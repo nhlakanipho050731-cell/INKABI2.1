@@ -213,6 +213,7 @@ function renderEvents(){const b=$("eventRows");if(!events.length)b.innerHTML='<t
 function addEvent(){const name=$("eventName").value.trim();if(!name){alert("Enter an event name.");return}events.push({name,time:$("eventTime").value,impact:$("eventImpact").value,actual:$("eventActual").value.trim(),forecast:$("eventForecast").value.trim(),previous:$("eventPrevious").value.trim(),notes:$("eventNotes").value.trim()});save("inkabi21_events",events);["eventName","eventTime","eventActual","eventForecast","eventPrevious","eventNotes"].forEach(id=>$(id).value="");renderEvents()}
 function analyzeNfp(){const ids=["nfpActual","nfpForecast","wageActual","wageForecast","unemploymentActual","unemploymentForecast"],raw=ids.map(id=>$(id).value.trim());if(raw.some(v=>v==="")||!raw.every(v=>Number.isFinite(Number(v)))){setText("nfpVerdict","INPUT INCOMPLETE / INVALID");setText("nfpExplanation","Enter all six valid figures and verify release source and units.");setText("nfpUsd","Unknown");setText("nfpGold","Unknown");return}const[a,f,wa,wf,ua,uf]=raw.map(Number);let score=0;score+=a>f?1:a<f?-1:0;score+=wa>wf?1:wa<wf?-1:0;score+=ua<uf?1:ua>uf?-1:0;setText("nfpVerdict",score>=2?"HAWKISH-LEANING":score<=-2?"DOVISH-LEANING":"MIXED / NO CLEAR SIGNAL");setText("nfpExplanation","Simple surprise score only. Revisions, participation, yields, DXY, risk sentiment and price reaction can reverse the initial move.");setText("nfpUsd",score>=2?"Potentially USD-supportive":score<=-2?"Potentially USD-negative":"Mixed / modest");setText("nfpGold",score>=2?"Potential headwind":score<=-2?"Potential support":"Unclear; wait for reaction")}
 function runLocalTests(){const now=Date.now(),lim=settings.staleSeconds*1000,q={price:4000,timestampMs:now,receivedAt:now,providerStale:false},fresh=(x,online=true,failed=false)=>!!x&&online&&!failed&&x.price>0&&x.providerStale===false&&now>=x.timestampMs&&now-x.timestampMs<=lim&&now-x.receivedAt<=lim;const rr=evaluateRiskValues("100","100","","");const tests=[["Stale quote rejected",!fresh({...q,timestampMs:now-lim-1})],["Zero price rejected",!fresh({...q,price:0})],["Offline blocks fresh status",!fresh(q,false,false)],["Failed refresh blocks fresh status",!fresh(q,true,true)],["Valid simulated quote passes logic",fresh(q)],["Daily loss limit blocks",rr.blocked&&rr.lossLock],["Incomplete risk config blocks",evaluateRiskValues("","","","").blocked],["Entry cap blocks",evaluateRiskValues("100","10","3","3").tradeLock],["Negative entry count invalid",!evaluateRiskValues("100","10","3","-1").configurationValid],["Macro levels don't establish trend",true]];$("testResults").innerHTML=tests.map(([n,p])=>`<div class="item"><span class="bullet" style="background:${p?"var(--green)":"var(--red)"}"></span><div><strong>${p?"PASS":"FAIL"} · ${esc(n)}</strong><p>Simulated local logic only; no network verification.</p></div></div>`).join("")+`<div class="${tests.every(t=>t[1])?"note":"alert"}">${tests.filter(t=>t[1]).length}/${tests.length} simulated tests passed. This does not prove feed connectivity.</div>`}
+console.log("INKABI21 NAVIGATION SCRIPT REACHED");
 function navigate(screen){const target=$("screen-"+screen);if(!target)return;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s===target));document.querySelectorAll(".nav button[data-screen]").forEach(b=>b.classList.toggle("active",b.dataset.screen===screen));window.scrollTo(0,0)}
 document.querySelectorAll(".nav button[data-screen]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.screen)));
 document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.goto)));
@@ -238,4 +239,22 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     });
   });
 }
-</script></body></html>
+</script>
+<script>
+window.addEventListener("error", function (event) {
+  var box = document.getElementById("inkabiDebug");
+  if (!box) {
+    box = document.createElement("pre");
+    box.id = "inkabiDebug";
+    box.style.cssText =
+      "position:fixed;bottom:0;left:0;right:0;z-index:99999;" +
+      "background:#300;color:#fff;padding:12px;font-size:12px;" +
+      "white-space:pre-wrap;max-height:40vh;overflow:auto";
+    document.body.appendChild(box);
+  }
+  box.textContent = "INKABI.21 JavaScript error:\n" +
+    event.message + "\nLine: " + event.lineno;
+});
+</script>
+</body>
+</html>
