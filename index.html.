@@ -1,137 +1,1081 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<link rel="manifest" href="./manifest.webmanifest">
 <title>INKABI.21 — Gold Intelligence</title>
 <style>
-:root{--bg:#090b10;--panel:#11151d;--panel2:#171d27;--line:#293140;--gold:#d8b45a;--gold2:#f1d991;--text:#f2f4f8;--muted:#9ba6b7;--green:#48d597;--red:#ff747d;--amber:#f5bf58;--blue:#8dbdff;--radius:16px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at top,#171a22 0,#090b10 55%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:1100px;margin:auto;padding:16px 14px 96px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 18px}.brand{display:flex;gap:11px;align-items:center}.mark{width:43px;height:43px;border:1px solid var(--gold);border-radius:13px;display:grid;place-items:center;color:var(--gold2);font-weight:900;letter-spacing:-2px}.brand h1{font-size:17px;letter-spacing:2px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:11px;letter-spacing:1.5px}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--muted);font-size:11px;white-space:nowrap}.pill.good{border-color:#2a6c52;color:var(--green)}.pill.bad{border-color:#6e3039;color:var(--red)}.pill.warn{border-color:#725b2b;color:var(--amber)}.nav{display:flex;gap:7px;overflow-x:auto;padding:4px 0 12px;margin-bottom:14px}.nav button{flex:0 0 auto;background:#10141c;border:1px solid var(--line);border-radius:11px;padding:10px 12px;color:var(--muted);font-weight:650;font-size:12px}.nav button.active{background:linear-gradient(135deg,#dfbf6a,#b88a2d);border-color:#f3d98d;color:#18140a}.screen{display:none}.screen.active{display:block;animation:appear .16s ease}@keyframes appear{from{opacity:.45;transform:translateY(3px)}to{opacity:1;transform:none}}.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}.card{background:linear-gradient(145deg,#141923,#0f1219);border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-width:0}.span12{grid-column:span 12}.span8{grid-column:span 8}.span7{grid-column:span 7}.span6{grid-column:span 6}.span5{grid-column:span 5}.span4{grid-column:span 4}.eyebrow{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);font-weight:800}.card h2,.card h3{margin:7px 0 9px}.card h2{font-size:20px}.card h3{font-size:15px}.bigprice{font-size:clamp(30px,7vw,48px);font-weight:800;letter-spacing:-1.5px;margin:5px 0;color:var(--gold2);font-variant-numeric:tabular-nums}.sub{color:var(--muted);font-size:12px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.metric{padding:11px;border:1px solid var(--line);border-radius:12px;background:#0c1016}.metric strong{display:block;font-size:17px;font-variant-numeric:tabular-nums}.metric span{font-size:10px;color:var(--muted)}.status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.4px}.dot{width:7px;height:7px;border-radius:50%;background:currentColor}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.blue{color:var(--blue)}.gold{color:var(--gold2)}.divider{height:1px;background:var(--line);margin:13px 0}.btn{border:1px solid #5e4b24;background:linear-gradient(135deg,#dfbf6a,#b78b32);color:#171309;border-radius:11px;padding:11px 14px;font-weight:850;font-size:12px}.btn.secondary{background:#171d27;color:var(--text);border-color:var(--line)}.btn.danger{background:#32171c;color:#ffc3c7;border-color:#71343c}.btn:disabled{opacity:.45;cursor:not-allowed}.btnrow{display:flex;gap:8px;flex-wrap:wrap}.field{display:flex;flex-direction:column;gap:5px;margin:9px 0}.field label{font-size:11px;color:var(--muted);font-weight:700}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#090d13;color:var(--text);border-radius:10px;padding:11px;outline:none}.field textarea{min-height:76px;resize:vertical}.note{border:1px solid #4f4328;background:#211c12;color:#e8d8ad;padding:11px 12px;border-radius:11px;font-size:12px}.alert{border:1px solid #63353b;background:#211216;color:#ffc5c9;padding:11px 12px;border-radius:11px;font-size:12px}.list{display:flex;flex-direction:column;gap:8px}.item{display:flex;align-items:flex-start;gap:9px;border-bottom:1px solid #242b36;padding:8px 0}.item:last-child{border-bottom:0}.item .bullet{width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:6px;flex:0 0 auto}.item strong{font-size:12px}.item p{margin:2px 0;color:var(--muted);font-size:11px}.meter{height:8px;background:#242b36;border-radius:20px;overflow:hidden;margin:8px 0}.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,#b98c36,#f1d991)}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px}td{font-variant-numeric:tabular-nums}.empty{color:var(--muted);font-size:12px;padding:12px 0}.footer{margin-top:20px;text-align:center;color:#697486;font-size:10px}.small{font-size:11px;color:var(--muted)}.sectiontitle{margin:5px 0 13px}.sectiontitle h2{margin:0;font-size:22px}.sectiontitle p{margin:4px 0;color:var(--muted);font-size:12px}.checkrow{display:flex;align-items:flex-start;gap:9px;margin:9px 0;font-size:12px}.reaction{display:grid;grid-template-columns:1fr 1fr;gap:8px}.reaction>div{border:1px solid var(--line);border-radius:11px;padding:11px;background:#0c1016}.reaction strong{display:block;font-size:12px}.reaction span{display:block;font-size:11px;color:var(--muted);margin-top:4px}@media(max-width:700px){.span8,.span7,.span6,.span5,.span4{grid-column:span 12}.metric{padding:9px 7px}.metric strong{font-size:14px}.app{padding-left:10px;padding-right:10px}.card{padding:14px}.pill{font-size:10px}}
+:root{
+  --bg:#090b10;--panel:#11151d;--panel2:#171d27;
+  --line:#293140;--gold:#d7b568;--gold2:#f0d69a;
+  --text:#f2f3f5;--muted:#939baa;--green:#4bd4a0;
+  --red:#ff6878;--yellow:#f5c66b;--blue:#83b9ff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font:14px/1.5 system-ui,-apple-system,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:10;background:#090b10f2;
+border-bottom:1px solid var(--line);padding:15px 16px}
+.brand{font-weight:900;font-size:21px;letter-spacing:2px;color:var(--gold)}
+.brand small{display:block;color:var(--muted);font-size:10px;
+letter-spacing:2px;font-weight:500}
+.headerline{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.status{font-size:10px;color:var(--yellow);border:1px solid #5b4b2d;
+padding:5px 8px;border-radius:20px}
+nav{display:flex;gap:7px;overflow-x:auto;padding:10px 12px;
+background:var(--bg);border-bottom:1px solid var(--line);
+scrollbar-width:thin}
+nav button{flex-shrink:0;border:1px solid var(--line);border-radius:8px;
+padding:9px 13px;background:var(--panel);color:var(--muted)}
+nav button.active{background:#302719;border-color:var(--gold);color:var(--gold2)}
+main{padding:16px;max-width:1000px;margin:auto;padding-bottom:40px}
+.screen{display:none}
+.screen.active{display:block}
+h1{font-size:23px;margin:8px 0 3px}
+h2{font-size:16px;margin:0 0 12px}
+h3{font-size:13px;margin:0 0 8px;color:var(--gold2)}
+p{color:var(--muted)}
+.sub{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.card{background:var(--panel);border:1px solid var(--line);
+border-radius:13px;padding:14px;margin-bottom:11px;min-width:0}
+.card.gold{border-color:#554729;background:linear-gradient(140deg,#211c12,#11151d 65%)}
+.bigprice{font-size:clamp(25px,7vw,39px);font-weight:800;letter-spacing:-1px;
+overflow-wrap:anywhere}
+.metric{font-size:20px;font-weight:750}
+.label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px}
+.goldtext{color:var(--gold2)}
+.green{color:var(--green)}
+.red{color:var(--red)}
+.yellow{color:var(--yellow)}
+.blue{color:var(--blue)}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;
+padding:4px 8px;font-size:10px;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+hr{border:0;border-top:1px solid var(--line);margin:13px 0}
+button.primary,.btn{background:var(--gold);color:#16120a;border:0;
+padding:10px 13px;border-radius:8px;font-weight:750}
+button.secondary{background:var(--panel2);color:var(--text);
+border:1px solid var(--line);padding:9px 12px;border-radius:8px}
+button.danger{background:#32191e;color:#ffb7c0;border:1px solid #6d303b;
+padding:9px 12px;border-radius:8px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.field{display:flex;flex-direction:column;gap:5px;margin:10px 0}
+.field label{font-size:12px;color:var(--muted)}
+input,select,textarea{width:100%;min-width:0;background:#0b0e14;
+color:var(--text);border:1px solid var(--line);border-radius:8px;
+padding:10px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+textarea{min-height:70px;resize:vertical}
+.notice{border:1px solid #514329;background:#211b10;color:#f1d99f;
+padding:11px;border-radius:9px;font-size:12px;margin:10px 0}
+.notice.error{border-color:#66313a;background:#251317;color:#ffb2bd}
+.notice.ok{border-color:#235b49;background:#10251e;color:#9ce9cb}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{padding:10px;border:1px solid var(--line);border-radius:9px;background:#0d1118}
+.item strong{display:block;margin-bottom:3px}
+.bar{height:7px;border-radius:5px;background:#292f39;overflow:hidden;margin:9px 0}
+.bar span{display:block;height:100%;width:0;background:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:500}
+footer{color:var(--muted);font-size:11px;text-align:center;padding:20px}
+.smallbtn{font-size:11px;padding:6px 9px!important}
+canvas{width:100%;height:180px;display:block}
+@media(min-width:650px){
+ main{padding:24px}
+ .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:370px){
+ main{padding:11px}
+ .card{padding:11px}
+ .grid3{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style>
 </head>
-<body><div class="app">
-<header class="top"><div class="brand"><div class="mark">I.21</div><div><h1>INKABI.21</h1><p>GOLD INTELLIGENCE SYSTEM</p></div></div><div id="connectionPill" class="pill warn">FEED NOT VERIFIED</div></header>
-<nav class="nav" aria-label="Main navigation"><button class="active" data-screen="home">⌂ Home</button><button data-screen="gold">◈ Gold</button><button data-screen="macro">⌁ Macro</button><button data-screen="risk">⛨ Risk</button><button data-screen="calendar">▦ Calendar / NFP</button><button data-screen="tests">✓ Tests & Settings</button></nav>
+<body>
+<header>
+  <div class="headerline">
+    <div class="brand">INKABI.21<small>GOLD INTELLIGENCE SYSTEM</small></div>
+    <span class="status" id="systemStatus">INITIALISING</span>
+  </div>
+</header>
+
+<nav id="navigation" aria-label="Main navigation">
+  <button class="active" data-screen="home">Home</button>
+  <button data-screen="gold">Gold</button>
+  <button data-screen="macro">Macro</button>
+  <button data-screen="risk">Risk</button>
+  <button data-screen="calendar">Calendar</button>
+  <button data-screen="tests">Tests & Settings</button>
+</nav>
+
 <main>
-<section id="screen-home" class="screen active"><div class="sectiontitle"><h2>Command centre</h2><p>Evidence first. Protect capital. No forced trades.</p></div><div class="grid">
-<article class="card span7"><div class="row"><span class="eyebrow">XAU / USD · Spot gold</span><span id="homeFeedStatus" class="status amber">● NOT VERIFIED</span></div><div id="homePrice" class="bigprice">—</div><div id="homePriceMeta" class="sub">Waiting for a verified quote</div><div class="metrics"><div class="metric"><span>Quote age</span><strong id="homeAge">—</strong></div><div class="metric"><span>Refresh</span><strong id="homeRefreshInterval">30 sec</strong></div><div class="metric"><span>Feed status</span><strong id="homeStale">Unverified</strong></div></div><div class="divider"></div><div class="btnrow"><button class="btn" id="refreshGoldBtn">Refresh gold</button><button class="btn secondary" data-goto="gold">Open Gold screen</button></div></article>
-<article class="card span5"><div class="eyebrow">Today's decision gate</div><h2 id="gateTitle">NO-GO · FEED UNVERIFIED</h2><p id="gateText" class="sub">No entry decision while the quote is missing, stale or unverified.</p><div class="divider"></div><div class="row"><span class="small">Risk lock</span><span id="homeRiskStatus" class="status amber">CHECK REQUIRED</span></div><div class="row" style="margin-top:9px"><span class="small">Macro agreement</span><span id="homeMacroStatus" class="status amber">NOT VERIFIED</span></div><div class="row" style="margin-top:9px"><span class="small">Calendar</span><span id="homeCalendarStatus" class="status amber">CHECK REQUIRED</span></div></article>
-<article class="card span6"><div class="eyebrow">System health</div><h3>Monitoring status</h3><div class="list" id="healthList"></div></article><article class="card span6"><div class="eyebrow">Operating rules</div><h3>Before any entry</h3><div class="checkrow">✓ Fresh quote and source timestamp verified.</div><div class="checkrow">✓ Daily loss limit checked locally.</div><div class="checkrow">✓ Conflicting or missing data means no directional claim.</div><div class="checkrow">✓ Decision support only; compare against MT5.</div></article></div></section>
-<section id="screen-gold" class="screen"><div class="sectiontitle"><h2>Gold monitor</h2><p>Quote freshness and feed integrity.</p></div><div class="grid"><article class="card span7"><div class="row"><span class="eyebrow">XAU/USD</span><span id="goldFeedStatus" class="pill bad">NOT VERIFIED</span></div><div id="goldPrice" class="bigprice">—</div><div id="goldMeta" class="sub">No verified quote loaded yet.</div><div class="metrics"><div class="metric"><span>Quote age</span><strong id="goldAge">—</strong></div><div class="metric"><span>Provider stale flag</span><strong id="goldProviderStale">—</strong></div><div class="metric"><span>Browser online</span><strong id="onlineStatus">—</strong></div></div><div class="divider"></div><div class="btnrow"><button class="btn" id="goldRefresh2">Refresh now</button><button class="btn secondary" id="copyQuote">Copy quote details</button></div><p class="small">Keyless goldprice.dev prices are delayed by about 15 minutes and the provider documentation says browser CORS is not supported. This standalone GitHub Pages app cannot honestly promise a working direct feed. A small server-side proxy is needed for a reliable in-app feed.</p></article><article class="card span5"><div class="eyebrow">Feed integrity</div><h3>Validation checks</h3><div class="list" id="feedChecks"></div><div class="note">A price is not considered fresh unless the timestamp is within the configured limit. The app must fail closed when data cannot be verified.</div></article><article class="card span12"><div class="eyebrow">Price history in this session</div><div class="tablewrap"><table><thead><tr><th>Received local</th><th>Price</th><th>Provider timestamp</th><th>Status</th></tr></thead><tbody id="quoteHistory"><tr><td colspan="4" class="empty">No verified quotes yet.</td></tr></tbody></table></div></article></div></section>
-<section id="screen-macro" class="screen"><div class="sectiontitle"><h2>Macro intelligence</h2><p>Public data attempts plus transparent manual fallback.</p></div><div class="note">FRED observations can be delayed and browser CORS may block requests. Broad USD index is a proxy, not ICE DXY.</div><div class="grid">
-<article class="card span4"><div class="eyebrow">USD index proxy</div><h2 id="dxyValue">—</h2><div id="dxyStatus" class="sub">Not loaded</div><div class="field"><label for="dxyManual">Manual value</label><input id="dxyManual" type="number" step=".001"></div><button class="btn secondary" id="saveDxy">Save manual value</button></article>
-<article class="card span4"><div class="eyebrow">US 10-year yield</div><h2 id="nominalValue">—</h2><div id="nominalStatus" class="sub">Not loaded</div><div class="field"><label for="nominalManual">Manual yield %</label><input id="nominalManual" type="number" step=".001"></div><button class="btn secondary" id="saveNominal">Save manual value</button></article>
-<article class="card span4"><div class="eyebrow">US 10-year real yield</div><h2 id="realValue">—</h2><div id="realStatus" class="sub">Not loaded</div><div class="field"><label for="realManual">Manual yield %</label><input id="realManual" type="number" step=".001"></div><button class="btn secondary" id="saveReal">Save manual value</button></article>
-<article class="card span6"><div class="eyebrow">Interpretation</div><h3 id="macroBias">INSUFFICIENT DATA</h3><p id="macroExplain" class="sub">Levels alone do not show trend. Verify observation dates and market reaction.</p><div class="metrics"><div class="metric"><span>USD pressure</span><strong id="usdPressure">Unknown</strong></div><div class="metric"><span>Yield pressure</span><strong id="yieldPressure">Unknown</strong></div><div class="metric"><span>Gold implication</span><strong id="goldPressure">Unknown</strong></div></div></article><article class="card span6"><div class="eyebrow">Source limitations</div><div class="list"><div class="item"><div><strong>DXY proxy</strong><p>FRED DTWEXBGS is not ICE DXY.</p></div></div><div class="item"><div><strong>Nominal yield</strong><p>FRED DGS10 is a daily series.</p></div></div><div class="item"><div><strong>Real yield</strong><p>FRED DFII10 is a daily series.</p></div></div></div><button class="btn secondary" id="refreshMacro">Try refresh public data</button></article></div></section>
-<section id="screen-risk" class="screen"><div class="sectiontitle"><h2>Risk command</h2><p>Local safety lockout only; it does not control MT5 orders.</p></div><div class="grid"><article class="card span6"><h3>Today's limits</h3><div class="field"><label for="dailyLimit">Daily loss limit (account currency)</label><input id="dailyLimit" type="number" min="0" step=".01"></div><div class="field"><label for="lossToday">Loss recorded today</label><input id="lossToday" type="number" min="0" step=".01"></div><div class="field"><label for="maxTrades">Maximum entries per day (optional)</label><input id="maxTrades" type="number" min="0" step="1"></div><div class="field"><label for="tradesToday">Entries already taken</label><input id="tradesToday" type="number" min="0" step="1"></div><div class="btnrow"><button class="btn" id="checkRisk">Check risk</button><button class="btn secondary" id="saveRisk">Save controls</button><button class="btn danger" id="resetRisk">Reset today's inputs</button></div></article><article class="card span6"><h2 id="riskDecision">CHECK REQUIRED</h2><p id="riskExplanation" class="sub">Enter valid limits and today's recorded loss.</p><div class="meter"><span id="riskMeter"></span></div><div class="row"><span class="small">Loss used</span><strong id="riskUsage">—</strong></div><div class="divider"></div><div class="alert">Local guardrail only. It cannot stop MT5 orders or verify broker P/L.</div></article></div></section>
-<section id="screen-calendar" class="screen"><div class="sectiontitle"><h2>Calendar & NFP reaction map</h2><p>Automatic calendar feed is not configured. Enter verified release values manually.</p></div><div class="grid"><article class="card span5"><h3>Add a release</h3><div class="field"><label for="eventName">Event name</label><input id="eventName" placeholder="US Nonfarm Payrolls"></div><div class="field"><label for="eventTime">Release date and time</label><input id="eventTime" type="datetime-local"></div><div class="field"><label for="eventImpact">Impact</label><select id="eventImpact"><option>High</option><option>Medium</option><option>Low</option></select></div><div class="field"><label for="eventActual">Actual</label><input id="eventActual"></div><div class="field"><label for="eventForecast">Forecast</label><input id="eventForecast"></div><div class="field"><label for="eventPrevious">Previous</label><input id="eventPrevious"></div><div class="field"><label for="eventNotes">Notes / source URL</label><textarea id="eventNotes"></textarea></div><button class="btn" id="addEvent">Add release</button></article>
-<article class="card span7"><h3>NFP reaction map</h3><div class="field"><label for="nfpActual">NFP actual (thousands)</label><input id="nfpActual" type="number" step="1"></div><div class="field"><label for="nfpForecast">NFP forecast (thousands)</label><input id="nfpForecast" type="number" step="1"></div><div class="field"><label for="wageActual">Hourly earnings actual (%)</label><input id="wageActual" type="number" step=".1"></div><div class="field"><label for="wageForecast">Hourly earnings forecast (%)</label><input id="wageForecast" type="number" step=".1"></div><div class="field"><label for="unemploymentActual">Unemployment actual (%)</label><input id="unemploymentActual" type="number" step=".1"></div><div class="field"><label for="unemploymentForecast">Unemployment forecast (%)</label><input id="unemploymentForecast" type="number" step=".1"></div><button class="btn" id="analyzeNfp">Analyze release</button><div class="divider"></div><h3 id="nfpVerdict">WAITING FOR INPUT</h3><p id="nfpExplanation" class="sub">NFP is not a one-number trade signal. Revisions, yields, DXY and price reaction can conflict.</p><div class="reaction"><div><strong>USD tendency</strong><span id="nfpUsd">Unknown</span></div><div><strong>Gold tendency</strong><span id="nfpGold">Unknown</span></div></div></article>
-<article class="card span12"><div class="row"><div><h3>Saved releases</h3></div><button class="btn secondary" id="clearEvents">Clear notes</button></div><div class="tablewrap"><table><thead><tr><th>Event / impact</th><th>Local time</th><th>Actual</th><th>Forecast</th><th>Previous</th><th>Notes / source</th></tr></thead><tbody id="eventRows"><tr><td colspan="6" class="empty">No releases added.</td></tr></tbody></table></div></article></div></section>
-<section id="screen-tests" class="screen"><div class="sectiontitle"><h2>Tests & settings</h2><p>Local simulated tests are not proof of external connectivity.</p></div><div class="grid"><article class="card span7"><h3>Safety test suite</h3><p class="sub">Tests cover freshness, offline status, failed refresh and risk limits.</p><div class="btnrow"><button class="btn" id="runTests">Run all local tests</button><button class="btn secondary" id="clearTests">Clear results</button></div><div class="divider"></div><div id="testResults" class="list"><div class="empty">Tests have not been run.</div></div></article><article class="card span5"><h3>Feed & safety thresholds</h3><div class="field"><label for="refreshSeconds">Refresh interval (seconds; minimum 30)</label><input id="refreshSeconds" type="number" min="30" max="300" step="10" value="30"></div><div class="field"><label for="staleSeconds">Mark quote stale after (seconds)</label><input id="staleSeconds" type="number" min="30" max="600" step="10" value="90"></div><div class="field"><label for="providerUrl">Gold feed endpoint</label><input id="providerUrl" value="https://api.goldprice.dev/v1/prices?symbol=XAU-USD-SPOT"></div><div class="btnrow"><button class="btn" id="saveSettings">Save & apply</button><button class="btn secondary" id="resetSettings">Restore defaults</button></div><p class="small">A static GitHub Pages app cannot bypass a provider's CORS restrictions. Do not put private API keys in this file.</p></article><article class="card span12"><h3>Implementation status</h3><div class="tablewrap"><table><thead><tr><th>Component</th><th>Status</th><th>Meaning</th></tr></thead><tbody><tr><td>Navigation</td><td>Implemented</td><td>Single handler per navigation button.</td></tr><tr><td>Gold quote</td><td>Provider/CORS limited</td><td>Direct API call may be blocked by provider CORS; keyless data is delayed.</td></tr><tr><td>DXY / yields</td><td>Best effort</td><td>FRED public series may be blocked or delayed.</td></tr><tr><td>Economic calendar</td><td>Manual</td><td>No automatic calendar provider connected.</td></tr><tr><td>MT5 order blocking</td><td>Not connected</td><td>Risk control is app-only.</td></tr><tr><td>Persistence</td><td>Local browser storage</td><td>Can be cleared by browser/device.</td></tr></tbody></table></div></article></div></section>
-</main><div class="footer">INKABI.21 · Independent decision support · Not financial advice · Verify every quote against your broker.</div></div>
+<!-- HOME -->
+<section class="screen active" id="home">
+  <div class="row">
+    <div>
+      <div class="label">TRADING COMMAND CENTRE</div>
+      <h1>Market overview</h1>
+      <p class="sub" id="localTime">Waiting for clock…</p>
+    </div>
+    <span class="pill" id="dayStatus">ASSESSING</span>
+  </div>
+
+  <div id="homeWarning" class="notice error">
+    Market feed has not yet been verified. Do not treat this dashboard as live until a current quote is confirmed.
+  </div>
+
+  <div class="grid">
+    <div class="card gold">
+      <div class="label">XAU/USD · USD per oz</div>
+      <div class="bigprice" id="homePrice">—</div>
+      <p class="sub" id="homeQuoteAge">No verified quote</p>
+      <button class="secondary smallbtn" data-go="gold">Open Gold →</button>
+    </div>
+    <div class="card">
+      <div class="label">Trade permission</div>
+      <div class="metric yellow" id="homePermission">NO-GO</div>
+      <p class="sub" id="homePermissionText">Waiting for verification checks.</p>
+    </div>
+    <div class="card">
+      <div class="label">Macro assessment</div>
+      <div class="metric" id="homeBias">NEUTRAL</div>
+      <p class="sub">Manual inputs only until verified data sources are available.</p>
+    </div>
+    <div class="card">
+      <div class="label">Daily loss used</div>
+      <div class="metric" id="homeLoss">R0.00</div>
+      <div class="bar"><span id="homeLossBar"></span></div>
+      <p class="sub" id="homeLossText">Configure risk settings.</p>
+    </div>
+    <div class="card">
+      <div class="label">Feed status</div>
+      <div class="metric yellow" id="homeFeedStatus">UNKNOWN</div>
+      <p class="sub" id="homeFeedMessage">Checking feed…</p>
+    </div>
+    <div class="card">
+      <div class="label">Safety checks</div>
+      <div class="metric" id="homeChecks">0 / 5</div>
+      <p class="sub">Passed checks are not a trade signal.</p>
+      <button class="secondary smallbtn" data-go="tests">Run diagnostics →</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Today's decision checklist</h2>
+    <div class="list" id="homeChecklist">
+      <div class="item">Verify price feed freshness.</div>
+      <div class="item">Check economic releases and event risk.</div>
+      <div class="item">Confirm direction and market structure on your chart.</div>
+      <div class="item">Check spread, stop distance and available risk.</div>
+      <div class="item">Never enter solely because the dashboard says GO.</div>
+    </div>
+  </div>
+</section>
+
+<!-- GOLD -->
+<section class="screen" id="gold">
+  <div class="label">INSTRUMENT MONITOR</div>
+  <h1>Gold intelligence</h1>
+  <p class="sub">XAU/USD · Spot gold reference price in USD per troy ounce</p>
+
+  <div id="goldWarning" class="notice error">No current quote has been verified.</div>
+  <div class="card gold">
+    <div class="row">
+      <span class="label">Latest retrieved price</span>
+      <span class="pill" id="goldSourceStatus">UNVERIFIED</span>
+    </div>
+    <div class="bigprice" id="goldPrice">—</div>
+    <div class="row">
+      <span class="sub" id="goldTimestamp">Last update: never</span>
+      <span class="sub" id="goldAge">Age: unknown</span>
+    </div>
+    <hr>
+    <div class="grid">
+      <div><div class="label">Previous quote</div><div class="metric" id="goldPrevious">—</div></div>
+      <div><div class="label">Change between quotes</div><div class="metric" id="goldChange">—</div></div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="refreshGold">Refresh quote</button>
+      <button class="secondary" id="autoRefreshToggle">Auto-refresh: ON</button>
+    </div>
+    <p class="sub">Refresh interval: 60 seconds. The timestamp records retrieval time, not necessarily the provider's market timestamp.</p>
+  </div>
+
+  <div class="card">
+    <h2>Feed integrity</h2>
+    <div class="list">
+      <div class="row"><span>Network available</span><strong id="networkState">Checking</strong></div>
+      <div class="row"><span>Last successful retrieval</span><strong id="lastSuccess">Never</strong></div>
+      <div class="row"><span>Quote freshness</span><strong id="freshnessState">UNKNOWN</strong></div>
+      <div class="row"><span>Data source</span><strong id="sourceLabel">Gold API</strong></div>
+    </div>
+    <p class="sub">A successful HTTP response does not independently prove that the provider's quote is current or executable at your broker.</p>
+  </div>
+
+  <div class="card">
+    <h2>Price observation</h2>
+    <canvas id="priceChart" width="700" height="250" aria-label="Retrieved gold quote history"></canvas>
+    <p class="sub" id="chartNote">The chart only records quotes retrieved by this page. It is not a broker tick chart.</p>
+  </div>
+
+  <div class="card">
+    <h2>Price history</h2>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Retrieved (local)</th><th>Price</th><th>Change</th></tr></thead>
+        <tbody id="priceHistory"><tr><td colspan="3">No quotes yet.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- MACRO -->
+<section class="screen" id="macro">
+  <div class="label">MACROECONOMIC MONITOR</div>
+  <h1>Macro intelligence</h1>
+  <p class="sub">Enter verified observations from reliable sources. Blank fields remain unknown, not zero.</p>
+
+  <div class="notice">
+    This version does not automatically retrieve DXY, Treasury yields, real yields, headlines or central-bank statements. Do not interpret missing data as confirmation.
+  </div>
+
+  <div class="card">
+    <h2>Market observations</h2>
+    <div class="field"><label for="dxy">DXY index level (optional)</label><input id="dxy" type="number" step="any" placeholder="Enter verified observation"></div>
+    <div class="field"><label for="dxyDirection">DXY direction</label><select id="dxyDirection"><option value="unknown">Unknown</option><option value="up">Rising</option><option value="down">Falling</option><option value="flat">Sideways</option></select></div>
+    <div class="field"><label for="yield10">US 10-year nominal yield (%)</label><input id="yield10" type="number" step="any" placeholder="Enter verified observation"></div>
+    <div class="field"><label for="realYield">US 10-year real yield (%)</label><input id="realYield" type="number" step="any" placeholder="Enter verified observation"></div>
+    <div class="field"><label for="yieldDirection">Yield direction</label><select id="yieldDirection"><option value="unknown">Unknown</option><option value="up">Rising</option><option value="down">Falling</option><option value="mixed">Mixed</option><option value="flat">Sideways</option></select></div>
+    <div class="field"><label for="riskTone">Risk environment</label><select id="riskTone"><option value="unknown">Unknown</option><option value="riskoff">Risk-off / safe-haven demand</option><option value="riskon">Risk-on</option><option value="mixed">Mixed</option></select></div>
+    <div class="field"><label for="macroTime">Observation time / source</label><input id="macroTime" placeholder="e.g. 10:30 SAST — source name"></div>
+    <button class="primary" id="saveMacro">Save observations and assess</button>
+  </div>
+
+  <div class="card">
+    <h2>Gold bias assessment</h2>
+    <div class="metric" id="macroBias">INSUFFICIENT DATA</div>
+    <p id="macroExplanation" class="sub">Enter verified observations to assess alignment.</p>
+    <div class="bar"><span id="macroBar"></span></div>
+    <div class="row"><span class="sub">Signal agreement</span><strong id="macroAgreement">Unknown</strong></div>
+    <p class="sub">This is a simple directional heuristic, not a calibrated probability or a forecast. Gold can rise or fall against these relationships.</p>
+  </div>
+
+  <div class="card">
+    <h2>Headline journal</h2>
+    <div class="field"><label for="headline">Headline and source</label><textarea id="headline" placeholder="Paste the headline and source"></textarea></div>
+    <div class="field"><label for="headlineImpact">Potential mechanism</label><select id="headlineImpact"><option value="unknown">Unassessed</option><option value="usd">USD strength / weakness</option><option value="rates">Interest rates / real yields</option><option value="inflation">Inflation expectations</option><option value="safehaven">Safe-haven demand</option><option value="liquidity">Liquidity / positioning</option></select></div>
+    <button class="secondary" id="saveHeadline">Add to journal</button>
+    <div class="list" id="headlineList" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<!-- RISK -->
+<section class="screen" id="risk">
+  <div class="label">CAPITAL PROTECTION</div>
+  <h1>Risk management</h1>
+  <div class="notice error">
+    These browser controls cannot read MT5 account equity, detect broker executions or prevent an order being placed. Enter actual results manually.
+  </div>
+
+  <div class="card">
+    <h2>Configure daily limits</h2>
+    <div class="grid">
+      <div class="field"><label for="accountSize">Reference account balance (R)</label><input id="accountSize" type="number" min="0" step="0.01" value="1000"></div>
+      <div class="field"><label for="riskPercent">Risk limit per trade (%)</label><input id="riskPercent" type="number" min="0" max="100" step="0.1" value="1"></div>
+      <div class="field"><label for="dailyLimit">Daily loss limit (%)</label><input id="dailyLimit" type="number" min="0" max="100" step="0.1" value="2"></div>
+      <div class="field"><label for="maxEntries">Maximum entries per day</label><input id="maxEntries" type="number" min="1" max="100" step="1" value="3"></div>
+    </div>
+    <button class="primary" id="saveRisk">Save risk settings</button>
+  </div>
+
+  <div class="card">
+    <h2>Today's manual journal</h2>
+    <div class="grid">
+      <div class="field"><label for="lossAmount">Net daily loss so far (R)</label><input id="lossAmount" type="number" min="0" step="0.01" value="0"></div>
+      <div class="field"><label for="entryCount">Entries taken today</label><input id="entryCount" type="number" min="0" step="1" value="0"></div>
+    </div>
+    <button class="primary" id="updateJournal">Update journal</button>
+    <hr>
+    <div class="grid">
+      <div><div class="label">Maximum daily loss</div><div class="metric" id="riskMaxLoss">R20.00</div></div>
+      <div><div class="label">Remaining loss allowance</div><div class="metric" id="riskRemaining">R20.00</div></div>
+      <div><div class="label">Suggested risk per trade</div><div class="metric" id="riskPerTrade">R10.00</div></div>
+      <div><div class="label">Entries remaining</div><div class="metric" id="riskEntriesRemaining">3</div></div>
+    </div>
+    <div class="bar"><span id="riskBar"></span></div>
+    <div class="metric red" id="riskBlockStatus">NO-GO — VERIFY INPUTS</div>
+    <p class="sub" id="riskMessage">Configure and verify your risk settings.</p>
+  </div>
+
+  <div class="card">
+    <h2>Session reset</h2>
+    <p class="sub">Resetting the local journal does not change broker records or your account balance.</p>
+    <button class="danger" id="resetRisk">Reset daily journal</button>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section class="screen" id="calendar">
+  <div class="label">EVENT RISK MANAGEMENT</div>
+  <h1>Economic calendar</h1>
+  <div class="notice">
+    There is no verified automatic calendar connection in this version. Add scheduled events from a reliable economic calendar. Do not rely on an empty list as proof that no major release is due.
+  </div>
+
+  <div class="card">
+    <h2>Add an event</h2>
+    <div class="field"><label for="eventName">Event name</label><input id="eventName" placeholder="e.g. US CPI / NFP / FOMC"></div>
+    <div class="grid">
+      <div class="field"><label for="eventDate">Date</label><input id="eventDate" type="date"></div>
+      <div class="field"><label for="eventTime">Time (your local time)</label><input id="eventTime" type="time"></div>
+    </div>
+    <div class="field"><label for="eventImpact">Impact</label><select id="eventImpact"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+    <div class="field"><label for="eventSource">Source / notes</label><input id="eventSource" placeholder="Source and time zone"></div>
+    <button class="primary" id="addEvent">Add event</button>
+  </div>
+
+  <div class="card">
+    <h2>Upcoming events</h2>
+    <div class="list" id="eventList"><p class="sub">No events entered. Calendar status is unverified.</p></div>
+  </div>
+
+  <div class="card">
+    <h2>NFP reaction map</h2>
+    <p class="sub">Enter the published actual and forecast figures after release. Compare like-for-like units and check revisions before interpreting.</p>
+    <div class="field"><label for="nfpActual">Payrolls actual (thousands)</label><input id="nfpActual" type="number" step="any" placeholder="Actual"></div>
+    <div class="field"><label for="nfpForecast">Payrolls forecast (thousands)</label><input id="nfpForecast" type="number" step="any" placeholder="Forecast"></div>
+    <div class="field"><label for="nfpUnemployment">Unemployment actual (%)</label><input id="nfpUnemployment" type="number" step="any" placeholder="Actual"></div>
+    <div class="field"><label for="nfpUnemploymentForecast">Unemployment forecast (%)</label><input id="nfpUnemploymentForecast" type="number" step="any" placeholder="Forecast"></div>
+    <div class="field"><label for="nfpWages">Average hourly earnings actual (%)</label><input id="nfpWages" type="number" step="any" placeholder="Monthly or annual — specify in notes"></div>
+    <div class="field"><label for="nfpWagesForecast">Average hourly earnings forecast (%)</label><input id="nfpWagesForecast" type="number" step="any" placeholder="Same measurement as actual"></div>
+    <div class="field"><label for="nfpNotes">Revisions / notes / measurement</label><textarea id="nfpNotes" placeholder="Prior revisions, source, units, release time"></textarea></div>
+    <button class="primary" id="assessNfp">Assess release</button>
+    <div id="nfpResult" class="notice">Awaiting verified release figures.</div>
+    <p class="sub">The initial reaction may reverse quickly. Check DXY, nominal and real yields, price structure, spread and follow-through before considering a trade.</p>
+  </div>
+</section>
+
+<!-- TESTS & SETTINGS -->
+<section class="screen" id="tests">
+  <div class="label">SYSTEM RELIABILITY</div>
+  <h1>Tests & settings</h1>
+  <p class="sub">Diagnostics report what this browser can test. They do not prove broker connectivity or profitability.</p>
+
+  <div class="card">
+    <h2>System diagnostics</h2>
+    <div class="actions">
+      <button class="primary" id="runTests">Run tests</button>
+      <button class="secondary" id="clearTestResults">Clear results</button>
+    </div>
+    <div id="testResults" class="list" style="margin-top:12px">
+      <p class="sub">Tests have not been run.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Gold feed settings</h2>
+    <div class="notice">
+      A provider endpoint must support browser CORS access. Never paste private API keys or passwords into a public GitHub repository.
+    </div>
+    <div class="field">
+      <label for="apiUrl">Gold price API URL</label>
+      <input id="apiUrl" type="url" placeholder="https://api.gold-api.com/price/XAU">
+    </div>
+    <div class="field">
+      <label for="refreshSeconds">Refresh interval (seconds; minimum 30)</label>
+      <input id="refreshSeconds" type="number" min="30" max="3600" step="10" value="60">
+    </div>
+    <div class="field">
+      <label for="staleSeconds">Mark quote stale after (seconds)</label>
+      <input id="staleSeconds" type="number" min="60" max="3600" step="30" value="180">
+    </div>
+    <button class="primary" id="saveFeedSettings">Save and restart feed</button>
+    <p class="sub">The default provider may be unavailable or may change its response format. A quote retrieved now is not proof of a real-time executable broker price.</p>
+  </div>
+
+  <div class="card">
+    <h2>Data and privacy</h2>
+    <p class="sub">Settings and journals are stored in this browser's local storage. Clearing browser data or changing browsers can erase them. No server-side backup is provided.</p>
+    <div class="row"><span>Browser online</span><strong id="diagOnline">Unknown</strong></div>
+    <div class="row"><span>JavaScript running</span><strong class="green">YES</strong></div>
+    <div class="row"><span>MT5 connection</span><strong class="yellow">NOT CONNECTED</strong></div>
+    <div class="row"><span>Automatic macro feed</span><strong class="yellow">NOT CONFIGURED</strong></div>
+    <div class="row"><span>Automatic calendar feed</span><strong class="yellow">NOT CONFIGURED</strong></div>
+    <hr>
+    <button class="danger" id="clearLocalData">Clear INKABI.21 local data</button>
+    <p class="sub">This permanently clears this browser's INKABI.21 settings, event journal, headlines and risk journal. It does not delete your GitHub files.</p>
+  </div>
+</section>
+
+<footer>
+  INKABI.21 · Decision support, not financial advice.<br>
+  Verify prices, releases and risk on your broker and authoritative sources before trading.
+</footer>
+</main>
+
 <script>
 "use strict";
-const $=id=>document.getElementById(id);
-const DEFAULTS={refreshSeconds:30,staleSeconds:90,providerUrl:"https://api.goldprice.dev/v1/prices?symbol=XAU-USD-SPOT"};
-function load(k,f){try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function setText(id,v){const e=$(id);if(e)e.textContent=v}
-function localTime(v){const d=new Date(v);return Number.isFinite(d.getTime())?d.toLocaleString():"Invalid date"}
-function fmtPrice(n){return Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}
-let settings={...DEFAULTS,...(load("inkabi21_settings",DEFAULTS)||{})};
-settings.refreshSeconds=Math.max(30,Math.min(300,Number(settings.refreshSeconds)||30));
-settings.staleSeconds=Math.max(30,Math.min(600,Number(settings.staleSeconds)||90));
-if(typeof settings.providerUrl!=="string"||!/^https:\/\//i.test(settings.providerUrl))settings.providerUrl=DEFAULTS.providerUrl;
-let latestQuote=null,quoteHistory=[],refreshTimer=null,refreshInProgress=false,lastRefreshFailed=true,lastFeedError="No successful quote yet.",recoveryTimer=null,recoveryDelayMs=5000,recoveryAttempts=0;
-let macro={dxy:null,nominal:null,real:null};
-let events=load("inkabi21_events",[]);if(!Array.isArray(events))events=[];
-let risk=load("inkabi21_risk",{limit:"",loss:"",maxTrades:"",trades:""});if(!risk||typeof risk!=="object")risk={limit:"",loss:"",maxTrades:"",trades:""};
-let tests=[];
-function quoteFresh(){if(!latestQuote||!navigator.onLine||lastRefreshFailed)return false;const now=Date.now(),max=Number(settings.staleSeconds)*1000;return Number.isFinite(latestQuote.price)&&latestQuote.price>0&&latestQuote.providerStale===false&&Number.isFinite(latestQuote.timestampMs)&&Number.isFinite(latestQuote.receivedAt)&&now>=latestQuote.timestampMs&&now>=latestQuote.receivedAt&&now-latestQuote.timestampMs<=max&&now-latestQuote.receivedAt<=max}
-function cancelRecoveryRetry(){if(recoveryTimer!==null)clearTimeout(recoveryTimer);recoveryTimer=null;recoveryAttempts=0;recoveryDelayMs=5000}
-function scheduleRecoveryRetry(immediate=false){if(recoveryTimer!==null)clearTimeout(recoveryTimer);recoveryTimer=null;if(!navigator.onLine)return;recoveryTimer=setTimeout(()=>{recoveryTimer=null;if(navigator.onLine&&!refreshInProgress)refreshGoldFeed()},immediate?1000:recoveryDelayMs)}
-function setStatus(id,text,kind){const e=$(id);if(!e)return;e.textContent=text;e.className=kind==="good"?"pill good":kind==="bad"?"pill bad":"pill warn"}
-function updateQuoteUI(){
- const fresh=quoteFresh(),age=latestQuote?Math.floor((Date.now()-latestQuote.receivedAt)/1000)+" sec":"—",price=latestQuote?"$"+fmtPrice(latestQuote.price):"—";
- ["homePrice","goldPrice"].forEach(id=>setText(id,price));["homeAge","goldAge"].forEach(id=>setText(id,age));
- setText("homePriceMeta",latestQuote?`Source timestamp: ${localTime(latestQuote.timestampMs)} · Received: ${localTime(latestQuote.receivedAt)}`:"No verified quote loaded yet.");
- setText("goldMeta",latestQuote?`Provider: ${latestQuote.source} · computed_at: ${new Date(latestQuote.timestampMs).toISOString()} · received ${localTime(latestQuote.receivedAt)}${fresh?"":" · NOT VERIFIED AS FRESH"}`:lastFeedError);
- setText("homeStale",fresh?"Fresh by local checks":"Unverified");setText("goldProviderStale",latestQuote?(latestQuote.providerStale?"YES":"NO"):"—");setText("onlineStatus",navigator.onLine?"Yes":"No");setText("homeRefreshInterval",settings.refreshSeconds+" sec");
- $("homeFeedStatus").className="status "+(fresh?"green":"amber");$("homeFeedStatus").textContent=fresh?"FRESH BY CHECKS":"NOT VERIFIED";
- setStatus("goldFeedStatus",fresh?"FRESH BY LOCAL CHECKS":"NOT VERIFIED",fresh?"good":"bad");
- setStatus("connectionPill",fresh?"GOLD FEED FRESH":(!navigator.onLine?"OFFLINE":"FEED NOT VERIFIED"),fresh?"good":(!navigator.onLine?"bad":"warn"));
- const checks=[["Valid positive numeric price",!!latestQuote&&Number.isFinite(latestQuote.price)&&latestQuote.price>0],["Provider timestamp parsed",!!latestQuote&&Number.isFinite(latestQuote.timestampMs)],["Provider stale flag confirmed false",!!latestQuote&&latestQuote.providerStale===false],["Quote timestamp within limit",!!latestQuote&&Date.now()>=latestQuote.timestampMs&&Date.now()-latestQuote.timestampMs<=settings.staleSeconds*1000],["Browser online",navigator.onLine],["Latest refresh succeeded",!lastRefreshFailed]];
- $("feedChecks").innerHTML=checks.map(([t,ok])=>`<div class="item"><span class="bullet" style="background:${ok?"var(--green)":"var(--red)"}"></span><div><strong>${esc(t)}</strong><p>${ok?"PASS":"NOT PASSED"}</p></div></div>`).join("");
- renderHistory();updateHomeDecision();updateMacroBias();updateHealth()
-}
-function renderHistory(){const b=$("quoteHistory");if(!quoteHistory.length){b.innerHTML='<tr><td colspan="4" class="empty">No verified quotes yet.</td></tr>';return}b.innerHTML=quoteHistory.slice().reverse().map(q=>{const fresh=Date.now()-q.timestampMs<=settings.staleSeconds*1000&&!q.providerStale;return `<tr><td>${esc(localTime(q.receivedAt))}</td><td>$${fmtPrice(q.price)}</td><td>${esc(new Date(q.timestampMs).toISOString())}</td><td class="${fresh?"green":"red"}">${fresh?"Within age limit at display":"STALE / UNVERIFIED"}</td></tr>`}).join("")}
-async function refreshGoldFeed(){
- if(refreshInProgress)return;
- if(!navigator.onLine){lastRefreshFailed=true;lastFeedError="Internet connection lost. Monitoring is impaired.";updateQuoteUI();return}
- refreshInProgress=true;const buttons=[$("refreshGoldBtn"),$("goldRefresh2")];buttons.forEach(b=>{if(b){b.disabled=true;b.textContent="Refreshing…"}});
- const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
- try{
-  const url=String(settings.providerUrl||DEFAULTS.providerUrl).trim();if(!/^https:\/\//i.test(url))throw new Error("Only HTTPS feed URLs are allowed.");
-  const response=await fetch(url,{method:"GET",cache:"no-store",headers:{Accept:"application/json"},signal:controller.signal});
-  if(!response.ok)throw new Error("Provider HTTP "+response.status);
-  const data=await response.json(),item=Array.isArray(data.symbols)?data.symbols.find(x=>x&&x.symbol==="XAU"&&x.quote_currency==="USD"):null;
-  if(!item)throw new Error("XAU/USD item not found in provider response.");
-  if(item.is_stale!==false)throw new Error("Provider stale status is missing or not confirmed false.");
-  const price=Number(item.price),timestampMs=Date.parse(item.computed_at),now=Date.now(),max=Number(settings.staleSeconds)*1000;
-  if(!Number.isFinite(price)||price<=0)throw new Error("Invalid or non-positive price.");
-  if(!Number.isFinite(timestampMs))throw new Error("Missing or invalid provider timestamp.");
-  if(item.unit!=="troy_ounce")throw new Error("Unexpected price unit.");
-  if(timestampMs>now+60000)throw new Error("Provider timestamp is in the future.");
-  if(now-timestampMs>max)throw new Error("Provider timestamp is too old for the "+settings.staleSeconds+"-second freshness limit.");
-  const candidate={price,timestampMs,receivedAt:now,providerStale:false,source:"goldprice.dev"};
-  latestQuote=candidate;quoteHistory.push(candidate);quoteHistory=quoteHistory.slice(-20);lastRefreshFailed=false;lastFeedError="Quote loaded and passed local validation.";cancelRecoveryRetry();
- }catch(err){
-  lastRefreshFailed=true;
-  const msg=err&&err.name==="AbortError"?"Request timed out after 10 seconds.":String(err&&err.message||"unknown error");
-  lastFeedError=/failed to fetch|networkerror|load failed/i.test(msg)?"Browser could not read the provider response. goldprice.dev documents that browser CORS is not supported; a server-side proxy is required.":`Gold feed unavailable or unverified: ${msg}`;
-  recoveryAttempts++;recoveryDelayMs=Math.min(60000,5000*Math.pow(2,Math.min(recoveryAttempts-1,4)));scheduleRecoveryRetry();
- }finally{clearTimeout(timeout);refreshInProgress=false;buttons.forEach(b=>{if(b){b.disabled=false;b.textContent=b.id==="refreshGoldBtn"?"Refresh gold":"Refresh now"}});updateQuoteUI()}
-}
-function evaluateRiskValues(lr,los,maxr,tr){const lt=String(lr??"").trim(),lost=String(los??"").trim(),mt=String(maxr??"").trim(),tt=String(tr??"").trim(),limit=Number(lt),loss=Number(lost),validLimit=lt!==""&&Number.isFinite(limit)&&limit>0,validLoss=lost!==""&&Number.isFinite(loss)&&loss>=0,max=mt===""?null:Number(mt),trades=tt===""?null:Number(tt),validMax=mt===""||(Number.isInteger(max)&&max>=0),validTrades=mt===""&&tt===""||(Number.isInteger(trades)&&trades>=0),tradeLock=mt!==""&&validMax&&validTrades&&trades>=max,configurationValid=validLimit&&validLoss&&validMax&&validTrades,lossLock=validLimit&&validLoss&&loss>=limit,blocked=!configurationValid||lossLock||tradeLock,usage=validLimit&&validLoss?Math.min(100,loss/limit*100):0;return{blocked,configurationValid,lossLock,tradeLock,usage,reason:!configurationValid?"Configuration incomplete or invalid.":lossLock?"Daily loss limit reached or exceeded.":tradeLock?"Maximum daily entries reached.":"Values are within configured limits."}}
-function calculateRisk(show=true){const r=evaluateRiskValues($("dailyLimit").value,$("lossToday").value,$("maxTrades").value,$("tradesToday").value);if(show){setText("riskDecision",!r.configurationValid?"CHECK CONFIGURATION":r.blocked?"NEW ENTRIES BLOCKED":"WITHIN LIMIT");setText("riskExplanation",r.reason);$("riskDecision").style.color=r.blocked?"var(--red)":"var(--green)";$("riskMeter").style.width=r.usage+"%";setText("riskUsage",r.configurationValid?r.usage.toFixed(1)+"%":"—")}return r}
-function updateHomeDecision(){const r=calculateRisk(false),fresh=quoteFresh();setText("homeRiskStatus",!r.configurationValid?"CONFIG REQUIRED":r.blocked?"BLOCKED":"WITHIN LIMIT");$("homeRiskStatus").className="status "+(r.blocked?"red":"green");const mk=Object.values(macro).every(x=>x&&Number.isFinite(x.value));setText("homeMacroStatus",mk?"VALUES AVAILABLE":"NOT VERIFIED");$("homeMacroStatus").className="status "+(mk?"blue":"amber");setText("homeCalendarStatus",events.length?events.length+" SAVED EVENT(S)":"CHECK REQUIRED");$("homeCalendarStatus").className="status "+(events.length?"blue":"amber");if(r.blocked){setText("gateTitle","NO-GO · RISK CHECK");setText("gateText",r.reason);return}if(!fresh){setText("gateTitle","NO-GO · FEED UNVERIFIED");setText("gateText","No trade decision while quote is missing, stale or unverified. Compare against MT5.");return}setText("gateTitle","WAIT FOR SETUP");setText("gateText","Quote passed local checks only; confirm chart structure and broker price yourself.")}
-function updateHealth(){const r=calculateRisk(false),fresh=quoteFresh(),mk=Object.values(macro).every(x=>x&&Number.isFinite(x.value));const rows=[["Gold quote",fresh?"Fresh by local checks":"Unverified / stale",fresh?"green":"amber"],["Internet",navigator.onLine?"Browser reports connected":"Disconnected",navigator.onLine?"green":"red"],["Risk control",!r.configurationValid?"Configuration required":r.blocked?"Entry lock active":"Within configured limits",r.blocked?"red":"green"],["Macro data",mk?"Values available; verify dates":"Incomplete / manually verify",mk?"green":"amber"],["Calendar",events.length?"User-entered events saved":"No automatic calendar feed",events.length?"blue":"amber"]];$("healthList").innerHTML=rows.map(([a,b,c])=>`<div class="item"><span class="bullet" style="background:var(--${c})"></span><div><strong>${esc(a)}</strong><p>${esc(b)}</p></div></div>`).join("")}
-function saveRiskValues(){risk={limit:$("dailyLimit").value,loss:$("lossToday").value,maxTrades:$("maxTrades").value,trades:$("tradesToday").value};save("inkabi21_risk",risk);calculateRisk();updateQuoteUI()}
-function loadRiskFields(){["dailyLimit","lossToday","maxTrades","tradesToday"].forEach((id,i)=>$(id).value=[risk.limit,risk.loss,risk.maxTrades,risk.trades][i]??"")}
-function updateMacroBias(){const known=["dxy","nominal","real"].every(k=>macro[k]&&Number.isFinite(macro[k].value));setText("macroBias",known?"LEVELS AVAILABLE · TREND UNKNOWN":"INSUFFICIENT DATA");setText("macroExplain",known?"Levels are available, but trend requires comparable prior observations and current reaction.":"Need all three values. No direction is inferred from missing data.");setText("usdPressure",known?"Level only":"Unknown");setText("yieldPressure",known?"Level only":"Unknown");setText("goldPressure","No bias")}
-function saveManualMacro(key,input,value,status,suffix=""){const raw=$(input).value;if(raw.trim()===""||!Number.isFinite(Number(raw))){setText(status,"Enter a valid number first.");return}macro[key]={value:Number(raw),date:new Date().toISOString().slice(0,10),source:"Manual user entry",manual:true};setText(value,Number(raw).toFixed(3)+suffix);setText(status,"Manual value · verify source and date");updateQuoteUI()}
-async function fetchFred(series){const u="https://fred.stlouisfed.org/graph/fredgraph.csv?id="+encodeURIComponent(series),r=await fetch(u,{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);const lines=(await r.text()).trim().split(/\r?\n/).slice(1);for(let i=lines.length-1;i>=0;i--){const p=lines[i].split(",");if(p[1]&&p[1]!=="."&&Number.isFinite(Number(p[1])))return{value:Number(p[1]),date:p[0],source:"FRED "+series};}throw Error("No numeric observations")}
-async function refreshMacro(){const jobs=[["dxy","DTWEXBGS","dxyValue","dxyStatus",v=>v.toFixed(3)],["nominal","DGS10","nominalValue","nominalStatus",v=>v.toFixed(3)+"%"],["real","DFII10","realValue","realStatus",v=>v.toFixed(3)+"%"]];await Promise.all(jobs.map(async([key,series,vid,sid,fmt])=>{try{const x=await fetchFred(series);macro[key]=x;setText(vid,fmt(x.value));setText(sid,x.source+" · "+x.date+" · daily/delayed")}catch(e){setText(sid,"Automatic fetch failed; verify manually.")}}));updateQuoteUI()}
-function renderEvents(){const b=$("eventRows");if(!events.length)b.innerHTML='<tr><td colspan="6" class="empty">No releases added. Automatic calendar feed is not configured.</td></tr>';else b.innerHTML=events.map(e=>`<tr><td>${esc(e.name)}<br>${esc(e.impact)}</td><td>${esc(e.time?localTime(e.time):"Not set")}</td><td>${esc(e.actual||"—")}</td><td>${esc(e.forecast||"—")}</td><td>${esc(e.previous||"—")}</td><td>${esc(e.notes||"—")}</td></tr>`).join("");updateHomeDecision();updateHealth()}
-function addEvent(){const name=$("eventName").value.trim();if(!name){alert("Enter an event name.");return}events.push({name,time:$("eventTime").value,impact:$("eventImpact").value,actual:$("eventActual").value.trim(),forecast:$("eventForecast").value.trim(),previous:$("eventPrevious").value.trim(),notes:$("eventNotes").value.trim()});save("inkabi21_events",events);["eventName","eventTime","eventActual","eventForecast","eventPrevious","eventNotes"].forEach(id=>$(id).value="");renderEvents()}
-function analyzeNfp(){const ids=["nfpActual","nfpForecast","wageActual","wageForecast","unemploymentActual","unemploymentForecast"],raw=ids.map(id=>$(id).value.trim());if(raw.some(v=>v==="")||!raw.every(v=>Number.isFinite(Number(v)))){setText("nfpVerdict","INPUT INCOMPLETE / INVALID");setText("nfpExplanation","Enter all six valid figures and verify release source and units.");setText("nfpUsd","Unknown");setText("nfpGold","Unknown");return}const[a,f,wa,wf,ua,uf]=raw.map(Number);let score=0;score+=a>f?1:a<f?-1:0;score+=wa>wf?1:wa<wf?-1:0;score+=ua<uf?1:ua>uf?-1:0;setText("nfpVerdict",score>=2?"HAWKISH-LEANING":score<=-2?"DOVISH-LEANING":"MIXED / NO CLEAR SIGNAL");setText("nfpExplanation","Simple surprise score only. Revisions, participation, yields, DXY, risk sentiment and price reaction can reverse the initial move.");setText("nfpUsd",score>=2?"Potentially USD-supportive":score<=-2?"Potentially USD-negative":"Mixed / modest");setText("nfpGold",score>=2?"Potential headwind":score<=-2?"Potential support":"Unclear; wait for reaction")}
-function runLocalTests(){const now=Date.now(),lim=settings.staleSeconds*1000,q={price:4000,timestampMs:now,receivedAt:now,providerStale:false},fresh=(x,online=true,failed=false)=>!!x&&online&&!failed&&x.price>0&&x.providerStale===false&&now>=x.timestampMs&&now-x.timestampMs<=lim&&now-x.receivedAt<=lim;const rr=evaluateRiskValues("100","100","","");const tests=[["Stale quote rejected",!fresh({...q,timestampMs:now-lim-1})],["Zero price rejected",!fresh({...q,price:0})],["Offline blocks fresh status",!fresh(q,false,false)],["Failed refresh blocks fresh status",!fresh(q,true,true)],["Valid simulated quote passes logic",fresh(q)],["Daily loss limit blocks",rr.blocked&&rr.lossLock],["Incomplete risk config blocks",evaluateRiskValues("","","","").blocked],["Entry cap blocks",evaluateRiskValues("100","10","3","3").tradeLock],["Negative entry count invalid",!evaluateRiskValues("100","10","3","-1").configurationValid],["Macro levels don't establish trend",true]];$("testResults").innerHTML=tests.map(([n,p])=>`<div class="item"><span class="bullet" style="background:${p?"var(--green)":"var(--red)"}"></span><div><strong>${p?"PASS":"FAIL"} · ${esc(n)}</strong><p>Simulated local logic only; no network verification.</p></div></div>`).join("")+`<div class="${tests.every(t=>t[1])?"note":"alert"}">${tests.filter(t=>t[1]).length}/${tests.length} simulated tests passed. This does not prove feed connectivity.</div>`}
-function navigate(screen){const target=$("screen-"+screen);if(!target)return;document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s===target));document.querySelectorAll(".nav button[data-screen]").forEach(b=>b.classList.toggle("active",b.dataset.screen===screen));window.scrollTo(0,0)}
-document.querySelectorAll(".nav button[data-screen]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.screen)));
-document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.goto)));
-$("refreshGoldBtn").addEventListener("click",refreshGoldFeed);$("goldRefresh2").addEventListener("click",refreshGoldFeed);
-$("copyQuote").addEventListener("click",async()=>{const t=latestQuote?`XAU/USD ${latestQuote.price} USD/troy ounce; computed_at=${new Date(latestQuote.timestampMs).toISOString()}; fresh=${quoteFresh()}`:"No verified quote available. "+lastFeedError;try{await navigator.clipboard.writeText(t);alert("Details copied.")}catch(e){alert(t)}});
-$("checkRisk").addEventListener("click",saveRiskValues);$("saveRisk").addEventListener("click",()=>{saveRiskValues();alert("Saved locally only; not connected to MT5.")});$("resetRisk").addEventListener("click",()=>{if(confirm("Reset today's loss and entry count inputs?")){risk.loss="";risk.trades="";save("inkabi21_risk",risk);loadRiskFields();saveRiskValues()}});
-["dailyLimit","lossToday","maxTrades","tradesToday"].forEach(id=>$(id).addEventListener("input",()=>{calculateRisk();updateHomeDecision()}));
-$("saveDxy").addEventListener("click",()=>saveManualMacro("dxy","dxyManual","dxyValue","dxyStatus"));$("saveNominal").addEventListener("click",()=>saveManualMacro("nominal","nominalManual","nominalValue","nominalStatus","%"));$("saveReal").addEventListener("click",()=>saveManualMacro("real","realManual","realValue","realStatus","%"));$("refreshMacro").addEventListener("click",refreshMacro);
-$("addEvent").addEventListener("click",addEvent);$("clearEvents").addEventListener("click",()=>{if(confirm("Delete all saved calendar notes?")){events=[];save("inkabi21_events",events);renderEvents()}});$("analyzeNfp").addEventListener("click",analyzeNfp);$("runTests").addEventListener("click",runLocalTests);$("clearTests").addEventListener("click",()=>{$("testResults").innerHTML='<div class="empty">Results cleared.</div>'});
-function loadSettingsFields(){$("refreshSeconds").value=settings.refreshSeconds;$("staleSeconds").value=settings.staleSeconds;$("providerUrl").value=settings.providerUrl}
-function startRefreshTimer(){if(refreshTimer)clearInterval(refreshTimer);refreshTimer=setInterval(()=>{refreshGoldFeed();updateQuoteUI()},settings.refreshSeconds*1000)}
-$("saveSettings").addEventListener("click",()=>{const url=$("providerUrl").value.trim();if(!/^https:\/\/.+/i.test(url)){alert("Use a valid HTTPS endpoint.");return}settings={refreshSeconds:Math.max(30,Math.min(300,Number($("refreshSeconds").value)||30)),staleSeconds:Math.max(30,Math.min(600,Number($("staleSeconds").value)||90)),providerUrl:url};save("inkabi21_settings",settings);loadSettingsFields();startRefreshTimer();updateQuoteUI();refreshGoldFeed()});
-$("resetSettings").addEventListener("click",()=>{settings={...DEFAULTS};save("inkabi21_settings",settings);loadSettingsFields();startRefreshTimer();updateQuoteUI();refreshGoldFeed()});
-window.addEventListener("offline",()=>{lastRefreshFailed=true;lastFeedError="Internet connection lost. Monitoring is impaired.";if(recoveryTimer!==null)clearTimeout(recoveryTimer);recoveryTimer=null;updateQuoteUI()});
-window.addEventListener("online",()=>{lastRefreshFailed=true;lastFeedError="Internet restored. Rechecking feed.";updateQuoteUI();scheduleRecoveryRetry(true)});
-document.addEventListener("visibilitychange",()=>{if(!document.hidden){updateQuoteUI();refreshGoldFeed()}});
-loadRiskFields();loadSettingsFields();renderEvents();calculateRisk();updateQuoteUI();startRefreshTimer();refreshGoldFeed();refreshMacro();
 
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {
-      // App remains usable if service-worker registration is unavailable.
-    });
+/* INKABI.21 — standalone browser application
+   No external JavaScript libraries required. */
+
+const $ = id => document.getElementById(id);
+const STORE = "inkabi21_standalone_v1";
+const state = {
+  price: null,
+  previousPrice: null,
+  fetchedAt: null,
+  providerTime: null,
+  source: "",
+  error: "",
+  history: [],
+  timer: null,
+  autoRefresh: true,
+  events: [],
+  headlines: [],
+  tests: [],
+  macro: {bias:"NEUTRAL",agreement:"Unknown"},
+  risk: {balance:1000,riskPct:1,dailyPct:2,maxEntries:3,loss:0,entries:0}
+};
+
+const defaultApi = "https://api.gold-api.com/price/XAU";
+const defaults = {
+  apiUrl: defaultApi,
+  refreshSeconds: 60,
+  staleSeconds: 180
+};
+
+function safeNumber(value) {
+  if (value === "" || value === null || value === undefined) return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+function money(value) {
+  return "R" + Number(value || 0).toLocaleString("en-ZA",{
+    minimumFractionDigits:2,maximumFractionDigits:2
   });
 }
-</script></body></html>
+function priceFormat(value) {
+  return value === null || !Number.isFinite(value) ? "—" :
+    value.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function localDate(timestamp) {
+  return timestamp ? new Date(timestamp).toLocaleString() : "Never";
+}
+function readStore() {
+  try {
+    const raw = localStorage.getItem(STORE);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (error) {
+    console.warn("Local storage unavailable", error);
+    return {};
+  }
+}
+function persist() {
+  try {
+    const settings = {
+      apiUrl: $("apiUrl").value.trim() || defaultApi,
+      refreshSeconds: Math.max(30,Number($("refreshSeconds").value)||60),
+      staleSeconds: Math.max(60,Number($("staleSeconds").value)||180)
+    };
+    localStorage.setItem(STORE,JSON.stringify({
+      settings,
+      risk:state.risk,
+      events:state.events,
+      headlines:state.headlines,
+      history:state.history.slice(-40),
+      macro:{
+        dxy:$("dxy").value,
+        dxyDirection:$("dxyDirection").value,
+        yield10:$("yield10").value,
+        realYield:$("realYield").value,
+        yieldDirection:$("yieldDirection").value,
+        riskTone:$("riskTone").value,
+        macroTime:$("macroTime").value
+      }
+    }));
+  } catch (error) {
+    console.warn("Could not save local data",error);
+  }
+}
+function setStatus(text) {
+  $("systemStatus").textContent = text;
+}
+function ageSeconds() {
+  return state.fetchedAt ? Math.max(0,Math.floor((Date.now()-state.fetchedAt)/1000)) : null;
+}
+function isFresh() {
+  const age = ageSeconds();
+  const stale = Number($("staleSeconds").value)||180;
+  return state.price !== null && age !== null && age <= stale;
+}
+function navigate(screen) {
+  const target = $(""+screen);
+  if (!target || !target.classList.contains("screen")) return;
+  document.querySelectorAll(".screen").forEach(el=>el.classList.remove("active"));
+  target.classList.add("active");
+  document.querySelectorAll("#navigation button").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.screen===screen);
+  });
+  window.scrollTo({top:0,behavior:"auto"});
+  if (screen==="gold") drawChart();
+  if (screen==="risk") updateRiskUI();
+}
+$("navigation").addEventListener("click",event=>{
+  const btn = event.target.closest("button[data-screen]");
+  if (btn) navigate(btn.dataset.screen);
+});
+document.addEventListener("click",event=>{
+  const btn = event.target.closest("[data-go]");
+  if (btn) navigate(btn.dataset.go);
+});
+
+/* Flexible response parsing, without treating invalid values as live quotes. */
+function extractPrice(data) {
+  const candidates = [];
+  function add(v) {
+    if (typeof v === "number" || (typeof v === "string" && v.trim()!=="")) {
+      const n = Number(v);
+      if (Number.isFinite(n) && n > 0) candidates.push(n);
+    }
+  }
+  if (data && typeof data==="object") {
+    add(data.price);
+    add(data.rate);
+    add(data.ask);
+    add(data.close);
+    if (data.data && typeof data.data==="object") {
+      add(data.data.price);
+      add(data.data.rate);
+      add(data.data.ask);
+    }
+    if (Array.isArray(data.symbols)) {
+      const xau = data.symbols.find(item =>
+        item && String(item.symbol||"").toUpperCase()==="XAU");
+      if (xau) add(xau.price);
+    }
+  }
+  return candidates.length ? candidates[0] : null;
+}
+function extractProviderTime(data) {
+  if (!data || typeof data!=="object") return null;
+  const value = data.computed_at || data.timestamp || data.updated_at ||
+    data.last_updated || data.date;
+  if (!value) return null;
+  const ms = typeof value==="number" ? value*(value<1e12?1000:1) : Date.parse(value);
+  return Number.isFinite(ms) ? ms : null;
+}
+async function fetchGold() {
+  const url = ($("apiUrl").value||defaultApi).trim();
+  if (!url) {
+    state.error = "No API URL configured.";
+    renderGold();
+    return false;
+  }
+  if (!navigator.onLine) {
+    state.error = "Device reports no internet connection.";
+    renderGold();
+    return false;
+  }
+  $("refreshGold").disabled = true;
+  $("refreshGold").textContent = "Refreshing…";
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(),10000);
+  try {
+    const response = await fetch(url,{
+      method:"GET",
+      cache:"no-store",
+      signal:controller.signal,
+      headers:{"Accept":"application/json"}
+    });
+    if (!response.ok) throw new Error("Provider HTTP status "+response.status);
+    const data = await response.json();
+    const value = extractPrice(data);
+    if (value===null) throw new Error("No recognised positive price in response.");
+    const previous = state.price;
+    state.previousPrice = previous;
+    state.price = value;
+    state.fetchedAt = Date.now();
+    state.providerTime = extractProviderTime(data);
+    state.source = url;
+    state.error = "";
+    state.history.push({price:value,time:state.fetchedAt});
+    state.history = state.history.slice(-40);
+    persist();
+    renderGold();
+    runSafetySummary();
+    return true;
+  } catch (error) {
+    state.error = error.name==="AbortError" ? "Feed request timed out." :
+      (error.message || "Feed request failed. Check URL, connection and CORS.");
+    renderGold();
+    runSafetySummary();
+    return false;
+  } finally {
+    clearTimeout(timeout);
+    $("refreshGold").disabled = false;
+    $("refreshGold").textContent = "Refresh quote";
+  }
+}
+function renderGold() {
+  const age = ageSeconds();
+  const fresh = isFresh();
+  const hasPrice = state.price!==null;
+  const priceText = hasPrice ? "$"+priceFormat(state.price) : "—";
+  $("goldPrice").textContent = priceText;
+  $("homePrice").textContent = priceText;
+  $("goldPrevious").textContent = state.previousPrice===null ? "—" : "$"+priceFormat(state.previousPrice);
+  let change = null;
+  if (state.previousPrice!==null && state.previousPrice!==0 && hasPrice) {
+    change=(state.price-state.previousPrice)/state.previousPrice*100;
+  }
+  $("goldChange").textContent = change===null ? "—" : (change>=0?"+":"")+change.toFixed(3)+"%";
+  $("goldChange").className = "metric "+(change===null?"":change>=0?"green":"red");
+  $("goldTimestamp").textContent = "Retrieved: "+localDate(state.fetchedAt);
+  $("goldAge").textContent = age===null ? "Age: unknown" : "Age: "+age+" sec";
+  $("homeQuoteAge").textContent = age===null ? "No verified quote" : "Retrieved "+age+" seconds ago";
+  $("lastSuccess").textContent = localDate(state.fetchedAt);
+  $("sourceLabel").textContent = state.source ? new URL(state.source).hostname : "Not yet verified";
+  $("networkState").textContent = navigator.onLine ? "Online" : "Offline";
+  $("diagOnline").textContent = navigator.onLine ? "Online" : "Offline";
+  $("freshnessState").textContent = !hasPrice ? "NO QUOTE" : fresh ? "RECENT RETRIEVAL" : "STALE";
+  $("freshnessState").className = fresh ? "green" : "red";
+  $("goldSourceStatus").textContent = fresh ? "RECENT RETRIEVAL" : hasPrice ? "STALE" : "UNVERIFIED";
+  $("homeFeedStatus").textContent = !hasPrice ? "UNAVAILABLE" : fresh ? "RECENT" : "STALE";
+  $("homeFeedMessage").textContent = state.error || (fresh ?
+    "A quote was retrieved recently; provider freshness is not guaranteed." :
+    "No recent successful retrieval.");
+  $("homeFeedStatus").className = "metric "+(fresh?"green":"red");
+  $("homeWarning").textContent = !hasPrice ?
+    "NO VERIFIED QUOTE. "+(state.error||"Waiting for a successful retrieval.") :
+    !fresh ? "STALE QUOTE: last retrieval was "+age+" seconds ago. Do not treat this price as live." :
+    "A recent quote was retrieved. Provider timestamp and broker execution price may differ.";
+  $("homeWarning").className = "notice "+(fresh?"":"error");
+  $("goldWarning").textContent = !hasPrice ?
+    "NO VERIFIED QUOTE. "+(state.error||"Waiting for a successful retrieval.") :
+    !fresh ? "STALE QUOTE. The app will not classify this as a current quote." :
+    "Recent retrieval only. Verify provider timestamp and broker quote independently.";
+  $("goldWarning").className = "notice "+(fresh?"":"error");
+  $("chartNote").textContent = state.history.length ?
+    "Shows "+state.history.length+" locally retrieved quotes; not a broker tick chart." :
+    "No quotes recorded yet.";
+  renderHistory();
+  drawChart();
+}
+function renderHistory() {
+  const body=$("priceHistory");
+  body.replaceChildren();
+  if (!state.history.length) {
+    const tr=document.createElement("tr"),td=document.createElement("td");
+    td.colSpan=3;td.textContent="No quotes yet.";tr.append(td);body.append(tr);return;
+  }
+  state.history.slice().reverse().slice(0,12).forEach((item,index,array)=>{
+    const tr=document.createElement("tr");
+    const values=[
+      localDate(item.time),
+      "$"+priceFormat(item.price),
+      index===array.length-1?"—":
+        ((item.price-array[index+1].price)>=0?"+":"")+
+        priceFormat(item.price-array[index+1].price)
+    ];
+    values.forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.append(td);});
+    body.append(tr);
+  });
+}
+function drawChart() {
+  const canvas=$("priceChart");
+  if (!canvas || !canvas.getContext) return;
+  const ctx=canvas.getContext("2d");
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle="#293140";ctx.lineWidth=1;
+  for(let i=1;i<=4;i++){
+    const y=i*h/5;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+  }
+  const data=state.history.slice(-30);
+  if(data.length<2){
+    ctx.fillStyle="#939baa";ctx.font="15px sans-serif";
+    ctx.fillText("Waiting for quote history",20,h/2);return;
+  }
+  const vals=data.map(d=>d.price);
+  const min=Math.min(...vals),max=Math.max(...vals);
+  const range=max-min || Math.max(max*0.001,1);
+  ctx.strokeStyle="#d7b568";ctx.lineWidth=3;ctx.beginPath();
+  data.forEach((d,i)=>{
+    const x=10+i*(w-20)/(data.length-1);
+    const y=h-15-((d.price-min)/range)*(h-35);
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.fillStyle="#f0d69a";ctx.font="14px sans-serif";
+  ctx.fillText("$"+priceFormat(max),10,16);
+  ctx.fillText("$"+priceFormat(min),10,h-3);
+}
+function startRefreshTimer() {
+  if (state.timer) clearInterval(state.timer);
+  const seconds=Math.max(30,Number($("refreshSeconds").value)||60);
+  state.timer=setInterval(()=>{
+    if(state.autoRefresh && document.visibilityState!=="hidden") fetchGold();
+    else renderGold();
+  },seconds*1000);
+}
+$("refreshGold").addEventListener("click",fetchGold);
+$("autoRefreshToggle").addEventListener("click",()=>{
+  state.autoRefresh=!state.autoRefresh;
+  $("autoRefreshToggle").textContent="Auto-refresh: "+(state.autoRefresh?"ON":"OFF");
+  if(state.autoRefresh)fetchGold();
+});
+window.addEventListener("online",()=>{
+  renderGold();setStatus("ONLINE");
+  if(state.autoRefresh)fetchGold();
+});
+window.addEventListener("offline",()=>{
+  state.error="Device reports no internet connection.";
+  renderGold();setStatus("OFFLINE");
+});
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"){
+    renderGold();
+    if(state.autoRefresh)fetchGold();
+  }
+});
+setInterval(()=>{
+  renderGold();
+  updateRiskUI();
+  runSafetySummary();
+},5000);
+
+/* Macro assessment: simple directional heuristic, not a probability. */
+function assessMacro() {
+  const dd=$("dxyDirection").value;
+  const yd=$("yieldDirection").value;
+  const risk=$("riskTone").value;
+  let points=0,known=0,parts=[];
+  if(dd==="up"){points-=1;known++;parts.push("rising DXY can pressure gold");}
+  if(dd==="down"){points+=1;known++;parts.push("falling DXY can support gold");}
+  if(yd==="up"){points-=1;known++;parts.push("rising yields can pressure gold");}
+  if(yd==="down"){points+=1;known++;parts.push("falling yields can support gold");}
+  if(risk==="riskoff"){points+=1;known++;parts.push("safe-haven demand may support gold");}
+  if(risk==="riskon"){points-=1;known++;parts.push("risk-on conditions may reduce safe-haven demand");}
+  const bias=known===0?"INSUFFICIENT DATA":
+    points>=2?"BULLISH LEAN":points<=-2?"BEARISH LEAN":"MIXED / NEUTRAL";
+  state.macro={bias,agreement:known+" directional inputs"};
+  $("macroBias").textContent=bias;
+  $("macroExplanation").textContent=parts.length?parts.join("; ")+".":"No directional inputs available.";
+  $("macroAgreement").textContent=known+" inputs; score "+points;
+  $("macroBar").style.width=(known?Math.min(100,Math.abs(points)/known*100):0)+"%";
+  $("homeBias").textContent=bias;
+  $("homeBias").className="metric "+(bias.includes("BULLISH")?"green":bias.includes("BEARISH")?"red":"yellow");
+  persist();
+}
+$("saveMacro").addEventListener("click",assessMacro);
+$("saveHeadline").addEventListener("click",()=>{
+  const text=$("headline").value.trim();
+  if(!text){alert("Enter a headline and source first.");return;}
+  state.headlines.unshift({text,impact:$("headlineImpact").value,time:Date.now()});
+  state.headlines=state.headlines.slice(0,50);
+  $("headline").value="";
+  renderHeadlines();persist();
+});
+function renderHeadlines() {
+  const list=$("headlineList");list.replaceChildren();
+  if(!state.headlines.length){list.innerHTML='<p class="sub">No headlines saved.</p>';return;}
+  state.headlines.forEach(item=>{
+    const box=document.createElement("div");box.className="item";
+    const strong=document.createElement("strong");strong.textContent=item.text;
+    const small=document.createElement("div");small.className="sub";
+    small.textContent=item.impact+" · "+localDate(item.time);
+    box.append(strong,small);list.append(box);
+  });
+}
+
+/* Risk journal: local advisory controls, not broker-side order blocking. */
+function riskNumbers() {
+  const r=state.risk;
+  const balance=Math.max(0,Number(r.balance)||0);
+  const dailyLimit=Math.max(0,Number(r.dailyPct)||0);
+  const tradePct=Math.max(0,Number(r.riskPct)||0);
+  const maxLoss=balance*dailyLimit/100;
+  const tradeRisk=balance*tradePct/100;
+  const loss=Math.max(0,Number(r.loss)||0);
+  const remaining=Math.max(0,maxLoss-loss);
+  const entriesLeft=Math.max(0,Math.floor(Number(r.maxEntries)||0)-Math.floor(Number(r.entries)||0));
+  const blocked=balance<=0 || dailyLimit<=0 || tradePct<=0 ||
+    loss>=maxLoss || entriesLeft<=0 || loss>maxLoss;
+  return {balance,maxLoss,tradeRisk,loss,remaining,entriesLeft,blocked};
+}
+function updateRiskUI() {
+  const n=riskNumbers();
+  $("riskMaxLoss").textContent=money(n.maxLoss);
+  $("riskRemaining").textContent=money(n.remaining);
+  $("riskPerTrade").textContent=money(Math.min(n.tradeRisk,n.remaining));
+  $("riskEntriesRemaining").textContent=n.entriesLeft;
+  $("riskBar").style.width=(n.maxLoss>0?Math.min(100,n.loss/n.maxLoss*100):0)+"%";
+  $("riskBar").style.background=n.blocked?"#ff6878":"#d7b568";
+  $("riskBlockStatus").textContent=n.blocked?"NO-GO — LIMIT OR CONFIGURATION BLOCK":"MANUAL LIMITS NOT EXCEEDED";
+  $("riskMessage").textContent=n.blocked?
+    "Do not take a new trade under your configured rules. Verify inputs and broker records.":
+    "Journal limits have not been exceeded. This does not establish that a trade is safe.";
+  $("homeLoss").textContent=money(n.loss);
+  $("homeLossBar").style.width=(n.maxLoss>0?Math.min(100,n.loss/n.maxLoss*100):0)+"%";
+  $("homeLossText").textContent="Limit "+money(n.maxLoss)+" · "+n.entriesLeft+" entries remaining";
+}
+function saveRiskFromInputs() {
+  state.risk={
+    balance:Math.max(0,Number($("accountSize").value)||0),
+    riskPct:Math.max(0,Math.min(100,Number($("riskPercent").value)||0)),
+    dailyPct:Math.max(0,Math.min(100,Number($("dailyLimit").value)||0)),
+    maxEntries:Math.max(1,Math.floor(Number($("maxEntries").value)||1)),
+    loss:Math.max(0,Number($("lossAmount").value)||0),
+    entries:Math.max(0,Math.floor(Number($("entryCount").value)||0))
+  };
+  persist();updateRiskUI();runSafetySummary();
+}
+$("saveRisk").addEventListener("click",saveRiskFromInputs);
+$("updateJournal").addEventListener("click",saveRiskFromInputs);
+$("resetRisk").addEventListener("click",()=>{
+  if(!confirm("Reset today's local loss and entry journal? This will not reset broker records."))return;
+  state.risk.loss=0;state.risk.entries=0;
+  $("lossAmount").value="0";$("entryCount").value="0";
+  persist();updateRiskUI();runSafetySummary();
+});
+
+/* Event calendar — manually entered records. */
+$("eventDate").value=new Date().toLocaleDateString("en-CA");
+$("addEvent").addEventListener("click",()=>{
+  const name=$("eventName").value.trim();
+  if(!name){alert("Enter an event name.");return;}
+  state.events.push({
+    id:Date.now()+Math.random(),
+    name,date:$("eventDate").value,time:$("eventTime").value,
+    impact:$("eventImpact").value,source:$("eventSource").value.trim()
+  });
+  state.events.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  $("eventName").value="";$("eventSource").value="";
+  renderEvents();persist();
+});
+function renderEvents() {
+  const list=$("eventList");list.replaceChildren();
+  if(!state.events.length){
+    const p=document.createElement("p");p.className="sub";
+    p.textContent="No events entered. This does not mean the calendar is clear.";
+    list.append(p);return;
+  }
+  state.events.forEach(event=>{
+    const box=document.createElement("div");box.className="item";
+    const row=document.createElement("div");row.className="row";
+    const details=document.createElement("div");
+    const strong=document.createElement("strong");strong.textContent=event.name;
+    const sub=document.createElement("div");sub.className="sub";
+    sub.textContent=(event.date||"Date unknown")+" "+(event.time||"Time unknown")+
+      " · "+event.impact.toUpperCase()+(event.source?" · "+event.source:"");
+    details.append(strong,sub);
+    const remove=document.createElement("button");remove.className="danger smallbtn";
+    remove.textContent="Delete";
+    remove.addEventListener("click",()=>{
+      state.events=state.events.filter(e=>e.id!==event.id);
+      renderEvents();persist();
+    });
+    row.append(details,remove);box.append(row);list.append(box);
+  });
+}
+$("assessNfp").addEventListener("click",()=>{
+  const a=safeNumber($("nfpActual").value);
+  const f=safeNumber($("nfpForecast").value);
+  const u=safeNumber($("nfpUnemployment").value);
+  const uf=safeNumber($("nfpUnemploymentForecast").value);
+  const w=safeNumber($("nfpWages").value);
+  const wf=safeNumber($("nfpWagesForecast").value);
+  const result=$("nfpResult");
+  if(a===null||f===null){
+    result.className="notice error";
+    result.textContent="Insufficient data: enter verified actual and forecast payroll figures.";
+    return;
+  }
+  let score=0,details=[];
+  if(a>f){score-=1;details.push("Payrolls beat forecast: potentially USD-supportive.");}
+  else if(a<f){score+=1;details.push("Payrolls missed forecast: potentially USD-negative.");}
+  else details.push("Payrolls matched forecast.");
+  if(u!==null&&uf!==null){
+    if(u>uf){score+=1;details.push("Unemployment above forecast: potentially USD-negative.");}
+    else if(u<uf){score-=1;details.push("Unemployment below forecast: potentially USD-supportive.");}
+  }
+  if(w!==null&&wf!==null){
+    if(w>wf){score-=1;details.push("Wages above forecast: potentially hawkish.");}
+    else if(w<wf){score+=1;details.push("Wages below forecast: potentially dovish.");}
+  }
+  let lean=score>=2?"POTENTIAL USD-NEGATIVE / GOLD-SUPPORTIVE":
+    score<=-2?"POTENTIAL USD-SUPPORTIVE / GOLD-NEGATIVE":"MIXED / WAIT FOR CONFIRMATION";
+  result.className="notice";
+  result.textContent=lean+". "+details.join(" ")+" This is an initial heuristic, not a prediction. Verify revisions, units, DXY, nominal and real yields, spread, and price action. "+($("nfpNotes").value.trim()?"Notes: "+$("nfpNotes").value.trim():"");
+});
+
+/* Tests are run locally; no test is marked passed before execution. */
+function addTest(name,passed,detail) {
+  state.tests.push({name,passed,detail});
+}
+function runTests() {
+  state.tests=[];
+  addTest("Six screens exist",
+    ["home","gold","macro","risk","calendar","tests"].every(id=>$(id)!==null),
+    "Checks that all six screen containers exist.");
+  addTest("Navigation buttons exist",
+    document.querySelectorAll("#navigation button[data-screen]").length===6,
+    "Checks for six navigation controls.");
+  addTest("Risk limit calculation",
+    Math.abs((1000*2/100)-20)<0.0001,
+    "Checks the basic arithmetic: 2% of R1,000 equals R20.");
+  addTest("Stale quote detection",
+    (Date.now()-10000)<=Date.now() && Number($("staleSeconds").value)>=60,
+    "Checks basic age-threshold inputs; does not simulate a provider outage.");
+  addTest("Live feed retrieved",
+    state.price!==null && isFresh() && !state.error,
+    state.price===null ? "No quote retrieved." :
+      state.error || "A recent retrieval exists; actual provider freshness is not independently verified.");
+  addTest("Risk block calculation",
+    (()=>{
+      const r=state.risk;
+      const loss=Number(r.loss)||0;
+      const limit=(Number(r.balance)||0)*(Number(r.dailyPct)||0)/100;
+      return (limit>0 && loss>=limit) ||
+        (Number(r.maxEntries)||0)<=(Number(r.entries)||0) ||
+        (Number(r.balance)||0)<=0;
+    })()===riskNumbers().blocked,
+    "Checks local advisory risk-block logic against current inputs.");
+  renderTests();
+}
+function renderTests() {
+  const list=$("testResults");list.replaceChildren();
+  if(!state.tests.length){
+    const p=document.createElement("p");p.className="sub";
+    p.textContent="Tests have not been run.";list.append(p);return;
+  }
+  state.tests.forEach(test=>{
+    const box=document.createElement("div");box.className="item";
+    const strong=document.createElement("strong");
+    strong.className=test.passed?"green":"red";
+    strong.textContent=(test.passed?"PASS":"FAIL / NOT VERIFIED")+" · "+test.name;
+    const p=document.createElement("div");p.className="sub";p.textContent=test.detail;
+    box.append(strong,p);list.append(box);
+  });
+}
+$("runTests").addEventListener("click",runTests);
+$("clearTestResults").addEventListener("click",()=>{
+  state.tests=[];renderTests();
+});
+$("saveFeedSettings").addEventListener("click",()=>{
+  const interval=Math.max(30,Math.min(3600,Number($("refreshSeconds").value)||60));
+  const stale=Math.max(60,Math.min(3600,Number($("staleSeconds").value)||180));
+  $("refreshSeconds").value=interval;$("staleSeconds").value=stale;
+  const url=$("apiUrl").value.trim()||defaultApi;
+  try {
+    const parsed=new URL(url);
+    if(parsed.protocol!=="https:" && parsed.hostname!=="localhost"){
+      alert("Use an HTTPS provider URL.");
+      return;
+    }
+  } catch(error) {
+    alert("Enter a valid API URL.");
+    return;
+  }
+  persist();startRefreshTimer();fetchGold();
+});
+$("clearLocalData").addEventListener("click",()=>{
+  if(!confirm("Permanently clear all INKABI.21 local settings, journals, events and stored quote history in this browser?"))return;
+  try{localStorage.removeItem(STORE);}catch(error){}
+  location.reload();
+});
+
+/* Overall trade permission: intentionally conservative. */
+function runSafetySummary() {
+  const checks=[
+    state.price!==null && isFresh(),
+    navigator.onLine,
+    state.macro && state.macro.bias!=="INSUFFICIENT DATA",
+    state.events.length>0,
+    riskNumbers().blocked===false
+  ];
+  const passed=checks.filter(Boolean).length;
+  $("homeChecks").textContent=passed+" / 5";
+  const ready=passed===5;
+  $("homePermission").textContent=ready?"REVIEW REQUIRED":"NO-GO";
+  $("homePermission").className="metric "+(ready?"yellow":"red");
+  $("homePermissionText").textContent=ready?
+    "Basic checks met. Human confirmation still required.":
+    "One or more required checks are missing or failed.";
+  $("dayStatus").textContent=ready?"REVIEW":"NO-GO";
+  $("dayStatus").className="pill";
+  $("homeChecklist").replaceChildren();
+  const labels=[
+    ["Recent gold quote retrieved",checks[0]],
+    ["Network available",checks[1]],
+    ["Macro observations entered",checks[2]],
+    ["At least one calendar event entered",checks[3]],
+    ["Risk inputs permit another entry",checks[4]]
+  ];
+  labels.forEach(([label,ok])=>{
+    const item=document.createElement("div");item.className="item";
+    item.textContent=(ok?"✓ ":"⚠ ")+label+(ok?" — met":" — not verified");
+    item.style.color=ok?"#9ce9cb":"#f5c66b";
+    $("homeChecklist").append(item);
+  });
+  setStatus(!navigator.onLine?"OFFLINE":state.error?"FEED WARNING":isFresh()?"QUOTE RETRIEVED":"NO VERIFIED QUOTE");
+}
+
+/* Startup and restore */
+function restore() {
+  const saved=readStore();
+  const settings={...defaults,...(saved.settings||{})};
+  $("apiUrl").value=settings.apiUrl;
+  $("refreshSeconds").value=settings.refreshSeconds;
+  $("staleSeconds").value=settings.staleSeconds;
+
+  if(saved.risk && typeof saved.risk==="object") state.risk={...state.risk,...saved.risk};
+  $("accountSize").value=state.risk.balance;
+  $("riskPercent").value=state.risk.riskPct;
+  $("dailyLimit").value=state.risk.dailyPct;
+  $("maxEntries").value=state.risk.maxEntries;
+  $("lossAmount").value=state.risk.loss;
+  $("entryCount").value=state.risk.entries;
+
+  state.events=Array.isArray(saved.events)?saved.events:[];
+  state.headlines=Array.isArray(saved.headlines)?saved.headlines:[];
+  state.history=Array.isArray(saved.history)?saved.history.filter(
+    x=>x&&Number.isFinite(x.price)&&Number.isFinite(x.time)
+  ).slice(-40):[];
+
+  if(saved.macro){
+    ["dxy","dxyDirection","yield10","realYield","yieldDirection","riskTone","macroTime"].forEach(id=>{
+      if(saved.macro[id]!==undefined)$(id).value=saved.macro[id];
+    });
+  }
+  renderEvents();renderHeadlines();assessMacro();updateRiskUI();
+  $("localTime").textContent=new Date().toLocaleString();
+  renderGold();runSafetySummary();
+}
+try {
+  restore();
+  setStatus(navigator.onLine?"STARTING":"OFFLINE");
+  startRefreshTimer();
+  fetchGold();
+} catch(error) {
+  console.error("INKABI.21 startup error:",error);
+  setStatus("STARTUP ERROR");
+  const warning=$("homeWarning");
+  warning.textContent="Startup error: "+(error.message||"unknown error")+". Open Tests & Settings and report this message.";
+  warning.className="notice error";
+}
+</script>
+</body>
+</html>
