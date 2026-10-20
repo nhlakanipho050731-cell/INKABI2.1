@@ -34,9 +34,12 @@
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
-const DEFAULTS={refreshSeconds:30,staleSeconds:90,providerUrl:"https://api.goldprice.dev/v1/prices?symbol=XAU-USD-SPOT"};
-function load(k,f){try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}}
-function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+ const DEFAULTS={
+  refreshSeconds:30,
+  staleSeconds:90,
+  providerUrl:"https://xaus.com/api/v1/spot"
+};
+ function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function setText(id,v){const e=$(id);if(e)e.textContent=v}
 function localTime(v){const d=new Date(v);return Number.isFinite(d.getTime())?d.toLocaleString():"Invalid date"}
@@ -68,32 +71,135 @@ function updateQuoteUI(){
  renderHistory();updateHomeDecision();updateMacroBias();updateHealth()
 }
 function renderHistory(){const b=$("quoteHistory");if(!quoteHistory.length){b.innerHTML='<tr><td colspan="4" class="empty">No verified quotes yet.</td></tr>';return}b.innerHTML=quoteHistory.slice().reverse().map(q=>{const fresh=Date.now()-q.timestampMs<=settings.staleSeconds*1000&&!q.providerStale;return `<tr><td>${esc(localTime(q.receivedAt))}</td><td>$${fmtPrice(q.price)}</td><td>${esc(new Date(q.timestampMs).toISOString())}</td><td class="${fresh?"green":"red"}">${fresh?"Within age limit at display":"STALE / UNVERIFIED"}</td></tr>`}).join("")}
-async function refreshGoldFeed(){
- if(refreshInProgress)return;
- if(!navigator.onLine){lastRefreshFailed=true;lastFeedError="Internet connection lost. Monitoring is impaired.";updateQuoteUI();return}
- refreshInProgress=true;const buttons=[$("refreshGoldBtn"),$("goldRefresh2")];buttons.forEach(b=>{if(b){b.disabled=true;b.textContent="Refreshing…"}});
- const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
- try{
-  const url=String(settings.providerUrl||DEFAULTS.providerUrl).trim();if(!/^https:\/\//i.test(url))throw new Error("Only HTTPS feed URLs are allowed.");
-  const response=await fetch(url,{method:"GET",cache:"no-store",headers:{Accept:"application/json"},signal:controller.signal});
-  if(!response.ok)throw new Error("Provider HTTP "+response.status);
-  const data=await response.json(),item=Array.isArray(data.symbols)?data.symbols.find(x=>x&&x.symbol==="XAU"&&x.quote_currency==="USD"):null;
-  if(!item)throw new Error("XAU/USD item not found in provider response.");
-  if(item.is_stale!==false)throw new Error("Provider stale status is missing or not confirmed false.");
-  const price=Number(item.price),timestampMs=Date.parse(item.computed_at),now=Date.now(),max=Number(settings.staleSeconds)*1000;
-  if(!Number.isFinite(price)||price<=0)throw new Error("Invalid or non-positive price.");
-  if(!Number.isFinite(timestampMs))throw new Error("Missing or invalid provider timestamp.");
-  if(item.unit!=="troy_ounce")throw new Error("Unexpected price unit.");
-  if(timestampMs>now+60000)throw new Error("Provider timestamp is in the future.");
-  if(now-timestampMs>max)throw new Error("Provider timestamp is too old for the "+settings.staleSeconds+"-second freshness limit.");
-  const candidate={price,timestampMs,receivedAt:now,providerStale:false,source:"goldprice.dev"};
-  latestQuote=candidate;quoteHistory.push(candidate);quoteHistory=quoteHistory.slice(-20);lastRefreshFailed=false;lastFeedError="Quote loaded and passed local validation.";cancelRecoveryRetry();
- }catch(err){
-  lastRefreshFailed=true;
-  const msg=err&&err.name==="AbortError"?"Request timed out after 10 seconds.":String(err&&err.message||"unknown error");
-  lastFeedError=/failed to fetch|networkerror|load failed/i.test(msg)?"Browser could not read the provider response. goldprice.dev documents that browser CORS is not supported; a server-side proxy is required.":`Gold feed unavailable or unverified: ${msg}`;
-  recoveryAttempts++;recoveryDelayMs=Math.min(60000,5000*Math.pow(2,Math.min(recoveryAttempts-1,4)));scheduleRecoveryRetry();
- }finally{clearTimeout(timeout);refreshInProgress=false;buttons.forEach(b=>{if(b){b.disabled=false;b.textContent=b.id==="refreshGoldBtn"?"Refresh gold":"Refresh now"}});updateQuoteUI()}
+
+async function refreshGoldFeed() {
+  if (refreshInProgress) return;
+
+  if (!navigator.onLine) {
+    lastRefreshFailed = true;
+    lastFeedError = "Offline. Gold monitoring is impaired.";
+    updateQuoteUI();
+    return;
+  }
+
+  refreshInProgress = true;
+  const buttons = [$("refreshGoldBtn"), $("goldRefresh2")];
+
+  buttons.forEach(b => {
+    if (b) {
+      b.disabled = true;
+      b.textContent = "Refreshing…";
+    }
+  });
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const url = String(settings.providerUrl || DEFAULTS.providerUrl).trim();
+
+    if (url !== "https://xaus.com/api/v1/spot") {
+      throw new Error("Unexpected feed URL. Restore the XAUS endpoint in settings.");
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      throw new Error("Provider HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    const price = Number(data.spot_usd_oz ?? data.xau?.price);
+    const timestampMs = Date.parse(data.updated_at);
+    const now = Date.now();
+    const maxAgeMs = Number(settings.staleSeconds) * 1000;
+
+    if (!Number.isFinite(price) || price <= 0) {
+      throw new Error("Invalid gold price.");
+    }
+
+    if (!Number.isFinite(timestampMs)) {
+      throw new Error("Missing or invalid provider timestamp.");
+    }
+
+    if (data.stale !== false) {
+      throw new Error("Provider has not confirmed the quote is fresh.");
+    }
+
+    if (
+      !data.data_state ||
+      data.data_state.status !== "fresh" ||
+      data.data_state.source !== "upstream"
+    ) {
+      throw new Error("Upstream freshness could not be verified.");
+    }
+
+    if (timestampMs > now + 5000) {
+      throw new Error("Provider timestamp is in the future.");
+    }
+
+    if (now - timestampMs > maxAgeMs) {
+      throw new Error("Gold quote is older than the configured limit.");
+    }
+
+    const candidate = {
+      price,
+      timestampMs,
+      receivedAt: now,
+      providerStale: false,
+      source: "XAUS / gold-api.com"
+    };
+
+    latestQuote = candidate;
+    quoteHistory.push(candidate);
+    quoteHistory = quoteHistory.slice(-20);
+    lastRefreshFailed = false;
+    lastFeedError = "Latest quote passed local validation.";
+
+    cancelRecoveryRetry();
+
+  } catch (err) {
+    lastRefreshFailed = true;
+
+    const message = err?.name === "AbortError"
+      ? "Request timed out after 10 seconds."
+      : String(err?.message || "Unknown error");
+
+    lastFeedError =
+      /failed to fetch|networkerror|load failed/i.test(message)
+        ? "Feed request failed. Browser CORS or network access may be blocking it."
+        : "Gold feed unavailable or unverified: " + message;
+
+    recoveryAttempts++;
+    recoveryDelayMs = Math.min(
+      60000,
+      5000 * Math.pow(2, Math.min(recoveryAttempts - 1, 4))
+    );
+
+    scheduleRecoveryRetry();
+
+  } finally {
+    clearTimeout(timeout);
+    refreshInProgress = false;
+
+    buttons.forEach(b => {
+      if (b) {
+        b.disabled = false;
+        b.textContent =
+          b.id === "refreshGoldBtn" ? "Refresh gold" : "Refresh now";
+      }
+    });
+
+    updateQuoteUI();
+  }
+}
+}
 }
 function evaluateRiskValues(lr,los,maxr,tr){const lt=String(lr??"").trim(),lost=String(los??"").trim(),mt=String(maxr??"").trim(),tt=String(tr??"").trim(),limit=Number(lt),loss=Number(lost),validLimit=lt!==""&&Number.isFinite(limit)&&limit>0,validLoss=lost!==""&&Number.isFinite(loss)&&loss>=0,max=mt===""?null:Number(mt),trades=tt===""?null:Number(tt),validMax=mt===""||(Number.isInteger(max)&&max>=0),validTrades=mt===""&&tt===""||(Number.isInteger(trades)&&trades>=0),tradeLock=mt!==""&&validMax&&validTrades&&trades>=max,configurationValid=validLimit&&validLoss&&validMax&&validTrades,lossLock=validLimit&&validLoss&&loss>=limit,blocked=!configurationValid||lossLock||tradeLock,usage=validLimit&&validLoss?Math.min(100,loss/limit*100):0;return{blocked,configurationValid,lossLock,tradeLock,usage,reason:!configurationValid?"Configuration incomplete or invalid.":lossLock?"Daily loss limit reached or exceeded.":tradeLock?"Maximum daily entries reached.":"Values are within configured limits."}}
 function calculateRisk(show=true){const r=evaluateRiskValues($("dailyLimit").value,$("lossToday").value,$("maxTrades").value,$("tradesToday").value);if(show){setText("riskDecision",!r.configurationValid?"CHECK CONFIGURATION":r.blocked?"NEW ENTRIES BLOCKED":"WITHIN LIMIT");setText("riskExplanation",r.reason);$("riskDecision").style.color=r.blocked?"var(--red)":"var(--green)";$("riskMeter").style.width=r.usage+"%";setText("riskUsage",r.configurationValid?r.usage.toFixed(1)+"%":"—")}return r}
