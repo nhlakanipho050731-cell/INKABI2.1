@@ -410,10 +410,8 @@ async function refreshGoldFeed() {
   const timeout = setTimeout(() => controller.abort(), 10000);
 
   try {
-    const url = String(settings.providerUrl || DEFAULTS.providerUrl).trim();
-    if (url !== DEFAULTS.providerUrl) {
-      throw new Error("Unexpected feed URL. Restore the configured XAUS endpoint.");
-    }
+   const url = DEFAULTS.providerUrl;
+settings.providerUrl = DEFAULTS.providerUrl;
 
     const response = await fetch(url, {
       method:"GET",
