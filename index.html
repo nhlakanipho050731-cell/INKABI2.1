@@ -492,33 +492,87 @@ settings.providerUrl = DEFAULTS.providerUrl;
   }
 }
 
-/* Risk checks */
+
+/* INKABI.21 — Risk checks */
 function evaluateRiskValues(lr, los, maxr, tr) {
-  const lt = String(lr ?? "").trim();
+  const limitText = String(lr ?? "").trim();
   const lossText = String(los ?? "").trim();
-  const mt = String(maxr ?? "").trim();
-  const tt = String(tr ?? "").trim();
-  const limit = Number(lt), loss = Number(lossText);
-  const validLimit = lt !== "" && Number.isFinite(limit) && limit > 0;
-  const validLoss = lossText !== "" && Number.isFinite(loss) && loss >= 0;
-  const max = mt === "" ? null : Number(mt);
-  const trades = tt === "" ? null : Number(tt);
-  const validMax = mt === "" || (Number.isInteger(max) && max >= 0);
-  const validTrades = mt === "" && tt === "" ||
-    (Number.isInteger(trades) && trades >= 0);
-  const tradeLock = mt !== "" && validMax && validTrades && trades >= max;
-  const configurationValid = validLimit && validLoss && validMax && validTrades;
-  const lossLock = validLimit && validLoss && loss >= limit;
-  const blocked = !configurationValid || lossLock || tradeLock;
-  const usage = validLimit && validLoss ? Math.min(100, loss / limit * 100) : 0;
+  const maxText = String(maxr ?? "").trim();
+  const tradesText = String(tr ?? "").trim();
+
+  const limit = Number(limitText);
+  const loss = Number(lossText);
+  const max = maxText === "" ? null : Number(maxText);
+  const trades = tradesText === "" ? null : Number(tradesText);
+
+  const validLimit =
+    limitText !== "" &&
+    Number.isFinite(limit) &&
+    limit > 0;
+
+  const validLoss =
+    lossText !== "" &&
+    Number.isFinite(loss) &&
+    loss >= 0;
+
+  const validMax =
+    maxText === "" ||
+    (Number.isInteger(max) && max >= 0);
+
+  const validTrades =
+    maxText === ""
+      ? tradesText === ""
+      : tradesText !== "" &&
+        Number.isInteger(trades) &&
+        trades >= 0;
+
+  const configurationValid =
+    validLimit &&
+    validLoss &&
+    validMax &&
+    validTrades;
+
+  const lossLock =
+    validLimit &&
+    validLoss &&
+    loss >= limit;
+
+  const tradeLock =
+    maxText !== "" &&
+    validMax &&
+    validTrades &&
+    trades >= max;
+
+  const blocked =
+    !configurationValid ||
+    lossLock ||
+    tradeLock;
+
+  const usage =
+    validLimit && validLoss
+      ? Math.min(100, (loss / limit) * 100)
+      : 0;
+
+  let reason = "Values are within configured limits.";
+
+  if (!configurationValid) {
+    reason = "Configuration incomplete or invalid.";
+  } else if (lossLock) {
+    reason = "Daily loss limit reached or exceeded.";
+  } else if (tradeLock) {
+    reason = "Maximum daily entries reached.";
+  }
+
   return {
-    blocked, configurationValid, lossLock, tradeLock, usage,
-    reason: !configurationValid ? "Configuration incomplete or invalid." :
-      lossLock ? "Daily loss limit reached or exceeded." :
-      tradeLock ? "Maximum daily entries reached." :
-      "Values are within configured limits."
+    blocked,
+    configurationValid,
+    lossLock,
+    tradeLock,
+    usage,
+    reason
   };
 }
+
 function calculateRisk(show = true) {
   const r = evaluateRiskValues(
     $("dailyLimit").value, $("lossToday").value,
