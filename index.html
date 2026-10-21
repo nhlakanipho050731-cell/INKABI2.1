@@ -75,6 +75,7 @@ th{color:var(--muted);font-size:10px;text-transform:uppercase}
 <nav class="nav" aria-label="Main navigation">
  <button class="active" data-screen="home">⌂ Home</button>
  <button data-screen="gold">◈ Gold</button>
+<button data-screen="live">◉ Live Market</button>
  <button data-screen="macro">⌁ Macro</button>
  <button data-screen="risk">⛨ Risk</button>
  <button data-screen="calendar">▦ Calendar / NFP</button>
@@ -99,6 +100,56 @@ th{color:var(--muted);font-size:10px;text-transform:uppercase}
  </div>
 </section>
 
+<section id="screen-live" class="screen">
+ <div class="sectiontitle">
+  <h2>Live Gold Market</h2>
+  <p>Monitor gold conditions. Verify data before making decisions.</p>
+ </div>
+ <div class="grid">
+  <article class="card span7">
+   <div class="row">
+    <span class="eyebrow">XAU/USD · Spot gold</span>
+    <span id="liveFeedStatus" class="amber">NOT VERIFIED</span>
+   </div>
+   <div id="liveGoldPrice" class="bigprice">—</div>
+   <p id="liveGoldMeta" class="sub">Waiting for a verified quote.</p>
+   <div class="metrics">
+    <div class="metric">
+     <span>Quote age</span>
+     <strong id="liveGoldAge">—</strong>
+    </div>
+    <div class="metric">
+     <span>Last update</span>
+     <strong id="liveGoldUpdated">—</strong>
+    </div>
+    <div class="metric">
+     <span>Feed status</span>
+     <strong id="liveGoldSource">Unverified</strong>
+    </div>
+   </div>
+   <div class="divider"></div>
+   <button class="btn" data-goto="gold">Open Gold Feed Checks</button>
+  </article>
+  <article class="card span5">
+   <h3>Trading safety gate</h3>
+   <h2 id="liveTradeGate">NO-GO</h2>
+   <p id="liveTradeGateText" class="sub">
+    A verified quote is required. This screen does not authorize trades.
+   </p>
+   <div class="note">
+    Compare prices with MT5. Check risk limits and upcoming news.
+   </div>
+  </article>
+  <article class="card span12">
+   <h3>Market monitoring</h3>
+   <p class="sub">
+    Live candles, bid/ask spread and real-time market signals are not
+    available here until a suitable data feed is connected and validated.
+   </p>
+  </article>
+ </div>
+</section>
+ 
 <section id="screen-gold" class="screen">
  <div class="sectiontitle"><h2>Gold monitor</h2><p>Quote freshness and feed integrity.</p></div>
  <div class="grid">
@@ -188,7 +239,7 @@ th{color:var(--muted);font-size:10px;text-transform:uppercase}
 <script>
 "use strict";
 
-const $ = id => document.getElementById(id);
+ $ = id => document.getElementById(id);
 const DEFAULTS = {
   refreshSeconds: 30,
   staleSeconds: 90,
