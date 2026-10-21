@@ -680,25 +680,122 @@ function addEvent() {
     .forEach(id => $(id).value = "");
   renderEvents();
 }
+
 function analyzeNfp() {
-  const ids = ["nfpActual","nfpForecast","wageActual","wageForecast","unemploymentActual","unemploymentForecast"];
-  const raw = ids.map(id => $(id).value.trim());
-  if (raw.some(v => v === "") || !raw.every(v => Number.isFinite(Number(v)))) {
+  const ids = [
+    "nfpActual",
+    "nfpForecast",
+    "wageActual",
+    "wageForecast",
+    "unemploymentActual",
+    "unemploymentForecast"
+  ];
+
+  const raw = ids.map(id => {
+    const field = $(id);
+    return field ? String(field.value).trim() : "";
+  });
+
+  if (
+    raw.some(v => v === "") ||
+    !raw.every(v => Number.isFinite(Number(v)))
+  ) {
     setText("nfpVerdict", "INPUT INCOMPLETE / INVALID");
-    setText("nfpExplanation", "Enter all six figures and verify the release source and units.");
+    setText(
+      "nfpExplanation",
+      "Enter all six figures. Verify the release source, reporting month and units."
+    );
     setText("nfpUsd", "Unknown");
     setText("nfpGold", "Unknown");
     return;
   }
-  const [a,f,wa,wf,ua,uf] = raw.map(Number);
+
+  const [a, f, wa, wf, ua, uf] = raw.map(Number);
+
+  // Validate units and plausible ranges before scoring.
+  if (
+    a < -2000 || a > 2000 ||
+    f < -2000 || f > 2000 ||
+    wa < -5 || wa > 5 ||
+    wf < -5 || wf > 5 ||
+    ua < 0 || ua > 100 ||
+    uf < 0 || uf > 100
+  ) {
+    setText("nfpVerdict", "INPUT OUT OF RANGE");
+    setText(
+      "nfpExplanation",
+      "Check units: payroll in thousands, wage growth in % MoM, unemployment in %."
+    );
+    setText("nfpUsd", "Unknown");
+    setText("nfpGold", "Unknown");
+    return;
+  }
+
+  // Positive score = potentially more hawkish for the Fed.
+  // Negative score = potentially more dovish for the Fed.
   let score = 0;
-  score += a > f ? 1 : a < f ? -1 : 0;
-  score += wa > wf ? 1 : wa < wf ? -1 : 0;
-  score += ua < uf ? 1 : ua > uf ? -1 : 0;
-  setText("nfpVerdict", score >= 2 ? "HAWKISH-LEANING" : score <= -2 ? "DOVISH-LEANING" : "MIXED / NO CLEAR SIGNAL");
-  setText("nfpExplanation", "Simplified surprise score only. Revisions, participation, yields, DXY, sentiment and price reaction can reverse the initial move.");
-  setText("nfpUsd", score >= 2 ? "Potentially USD-supportive" : score <= -2 ? "Potentially USD-negative" : "Mixed / modest");
-  setText("nfpGold", score >= 2 ? "Potential headwind" : score <= -2 ? "Potential support" : "Unclear; wait for reaction");
+  const reasons = [];
+
+  if (a > f) {
+    score += 1;
+    reasons.push("Payrolls beat forecast");
+  } else if (a < f) {
+    score -= 1;
+    reasons.push("Payrolls missed forecast");
+  } else {
+    reasons.push("Payrolls matched forecast");
+  }
+
+  if (wa > wf) {
+    score += 1;
+    reasons.push("Wage growth beat forecast");
+  } else if (wa < wf) {
+    score -= 1;
+    reasons.push("Wage growth missed forecast");
+  } else {
+    reasons.push("Wage growth matched forecast");
+  }
+
+  if (ua < uf) {
+    score += 1;
+    reasons.push("Unemployment was lower than forecast");
+  } else if (ua > uf) {
+    score -= 1;
+    reasons.push("Unemployment was higher than forecast");
+  } else {
+    reasons.push("Unemployment matched forecast");
+  }
+
+  const verdict =
+    score >= 2 ? "HAWKISH-LEANING" :
+    score <= -2 ? "DOVISH-LEANING" :
+    "MIXED / NO CLEAR SIGNAL";
+
+  setText("nfpVerdict", verdict);
+
+  setText(
+    "nfpExplanation",
+    "Initial labour-data score: " + score + " of 3 indicators. " +
+    reasons.join("; ") + ". " +
+    "This is a simplified surprise score, not a trade signal. " +
+    "Prior revisions, labour-force participation, DXY, nominal and real " +
+    "yields, market sentiment and gold's price reaction are not yet " +
+    "automatically assessed. Confirm those factors before considering a trade."
+  );
+
+  setText(
+    "nfpUsd",
+    score >= 2 ? "Potentially USD-supportive; confirmation required" :
+    score <= -2 ? "Potentially USD-negative; confirmation required" :
+    "Mixed; direction unconfirmed"
+  );
+
+  setText(
+    "nfpGold",
+    score >= 2 ? "Potential headwind; check yields and gold reaction" :
+    score <= -2 ? "Potential support; check yields and gold reaction" :
+    "Unclear; wait for cross-market confirmation"
+  );
 }
 
 /* Local simulated safety tests */
