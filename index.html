@@ -759,66 +759,213 @@ async function refreshMacro() {
   
 /* Calendar and NFP */  
 function renderEvents() {
+
+function calendarValue(e, keys) {
+  for (const key of keys) {
+    const value = e[key];
+    if (value !== undefined && value !== null &&
+        String(value).trim() !== "") {
+      return value;
+    }
+  }
+  return "";
+}
+
+function calendarDate(e) {
+  return calendarValue(e, [
+    "release_at_utc", "time_utc", "datetime",
+    "date", "release_date"
+  ]);
+}
+
+function fillSelectedEvent() {
+  const select = $("calendarEventSelect");
+  const e = automaticCalendarEvents[
+    Number(select.value)
+  ];
+
+  if (!e || select.value === "") {
+    ["eventName", "eventTime", "eventImpact",
+     "eventActual", "eventForecast", "eventPrevious",
+     "eventNotes"].forEach(id => setText(id, ""));
+    ["eventName", "eventTime", "eventImpact",
+     "eventActual", "eventForecast", "eventPrevious",
+     "eventNotes"].forEach(id => {
+       if ($(id)) $(id).value = "";
+     });
+    setText("eventGoldOutlook", "WAIT — select an event");
+    return;
+  }
+
+  const name = calendarValue(e, ["name", "title", "event"]);
+  const date = calendarDate(e);
+  const impact = calendarValue(e, [
+    "impact", "importance", "impact_level"
+  ]) || "Unknown";
+  const actual = calendarValue(e, [
+    "actual", "actual_value"
+  ]);
+  const forecast = calendarValue(e, [
+    "consensus", "forecast", "forecast_value"
+  ]);
+  const previous = calendarValue(e, [
+    "prior", "previous", "previous_value"
+  ]);
+  const country = calendarValue(e, ["country", "currency"]);
+  const source = calendarValue(e, [
+    "source_name", "source_url", "url"
+  ]);
+
+  $("eventName").value = name || "Unnamed event";
+  $("eventTime").value = date ? localTime(date) : "Time not supplied";
+  $("eventImpact").value = impact;
+  $("eventActual").value =
+    actual === "" ? "Awaiting release" : actual;
+  $("eventForecast").value =
+    forecast === "" ? "Not supplied" : forecast;
+  $("eventPrevious").value =
+    previous === "" ? "Not supplied" : previous;
+
+  $("eventNotes").value =
+    "Country/currency: " + (country || "Not supplied") +
+    "\nSource: " + (source || CALENDAR_URL) +
+    "\nFeed updated: " +
+    (calendarLastUpdated
+      ? new Date(calendarLastUpdated).toLocaleString()
+      : "Not verified");
+
+  evaluateCalendarOutlook(e);
+}
+
+function evaluateCalendarOutlook(e) {
+  const actual = calendarValue(e, [
+    "actual", "actual_value"
+  ]);
+  const forecast = calendarValue(e, [
+    "consensus", "forecast", "forecast_value"
+  ]);
+  const name = String(
+    calendarValue(e, ["name", "title", "event"])
+  ).toLowerCase();
+
+  if (actual === "" || forecast === "" ||
+      !Number.isFinite(Number(actual)) ||
+      !Number.isFinite(Number(forecast))) {
+    setText(
+      "eventGoldOutlook",
+      "WAIT — actual/forecast comparison unavailable"
+    );
+    return;
+  }
+
+  if (Number(actual) === Number(forecast)) {
+    setText(
+      "eventGoldOutlook",
+      "NEUTRAL INITIAL SURPRISE — confirm market reaction"
+    );
+    return;
+  }
+
+  const beat = Number(actual) > Number(forecast);
+  let usdSupportive;
+
+  if (/unemployment|jobless claims|initial claims/.test(name)) {
+    usdSupportive = !beat;
+  } else if (
+    /payroll|employment|jobs|wage|earnings|inflation|cpi|ppi|pce|retail sales|gdp/.test(name)
+  ) {
+    usdSupportive = beat;
+  } else {
+    setText(
+      "eventGoldOutlook",
+      "WAIT — event-specific interpretation required"
+    );
+    return;
+  }
+
+  setText(
+    "eventGoldOutlook",
+    (usdSupportive
+      ? "POTENTIAL GOLD HEADWIND"
+      : "POTENTIAL GOLD SUPPORT") +
+    " — verify USD, yields and gold reaction"
+  );
+}
+
+function renderEvents() {
+  const select = $("calendarEventSelect");
+  const previousValue = select.value;
+
+  select.innerHTML = "";
+
+  if (!automaticCalendarEvents.length) {
+    select.add(new Option(
+      "No automatic events available", ""
+    ));
+  } else {
+    automaticCalendarEvents.forEach((e, index) => {
+      const name = calendarValue(e, ["name", "title"]) ||
+        "Unnamed event";
+      const date = calendarDate(e);
+      select.add(new Option(
+        (date ? localTime(date) + " · " : "") + name,
+        String(index)
+      ));
+    });
+
+    if (automaticCalendarEvents[
+      Number(previousValue)
+    ] && previousValue !== "") {
+      select.value = previousValue;
+    } else {
+      select.selectedIndex = 0;
+    }
+  }
+
+  setText(
+    "calendarStatus",
+    automaticCalendarEvents.length
+      ? automaticCalendarEvents.length +
+        " events loaded · " +
+        (calendarLastUpdated
+          ? new Date(calendarLastUpdated).toLocaleTimeString()
+          : "update time unknown")
+      : calendarLastError || "No events loaded"
+  );
+
   const body = $("eventRows");
-
-  const manualRows = events.map(e => ({
-    name: e.name,
-    impact: e.impact || "Manual",
-    time: e.time ? localTime(e.time) : "Not set",
-    actual: e.actual || "—",
-    forecast: e.forecast || "—",
-    previous: e.previous || "—",
-    notes: e.notes || "—",
-    source: "MANUAL"
-  }));
-
-  const automaticRows = automaticCalendarEvents.map(e => ({
-    name: e.name || e.title || "Unnamed event",
-    impact: e.impact || "Unknown",
-    time: e.release_at_utc
-      ? localTime(e.release_at_utc)
-      : e.time_utc
-        ? localTime(e.time_utc)
-        : e.date || "Time not supplied",
-    actual: e.actual ?? "—",
-    forecast: e.consensus ?? "—",
-    previous: e.prior ?? "—",
-    notes: e.source_name || e.source_url || e.url || "Provider data",
+  const rows = automaticCalendarEvents.map(e => ({
+    name: calendarValue(e, ["name", "title"]) || "Unnamed event",
+    impact: calendarValue(e, ["impact", "importance"]) || "Unknown",
+    time: calendarDate(e),
+    actual: calendarValue(e, ["actual", "actual_value"]) || "—",
+    forecast: calendarValue(e, ["consensus", "forecast", "forecast_value"]) || "—",
+    previous: calendarValue(e, ["prior", "previous", "previous_value"]) || "—",
+    notes: calendarValue(e, ["source_name", "source_url", "url"]) || "FinanceCalendar",
     source: "AUTOMATIC"
   }));
 
-  const rows = [...automaticRows, ...manualRows];
+  body.innerHTML = rows.length
+    ? rows.map(e =>
+        "<tr><td><strong>" + esc(e.source) + "</strong><br>" +
+        esc(e.name) + "<br>" + esc(e.impact) +
+        "</td><td>" + esc(e.time ? localTime(e.time) : "Time not supplied") +
+        "</td><td>" + esc(e.actual) +
+        "</td><td>" + esc(e.forecast) +
+        "</td><td>" + esc(e.previous) +
+        "</td><td>" + esc(e.notes) + "</td></tr>"
+      ).join("")
+    : '<tr><td colspan="6" class="empty">Waiting for automatic calendar data.</td></tr>';
 
-  if (!rows.length) {
-    body.innerHTML =
-      '<tr><td colspan="6" class="empty">' +
-      'No events available. Automatic calendar has not supplied verified records.' +
-      '</td></tr>';
-  } else {
-    body.innerHTML = rows.map(e =>
-      '<tr><td><strong>' + esc(e.source) + '</strong><br>' +
-      esc(e.name) + '<br>' + esc(e.impact) +
-      '</td><td>' + esc(e.time) +
-      '</td><td>' + esc(e.actual) +
-      '</td><td>' + esc(e.forecast) +
-      '</td><td>' + esc(e.previous) +
-      '</td><td>' + esc(e.notes) + '</td></tr>'
-    ).join("");
-  }
-
+  fillSelectedEvent();
   updateHomeDecision();
   updateHealth();
 }
-function addEvent() {  
-  const name = $("eventName").value.trim();  
-  if (!name) { alert("Enter an event name."); return; }  
-  events.push({  
-    name, time:$("eventTime").value, impact:$("eventImpact").value,  
-    actual:$("eventActual").value.trim(),  
-    forecast:$("eventForecast").value.trim(),  
-    previous:$("eventPrevious").value.trim(),  
-    notes:$("eventNotes").value.trim()  
-  });  
+
+$("calendarEventSelect").addEventListener(
+  "change", fillSelectedEvent
+);
+
   save("inkabi21_events", events);  
   ["eventName","eventTime","eventActual","eventForecast","eventPrevious","eventNotes"]  
     .forEach(id => $(id).value = "");  
