@@ -909,6 +909,254 @@ if (document.readyState === "loading") {
 } else {
   initializeApp();
 }
+ 
+/* INKABI.21 — Official BLS NFP adapter */
+(function () {
+  "use strict";
+
+  if (window.inkabiNfpAdapterLoaded) return;
+  window.inkabiNfpAdapterLoaded = true;
+
+  const SERIES = {
+    payroll: "CES0000000001",
+    wages: "CES0500000003",
+    unemployment: "LNS14000000"
+  };
+
+  let latestActuals = null;
+
+  function addPanel() {
+    if (document.getElementById("inkabiBlsPanel")) return;
+
+    const screen = document.getElementById("screen-calendar");
+    if (!screen) {
+      console.error("INKABI NFP adapter: Calendar screen not found.");
+      return;
+    }
+
+    const panel = document.createElement("section");
+    panel.id = "inkabiBlsPanel";
+    panel.style.cssText =
+      "margin:16px 0;padding:16px;border:1px solid #49515f;" +
+      "border-radius:12px;background:#11151d;color:#f3f4f6;";
+
+    panel.innerHTML = `
+      <h3 style="margin-top:0">Official US Labour Data</h3>
+      <p id="inkabiBlsStatus" role="status">
+        Not checked yet. Forecasts are not supplied by this feed.
+      </p>
+      <p id="inkabiBlsDetails">
+        Sources: US Bureau of Labor Statistics (BLS).
+      </p>
+      <button type="button" id="inkabiBlsFetch"
+        style="padding:10px 14px;margin:4px;border-radius:8px">
+        Fetch official data
+      </button>
+      <button type="button" id="inkabiBlsApply"
+        disabled
+        style="padding:10px 14px;margin:4px;border-radius:8px">
+        Use retrieved actuals
+      </button>
+      <p style="font-size:12px;color:#b7c0ce">
+        Payroll change is derived from adjacent employment levels.
+        Wage growth is calculated month over month. Neither value is
+        a forecast. Confirm the reporting month and official release
+        before using these figures in a trading decision.
+      </p>
+    `;
+
+    screen.appendChild(panel);
+
+    document.getElementById("inkabiBlsFetch")
+      .addEventListener("click", fetchLabourData);
+
+    document.getElementById("inkabiBlsApply")
+      .addEventListener("click", applyActuals);
+  }
+
+  function status(message) {
+    const el = document.getElementById("inkabiBlsStatus");
+    if (el) el.textContent = message;
+  }
+
+  function details(message) {
+    const el = document.getElementById("inkabiBlsDetails");
+    if (el) el.textContent = message;
+  }
+
+  async function fetchSeries(seriesId) {
+    const year = new Date().getFullYear();
+    const url =
+      "https://api.bls.gov/publicAPI/v2/timeseries/data/" +
+      seriesId + "?startyear=" + (year - 1) +
+      "&endyear=" + year;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("BLS HTTP error " + response.status);
+    }
+
+    const json = await response.json();
+
+    if (json.status !== "REQUEST_SUCCEEDED" ||
+        !json.Results ||
+        !json.Results.series ||
+        !json.Results.series[0]) {
+      throw new Error("BLS did not return usable series data.");
+    }
+
+    return json.Results.series[0].data
+      .filter(item =>
+        /^M(0[1-9]|1[0-2])$/.test(item.period) &&
+        Number.isFinite(Number(item.value))
+      )
+      .map(item => ({
+        year: Number(item.year),
+        month: Number(item.period.slice(1)),
+        value: Number(item.value)
+      }))
+      .sort((a, b) =>
+        b.year - a.year || b.month - a.month
+      );
+  }
+
+  function monthLabel(item) {
+    return String(item.year) + "-" +
+      String(item.month).padStart(2, "0");
+  }
+
+  async function fetchLabourData() {
+    const button = document.getElementById("inkabiBlsFetch");
+    const applyButton = document.getElementById("inkabiBlsApply");
+
+    button.disabled = true;
+    applyButton.disabled = true;
+    latestActuals = null;
+    status("Fetching BLS data. Please wait...");
+    details("The app has not yet verified that browser access works.");
+
+    try {
+      const results = await Promise.all([
+        fetchSeries(SERIES.payroll),
+        fetchSeries(SERIES.wages),
+        fetchSeries(SERIES.unemployment)
+      ]);
+
+      const payroll = results[0];
+      const wages = results[1];
+      const unemployment = results[2];
+
+      if (payroll.length < 2 || wages.length < 2 ||
+          unemployment.length < 1) {
+        throw new Error("Not enough observations to calculate actuals.");
+      }
+
+      const p0 = payroll[0];
+      const p1 = payroll[1];
+      const w0 = wages[0];
+      const w1 = wages[1];
+      const u0 = unemployment[0];
+
+      const consecutivePayrollMonths =
+        (p0.year * 12 + p0.month) -
+        (p1.year * 12 + p1.month) === 1;
+
+      const consecutiveWageMonths =
+        (w0.year * 12 + w0.month) -
+        (w1.year * 12 + w1.month) === 1;
+
+      if (!consecutivePayrollMonths || !consecutiveWageMonths) {
+        throw new Error(
+          "The latest payroll or wage observations are not consecutive months."
+        );
+      }
+
+      const payrollChange = p0.value - p1.value;
+      const wageGrowth = ((w0.value / w1.value) - 1) * 100;
+
+      if (!Number.isFinite(payrollChange) ||
+          !Number.isFinite(wageGrowth) ||
+          !Number.isFinite(u0.value) ||
+          w1.value <= 0) {
+        throw new Error("Invalid values received from BLS.");
+      }
+
+      latestActuals = {
+        payroll: payrollChange,
+        wages: wageGrowth,
+        unemployment: u0.value,
+        payrollMonth: monthLabel(p0),
+        wageMonth: monthLabel(w0),
+        unemploymentMonth: monthLabel(u0),
+        fetchedAt: new Date().toISOString()
+      };
+
+      status("Fetch succeeded. Check reporting months before applying.");
+      details(
+        "Payroll level change: " + payrollChange.toFixed(0) +
+        " thousand (" + monthLabel(p0) + "); wage growth: " +
+        wageGrowth.toFixed(2) + "% MoM (" + monthLabel(w0) +
+        "); unemployment: " + u0.value.toFixed(1) + "% (" +
+        monthLabel(u0) + "). Retrieved: " +
+        new Date(latestActuals.fetchedAt).toLocaleString()
+      );
+
+      applyButton.disabled = false;
+    } catch (error) {
+      latestActuals = null;
+      status(
+        "DATA UNAVAILABLE — automatic retrieval failed. " +
+        "Do not treat old or missing figures as live."
+      );
+      details(
+        String(error && error.message ? error.message : error) +
+        " Check your connection. Browser security (CORS) may block this feed."
+      );
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function applyActuals() {
+    if (!latestActuals) {
+      status("No verified retrieval is available to apply.");
+      return;
+    }
+
+    const fields = {
+      payroll: document.getElementById("nfpActual"),
+      wages: document.getElementById("wageActual"),
+      unemployment: document.getElementById("unemploymentActual")
+    };
+
+    if (!fields.payroll || !fields.wages || !fields.unemployment) {
+      status("Could not find the existing NFP actual input fields.");
+      return;
+    }
+
+    fields.payroll.value = latestActuals.payroll.toFixed(0);
+    fields.wages.value = latestActuals.wages.toFixed(2);
+    fields.unemployment.value =
+      latestActuals.unemployment.toFixed(1);
+
+    status(
+      "Actual fields populated from retrieved observations. " +
+      "Forecasts remain unchanged. Verify the official release figures."
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addPanel);
+  } else {
+    addPanel();
+  }
+})();
+ 
 </script>
 </body>
 </html>
