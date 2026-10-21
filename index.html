@@ -1030,9 +1030,10 @@ if (!data.every(e =>
 }  
   
   
-     automaticCalendarEvents = data;  
-    calendarLastUpdated = Date.now();  
-    calendarLastError = "";  
+     automaticCalendarEvents = data;
+calendarLastUpdated = Date.now();
+calendarLastError = "";
+renderEvents();
   } catch (error) {  
     calendarLastError = error?.name === "AbortError"  
       ? "Calendar request timed out."  
