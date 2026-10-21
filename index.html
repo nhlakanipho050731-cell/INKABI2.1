@@ -1016,18 +1016,28 @@ let calendarRefreshTimer = null;
       throw new Error("Calendar HTTP " + response.status);  
     }  
   
-const data = await response.json();  
-  
-if (!Array.isArray(data)) {  
-  throw new Error("Unexpected calendar response format.");  
-}  
-  
-if (!data.every(e =>  
-  e && typeof e.name === "string" &&  
-  typeof e.date === "string"  
-)) {  
-  throw new Error("Calendar contains invalid event records.");  
-}  
+
+const payload = await response.json();
+
+// The calendar API returns an object containing an events array.
+const data = Array.isArray(payload)
+  ? payload
+  : payload && Array.isArray(payload.events)
+    ? payload.events
+    : null;
+
+if (!data) {
+  throw new Error("Unexpected calendar response: events array missing.");
+}
+
+if (!data.every(e =>
+  e &&
+  typeof e.name === "string" &&
+  typeof e.date === "string"
+)) {
+  throw new Error("Calendar contains invalid event records.");
+}
+
   
   
      automaticCalendarEvents = data;
