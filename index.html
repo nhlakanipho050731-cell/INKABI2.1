@@ -1254,6 +1254,229 @@ if (document.readyState === "loading") {
   }
 })();
  
+/* INKABI.21 — Cross-Market Confirmation */
+(function () {
+  "use strict";
+
+  if (window.inkabiCrossMarketLoaded) return;
+  window.inkabiCrossMarketLoaded = true;
+
+  function addConfirmationPanel() {
+    if (document.getElementById("inkabiCrossMarket")) return;
+
+    const screen = document.getElementById("screen-calendar");
+    if (!screen) {
+      console.error("INKABI: Calendar screen not found.");
+      return;
+    }
+
+    const panel = document.createElement("section");
+    panel.id = "inkabiCrossMarket";
+    panel.style.cssText =
+      "margin:16px 0;padding:16px;border:1px solid #49515f;" +
+      "border-radius:12px;background:#11151d;color:#f3f4f6;";
+
+    panel.innerHTML = `
+      <h3 style="margin-top:0">Cross-Market Confirmation</h3>
+      <p style="color:#b7c0ce">
+        Manual observations only. Select the direction since the release.
+        This panel does not fetch live DXY or yield data.
+      </p>
+
+      <label for="inkabiDxy">DXY direction</label>
+      <select id="inkabiDxy" style="display:block;width:100%;padding:10px;margin:6px 0 14px">
+        <option value="">Select observation</option>
+        <option value="up">Rising — USD stronger</option>
+        <option value="down">Falling — USD weaker</option>
+        <option value="flat">Flat / unclear</option>
+      </select>
+
+      <label for="inkabiNominal">US 10-year nominal yield</label>
+      <select id="inkabiNominal" style="display:block;width:100%;padding:10px;margin:6px 0 14px">
+        <option value="">Select observation</option>
+        <option value="up">Rising</option>
+        <option value="down">Falling</option>
+        <option value="flat">Flat / unclear</option>
+      </select>
+
+      <label for="inkabiReal">US 10-year real yield</label>
+      <select id="inkabiReal" style="display:block;width:100%;padding:10px;margin:6px 0 14px">
+        <option value="">Select observation</option>
+        <option value="up">Rising</option>
+        <option value="down">Falling</option>
+        <option value="flat">Flat / unclear</option>
+      </select>
+
+      <label for="inkabiGoldReaction">Gold price reaction</label>
+      <select id="inkabiGoldReaction" style="display:block;width:100%;padding:10px;margin:6px 0 14px">
+        <option value="">Select observation</option>
+        <option value="up">Rising / holding higher</option>
+        <option value="down">Falling / holding lower</option>
+        <option value="flat">Sideways / unclear</option>
+      </select>
+
+      <label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0">
+        <input id="inkabiFreshCheck" type="checkbox">
+        <span>I verified all four observations are current and refer to the same post-release window.</span>
+      </label>
+
+      <button id="inkabiCheckMarkets" type="button"
+        style="padding:10px 14px;margin:4px;border-radius:8px">
+        Evaluate confirmation
+      </button>
+
+      <button id="inkabiResetMarkets" type="button"
+        style="padding:10px 14px;margin:4px;border-radius:8px">
+        Reset observations
+      </button>
+
+      <div id="inkabiMarketVerdict" role="status" aria-live="polite"
+        style="margin-top:14px;padding:12px;border:1px solid #49515f;border-radius:8px">
+        WAIT — observations not evaluated.
+      </div>
+      <p id="inkabiMarketReason" style="color:#b7c0ce">
+        No confirmation decision has been made.
+      </p>
+      <p style="font-size:12px;color:#b7c0ce">
+        GO means cross-market alignment only, not an entry instruction.
+        Check price structure, spread, volatility, risk limits and your
+        trading plan before any decision.
+      </p>
+    `;
+
+    screen.appendChild(panel);
+
+    document.getElementById("inkabiCheckMarkets")
+      .addEventListener("click", evaluateMarkets);
+
+    document.getElementById("inkabiResetMarkets")
+      .addEventListener("click", resetMarkets);
+  }
+
+  function evaluateMarkets() {
+    const get = id => document.getElementById(id).value;
+    const set = (id, value) => {
+      document.getElementById(id).textContent = value;
+    };
+
+    const verdict = document.getElementById("nfpVerdict");
+    const bias = verdict ? verdict.textContent.trim() : "";
+
+    const dxy = get("inkabiDxy");
+    const nominal = get("inkabiNominal");
+    const real = get("inkabiReal");
+    const gold = get("inkabiGoldReaction");
+    const fresh = document.getElementById("inkabiFreshCheck").checked;
+
+    const values = [dxy, nominal, real, gold];
+
+    if (values.some(value => !value)) {
+      set("inkabiMarketVerdict", "WAIT — DATA INCOMPLETE");
+      set(
+        "inkabiMarketReason",
+        "Select all four observations. Missing data cannot confirm the NFP bias."
+      );
+      return;
+    }
+
+    if (!fresh) {
+      set("inkabiMarketVerdict", "WAIT — FRESHNESS UNCONFIRMED");
+      set(
+        "inkabiMarketReason",
+        "Verify that all observations are current and refer to the same post-release window."
+      );
+      return;
+    }
+
+    if (
+      bias !== "HAWKISH-LEANING" &&
+      bias !== "DOVISH-LEANING"
+    ) {
+      set("inkabiMarketVerdict", "WAIT — NO CLEAR NFP BIAS");
+      set(
+        "inkabiMarketReason",
+        "The NFP calculator has no clear directional bias to confirm."
+      );
+      return;
+    }
+
+    const expected =
+      bias === "HAWKISH-LEANING"
+        ? { dxy: "up", nominal: "up", real: "up", gold: "down" }
+        : { dxy: "down", nominal: "down", real: "down", gold: "up" };
+
+    const actual = { dxy, nominal, real, gold };
+    const names = {
+      dxy: "DXY",
+      nominal: "nominal yield",
+      real: "real yield",
+      gold: "gold price"
+    };
+
+    const conflicts = [];
+    const unclear = [];
+
+    Object.keys(actual).forEach(key => {
+      if (actual[key] === "flat") {
+        unclear.push(names[key]);
+      } else if (actual[key] !== expected[key]) {
+        conflicts.push(names[key]);
+      }
+    });
+
+    if (conflicts.length > 0) {
+      set("inkabiMarketVerdict", "NO-GO — MARKET CONFLICT");
+      set(
+        "inkabiMarketReason",
+        "Contradictory observations: " + conflicts.join(", ") +
+        ". Do not treat the initial NFP bias as confirmed."
+      );
+      return;
+    }
+
+    if (unclear.length > 0) {
+      set("inkabiMarketVerdict", "WAIT — CONFIRMATION WEAK");
+      set(
+        "inkabiMarketReason",
+        "Flat or unclear observations: " + unclear.join(", ") +
+        ". Cross-market alignment is incomplete."
+      );
+      return;
+    }
+
+    set("inkabiMarketVerdict", "GO — ALIGNMENT ONLY");
+    set(
+      "inkabiMarketReason",
+      "All four selected directions align with the " + bias +
+      " bias. This is not an entry signal; independently verify live data, " +
+      "gold structure, volatility, execution costs and risk limits."
+    );
+  }
+
+  function resetMarkets() {
+    [
+      "inkabiDxy",
+      "inkabiNominal",
+      "inkabiReal",
+      "inkabiGoldReaction"
+    ].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+
+    document.getElementById("inkabiFreshCheck").checked = false;
+    document.getElementById("inkabiMarketVerdict").textContent =
+      "WAIT — observations not evaluated.";
+    document.getElementById("inkabiMarketReason").textContent =
+      "No confirmation decision has been made.";
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addConfirmationPanel);
+  } else {
+    addConfirmationPanel();
+  }
+})();
+ 
 </script>
 </body>
 </html>
