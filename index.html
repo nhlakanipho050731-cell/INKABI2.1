@@ -369,7 +369,34 @@ function updateQuoteUI() {
 
   ["homePrice","goldPrice"].forEach(id => setText(id, price));
   ["homeAge","goldAge"].forEach(id => setText(id, age));
-  setText("homePriceMeta", latestQuote
+  
+  setText("liveGoldPrice", price);
+  setText("liveGoldAge", age);
+  setText("liveGoldUpdated", latestQuote
+    ? localTime(latestQuote.receivedAt)
+    : "—");
+  setText("liveGoldSource", fresh && !lastRefreshFailed
+    ? latestQuote.source
+    : "Unverified");
+  setText("liveGoldMeta", latestQuote
+    ? "Source timestamp: " + localTime(latestQuote.timestampMs) +
+      (fresh && !lastRefreshFailed
+        ? " · Quote passed local checks"
+        : " · NOT VERIFIED")
+    : lastFeedError);
+
+  setText("liveFeedStatus",
+    fresh && !lastRefreshFailed ? "FRESH BY CHECKS" : "NOT VERIFIED");
+  $("liveFeedStatus").className =
+    fresh && !lastRefreshFailed ? "green" : "amber";
+
+  setText("liveTradeGate", "NO-GO");
+  setText("liveTradeGateText",
+    fresh && !lastRefreshFailed
+      ? "Quote passed local checks. Verify MT5, risk limits and news before any trade."
+      : "A verified quote is required. Trading is not authorized.");
+ 
+ setText("homePriceMeta", latestQuote
     ? "Source timestamp: " + localTime(latestQuote.timestampMs) +
       " · Received: " + localTime(latestQuote.receivedAt)
     : lastFeedError);
