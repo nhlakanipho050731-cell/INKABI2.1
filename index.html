@@ -1050,13 +1050,20 @@ function loadSettingsFields() {
   $("staleSeconds").value = settings.staleSeconds;  
   $("providerUrl").value = settings.providerUrl;  
 }  
-function startRefreshTimer() {  
-  if (refreshTimer) clearInterval(refreshTimer);  
-  refreshTimer = setInterval(() => {  
-    refreshGoldFeed();  
-    updateQuoteUI();  
-  }, settings.refreshSeconds * 1000);  
-}  
+
+function startRefreshTimer() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(() => {
+    refreshGoldFeed();
+    updateQuoteUI();
+  }, settings.refreshSeconds * 1000);
+
+  if (calendarRefreshTimer) clearInterval(calendarRefreshTimer);
+  calendarRefreshTimer = setInterval(() => {
+    refreshCalendar();
+  }, 5 * 60 * 1000);
+}
+
   
 /* All handlers use one initialization function. */  
 function initializeApp() {  
