@@ -962,9 +962,12 @@ function renderEvents() {
   updateHealth();
 }
 
-$("calendarEventSelect").addEventListener(
-  "change", fillSelectedEvent
-);
+
+const calendarEventSelect = $("calendarEventSelect");
+if (calendarEventSelect) {
+  calendarEventSelect.addEventListener("change", fillSelectedEvent);
+}
+
 
   save("inkabi21_events", events);  
   ["eventName","eventTime","eventActual","eventForecast","eventPrevious","eventNotes"]  
