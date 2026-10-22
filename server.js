@@ -141,7 +141,7 @@ console.log("NFP calendar sample:", JSON.stringify(
    } else if(a!==null && f===null){ interpretation="Actual is published but market consensus is unavailable; no surprise score assigned."; }
    return {date:e.date||null,name,status:e.status||"unknown",actual,forecast,previous,interpretation,sourceUrl:e.source_url||e.url||null,sourceName:e.source_name||"Finance Calendar",_score:points};
   });
-  let label = "WAIT — CONSENSUS MISSING";
+ 
 
   const upcomingConsensus = nextNfp?.consensus;
   const consensusMissing =
@@ -160,11 +160,12 @@ console.log("NFP calendar sample:", JSON.stringify(
     : "A consensus value is present, but the available evidence has not established a reliable directional outlook. Validate the units, previous value, and comparable labour indicators before interpreting the release.";
 
   let goldImpact = "WAIT. NFP can move USD, Treasury yields and gold in either direction. Confirm the actual payroll result, wages, unemployment, revisions, and post-release price reaction before considering direction.";
-
+if (!consensusMissing) {
   if(scored>=3 && score>=2){label="LABOUR SIGNAL LEANS STRONGER";confidence=`Low-to-moderate · ${scored} comparable surprise(s); ${positive} stronger and ${negative} weaker signals`;briefing="Available comparable releases lean toward stronger labour conditions versus consensus. This is a conditional signal, not a statistically calibrated NFP forecast; proxy indicators can diverge from official payrolls.";goldImpact="If official NFP and wages also beat expectations and yields/USD rise, gold may face downside pressure. Confirm with the actual release and price reaction.";}
   else if(scored>=3 && score<=-2){label="LABOUR SIGNAL LEANS WEAKER";confidence=`Low-to-moderate · ${scored} comparable surprise(s); ${positive} stronger and ${negative} weaker signals`;briefing="Available comparable releases lean toward weaker labour conditions versus consensus. This is a conditional signal, not a statistically calibrated NFP forecast; proxy indicators can diverge from official payrolls.";goldImpact="If official NFP misses and yields/USD fall, gold may gain support. Confirm with wages, unemployment, revisions and the actual price reaction.";}
   else if(scored>=3){label="MIXED / NO CLEAR EDGE";confidence=`Low · ${scored} comparable surprises conflict`;briefing="The comparable labour indicators are mixed. There is no clear pre-NFP directional edge from these inputs.";}
-  const quality=[];
+}
+ const quality=[];
   quality.push(`Finance Calendar returned ${all.length} US calendar events for the requested date window.`);
   quality.push(`${mapped.length} labour-related releases matched the timeline filters; ${scored} had numeric actual-versus-consensus comparisons suitable for the simple directional tally.`);
   if(!nextNfp) quality.push("Upcoming official NFP event was not identified in the calendar response; verify the BLS schedule before relying on a date.");
