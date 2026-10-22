@@ -188,7 +188,9 @@ if (!consensusMissing) {
       status: nextNfp.status || "unknown",
       consensus: nextNfp.consensus ?? null,
       actual: nextNfp.actual ?? null,
-      previous: nextNfp.prior ?? null,
+      
+previous: nextNfp.previous ?? nextNfp.prior ?? null,
+
       dataStale: nextNfp.data_stale ?? null,
       lastVerifiedAt: nextNfp.last_verified_at ?? null,
       sourceUrl: nextNfp.source_url || "https://www.bls.gov/schedule/news_release/empsit.htm"
