@@ -760,7 +760,22 @@ async function fetchNfpMap(){
  try{
   const r=await fetch(base+"/api/nfp/outlook",{cache:"no-store"});if(!r.ok)throw new Error("Backend HTTP "+r.status);const d=await r.json();
   setText("nfpDate",d.nextNfp?.date||"UNAVAILABLE");setText("nfpDateMeta",d.nextNfp?.title||"Official NFP date was not found in the calendar feed.");
-  setText("nfpBias",d.outlook?.label||"WAIT");setText("nfpConfidence",d.outlook?.confidence||"Insufficient verified evidence");setText("nfpBrief",d.outlook?.briefing||"No briefing available.");setText("nfpGoldImpact",d.outlook?.goldImpact||"WAIT: no defensible gold implication.")setText("nfpQuality",
+  setText("nfpBias",d.outlook?.label||"WAIT");setText("nfpConfidence",d.outlook?.confidence||"Insufficient verified evidence");setText("nfpBrief",d.outlook?.briefing||"No briefing available.");setText("nfpGoldImpact",d.outlook?.goldImpact||"WAIT: no defensible gold implication.")
+setText(
+  "nfpGoldImpact",
+  d.outlook?.goldImpact || "WAIT: no defensible gold implication."
+);
+
+setText(
+  "nfpQuality",
+  (Array.isArray(d.quality) && d.quality.length)
+    ? d.quality.join(" · ")
+    : "Upcoming NFP consensus: " +
+      (d.nextNfp?.consensus == null ? "Unavailable" : "Provided") +
+      " · Missing values are not estimated" +
+      " · Verify release data against official sources."
+);
+
   (Array.isArray(d.quality)&&d.quality.length)
     ? d.quality.join(" · ")
     : "Upcoming NFP consensus: "+(d.nextNfp?.consensus==null?"Unavailable":"Provided")+
