@@ -176,18 +176,52 @@ console.log("NFP calendar sample:", JSON.stringify(
    {name:"U.S. Department of Labor — weekly unemployment claims",url:"https://oui.doleta.gov/unemploy/claims.asp",status:"Official claims source"},
    {name:"U.S. Bureau of Labor Statistics — JOLTS",url:"https://www.bls.gov/jlt/",status:"Official job openings and labour turnover source"}
   ];
-  res.json({ok:true,generatedAt:new Date().toISOString(),
-nextNfp:nextNfp?{
-  date:nextNfp.date,
-  title:nextNfp.title||nextNfp.name||nextNfp.series_name||"U.S. Employment Situation",
-  status:nextNfp.status||"unknown",
-  consensus:nextNfp.consensus??null,
-  actual:nextNfp.actual??null,
-  previous:nextNfp.prior??null,
-  dataStale:nextNfp.data_stale??null,
-  lastVerifiedAt:nextNfp.last_verified_at??null,
-  sourceUrl:nextNfp.source_url||"https://www.bls.gov/schedule/news_release/empsit.htm"
-}:null,
+  
+  res.json({
+    ok: true,
+    generatedAt: new Date().toISOString(),
+
+    nextNfp: nextNfp ? {
+      date: nextNfp.date ?? null,
+      title: nextNfp.title || nextNfp.name || nextNfp.series_name || "U.S. Employment Situation",
+      status: nextNfp.status || "unknown",
+      consensus: nextNfp.consensus ?? null,
+      actual: nextNfp.actual ?? null,
+      previous: nextNfp.prior ?? null,
+      dataStale: nextNfp.data_stale ?? null,
+      lastVerifiedAt: nextNfp.last_verified_at ?? null,
+      sourceUrl: nextNfp.source_url || "https://www.bls.gov/schedule/news_release/empsit.htm"
+    } : null,
+
+    previousNfp: previousNfp ? {
+      date: previousNfp.date ?? null,
+      title: previousNfp.title || previousNfp.name || previousNfp.series_name || "U.S. Employment Situation",
+      actual: safeText(previousNfp.actual),
+      forecast: safeText(previousNfp.consensus),
+      previous: safeText(previousNfp.prior)
+    } : null,
+
+    window: { from, to },
+
+    outlook: {
+      label,
+      confidence,
+      briefing,
+      goldImpact,
+      score,
+      scored,
+      positive,
+      negative
+    },
+
+    timeline: mapped,
+
+    attribution: {
+      source: "FinanceCalendar",
+      url: "https://www.financecalendar.com"
+    }
+  });
+
 
  } catch(e) {
   console.error("/api/nfp/outlook failed:",e?.message||"unknown");
