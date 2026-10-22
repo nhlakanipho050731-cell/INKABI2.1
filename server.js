@@ -86,14 +86,16 @@ const to = ymd(new Date(now.getTime()+45*86400000));
   const all = Array.isArray(data?.events) ? data.events : Array.isArray(data) ? data : null;
   
 console.log("NFP calendar sample:", JSON.stringify(
-  all?.find(e =>
-    String(e.date || "") >= from &&
-    /non.?farm payroll|employment situation|ADP.*employment|JOLTS/i.test(
-      `${e.name || ""} ${e.title || ""} ${e.series_name || ""}`
+  (all || [])
+    .filter(e =>
+      String(e.country || "").toUpperCase() === "US" &&
+      /non.?farm payroll|employment situation|ADP.*employment|JOLTS/i.test(
+        `${e.name || ""} ${e.title || ""} ${e.series_name || ""}`
+      )
     )
-  )
+    .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))
+    .slice(0, 3)
 ));
-
   if (!all) throw new Error("Calendar source returned an unexpected format");
   const nfpRx = /non.?farm payroll|employment situation|nonfarm employment/i;
   const nfpEvents = all.filter(e=>nfpRx.test(`${e.name||""} ${e.title||""} ${e.series_name||""}`)).sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
