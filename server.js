@@ -129,7 +129,11 @@ console.log("NFP calendar sample:", JSON.stringify(
   let score=0, scored=0, positive=0, negative=0;
   const mapped = timeline.map(e=>{
    const name=`${e.name||e.title||e.series_name||"Economic release"}`;
-   const actual=safeText(e.actual), forecast=safeText(e.consensus), previous=safeText(e.prior);
+   
+const actual = safeText(e.actual);
+const forecast = safeText(e.consensus ?? e.forecast);
+const previous = safeText(e.previous ?? e.prior);
+
    const a=parseFirstNumber(actual), f=parseFirstNumber(forecast);
    let interpretation="No directional comparison possible; actual or consensus is unavailable.";
    let points=0;
@@ -144,7 +148,8 @@ console.log("NFP calendar sample:", JSON.stringify(
   });
  
 
-  const upcomingConsensus = nextNfp?.consensus;
+  const upcomingConsensus =
+  nextNfp?.consensus ?? nextNfp?.forecast ?? null;
   const consensusMissing =
     upcomingConsensus === null ||
     upcomingConsensus === undefined ||
@@ -161,11 +166,16 @@ console.log("NFP calendar sample:", JSON.stringify(
     : "A consensus value is present, but the available evidence has not established a reliable directional outlook. Validate the units, previous value, and comparable labour indicators before interpreting the release.";
 
   let goldImpact = "WAIT. NFP can move USD, Treasury yields and gold in either direction. Confirm the actual payroll result, wages, unemployment, revisions, and post-release price reaction before considering direction.";
+
 if (!consensusMissing) {
-  if(scored>=3 && score>=2){label="LABOUR SIGNAL LEANS STRONGER";confidence=`Low-to-moderate · ${scored} comparable surprise(s); ${positive} stronger and ${negative} weaker signals`;briefing="Available comparable releases lean toward stronger labour conditions versus consensus. This is a conditional signal, not a statistically calibrated NFP forecast; proxy indicators can diverge from official payrolls.";goldImpact="If official NFP and wages also beat expectations and yields/USD rise, gold may face downside pressure. Confirm with the actual release and price reaction.";}
-  else if(scored>=3 && score<=-2){label="LABOUR SIGNAL LEANS WEAKER";confidence=`Low-to-moderate · ${scored} comparable surprise(s); ${positive} stronger and ${negative} weaker signals`;briefing="Available comparable releases lean toward weaker labour conditions versus consensus. This is a conditional signal, not a statistically calibrated NFP forecast; proxy indicators can diverge from official payrolls.";goldImpact="If official NFP misses and yields/USD fall, gold may gain support. Confirm with wages, unemployment, revisions and the actual price reaction.";}
-  else if(scored>=3){label="MIXED / NO CLEAR EDGE";confidence=`Low · ${scored} comparable surprises conflict`;briefing="The comparable labour indicators are mixed. There is no clear pre-NFP directional edge from these inputs.";}
+  label = "WAIT — INSUFFICIENT EVIDENCE";
+  confidence = "Low — consensus present; direction not validated";
+  briefing =
+    "A consensus value is present, but this endpoint does not yet validate a complete, comparable set of labour data and official release inputs. No reliable directional NFP forecast is established.";
+  goldImpact =
+    "WAIT. Do not infer gold direction from the consensus or proxy indicators alone. Verify NFP, wages, unemployment, revisions, USD, Treasury yields and the post-release gold reaction.";
 }
+
  const quality=[];
   quality.push(`Finance Calendar returned ${all.length} US calendar events for the requested date window.`);
   quality.push(`${mapped.length} labour-related releases matched the timeline filters; ${scored} had numeric actual-versus-consensus comparisons suitable for the simple directional tally.`);
@@ -187,10 +197,12 @@ if (!consensusMissing) {
       date: nextNfp.date ?? null,
       title: nextNfp.title || nextNfp.name || nextNfp.series_name || "U.S. Employment Situation",
       status: nextNfp.status || "unknown",
-      consensus: nextNfp.consensus ?? null,
-      actual: nextNfp.actual ?? null,
       
+consensus: nextNfp.consensus ?? nextNfp.forecast ?? null,
+forecast: nextNfp.forecast ?? nextNfp.consensus ?? null,
+actual: nextNfp.actual ?? null,
 previous: nextNfp.previous ?? nextNfp.prior ?? null,
+
 
       dataStale: nextNfp.data_stale ?? null,
       lastVerifiedAt: nextNfp.last_verified_at ?? null,
@@ -201,8 +213,8 @@ previous: nextNfp.previous ?? nextNfp.prior ?? null,
       date: previousNfp.date ?? null,
       title: previousNfp.title || previousNfp.name || previousNfp.series_name || "U.S. Employment Situation",
       actual: safeText(previousNfp.actual),
-      forecast: safeText(previousNfp.consensus),
-      previous: safeText(previousNfp.prior)
+      forecast: safeText(previousNfp.consensus ?? previousNfp.forecast),
+previous: safeText(previousNfp.previous ?? previousNfp.prior)
     } : null,
 
     window: { from, to },
