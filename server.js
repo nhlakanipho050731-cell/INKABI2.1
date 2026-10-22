@@ -85,11 +85,11 @@ const to = ymd(new Date(now.getTime()+45*86400000));
   const data = await fetchJsonWithTimeout(url);
   
   const dedicatedNfpUrl = `${FC_BASE}/next?series=us-nfp`;
-  console.log("Dedicated NFP response:", JSON.stringify(dedicatedData));
   let dedicatedNfp = null;
   try {
     const dedicatedData = await fetchJsonWithTimeout(dedicatedNfpUrl);
-    if (
+   console.log("Dedicated NFP response:", JSON.stringify(dedicatedData));
+   if (
       dedicatedData?.series_code === "us-nfp" &&
       dedicatedData?.next?.date &&
       dedicatedData?.next?.country === "US"
