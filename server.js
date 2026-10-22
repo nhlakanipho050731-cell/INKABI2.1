@@ -115,7 +115,10 @@ console.log("NFP calendar sample:", JSON.stringify(
   if (!all) throw new Error("Calendar source returned an unexpected format");
   const nfpRx = /non.?farm payroll|employment situation|nonfarm employment/i;
   const nfpEvents = all.filter(e=>nfpRx.test(`${e.name||""} ${e.title||""} ${e.series_name||""}`)).sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
-  const nextNfp = nfpEvents.find(e=>String(e.date||"")>=today && !/cancelled/i.test(e.status||"")) || null;
+  
+  const calendarNextNfp = nfpEvents.find(e=>String(e.date||"")>=today && !/cancelled/i.test(e.status||"")) || null;
+  const nextNfp = dedicatedNfp || calendarNextNfp;
+
   const previousNfp = [...nfpEvents].reverse().find(e=>String(e.date||"")<today && (e.actual!==null && e.actual!==undefined || /released/i.test(e.status||""))) || null;
   const relevantRx = /ADP.*employment|employment change|jobless claims|unemployment claims|continuing claims|JOLTS|job openings|ISM.*employment|employment.*ISM|average hourly earnings|hourly earnings|unemployment rate|labor force participation|labour force participation|non.?farm payroll|employment situation|challenger.*job cuts/i;
   let timeline = all.filter(e=>relevantRx.test(`${e.name||""} ${e.title||""} ${e.series_name||""}`));
