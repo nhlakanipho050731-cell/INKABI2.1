@@ -160,7 +160,19 @@ let briefing = "Official payroll actuals and previous values may be available, b
    {name:"U.S. Department of Labor — weekly unemployment claims",url:"https://oui.doleta.gov/unemploy/claims.asp",status:"Official claims source"},
    {name:"U.S. Bureau of Labor Statistics — JOLTS",url:"https://www.bls.gov/jlt/",status:"Official job openings and labour turnover source"}
   ];
-  res.json({ok:true,generatedAt:new Date().toISOString(),nextNfp:nextNfp?{date:nextNfp.date,title:nextNfp.title||nextNfp.name||nextNfp.series_name||"U.S. Employment Situation",status:nextNfp.status||"unknown",sourceUrl:nextNfp.source_url||"https://www.bls.gov/schedule/news_release/empsit.htm"}:null,previousNfp:previousNfp?{date:previousNfp.date,actual:safeText(previousNfp.actual),title:previousNfp.title||previousNfp.name}:null,window:{from:previousNfp?.date||from,to:nextNfp?.date||to},outlook:{label,confidence,briefing,goldImpact,scoredReleases:scored,score},timeline:mapped.map(({_score,...e})=>e),quality,sources,attribution:data.attribution||{source:"financecalendar.com",url:"https://www.financecalendar.com/api/"}});
+  res.json({ok:true,generatedAt:new Date().toISOString(),
+nextNfp:nextNfp?{
+  date:nextNfp.date,
+  title:nextNfp.title||nextNfp.name||nextNfp.series_name||"U.S. Employment Situation",
+  status:nextNfp.status||"unknown",
+  consensus:nextNfp.consensus??null,
+  actual:nextNfp.actual??null,
+  previous:nextNfp.prior??null,
+  dataStale:nextNfp.data_stale??null,
+  lastVerifiedAt:nextNfp.last_verified_at??null,
+  sourceUrl:nextNfp.source_url||"https://www.bls.gov/schedule/news_release/empsit.htm"
+}:null,
+
  } catch(e) {
   console.error("/api/nfp/outlook failed:",e?.message||"unknown");
   res.status(502).json({error:"Automatic NFP data request failed. Check upstream calendar availability and backend logs."});
