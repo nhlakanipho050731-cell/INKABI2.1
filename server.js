@@ -81,8 +81,24 @@ app.get("/api/nfp/outlook", async (_req,res) => {
 const from = ymd(new Date(now.getTime()-45*86400000));
 const to = ymd(new Date(now.getTime()+45*86400000));
 
-  const url = `${FC_BASE}/calendar?from=${from}&to=${to}&country=US&limit=500&tz=America%2FNew_York`;
+  const url = `${FC_BASE}/calendar?from=${from}&to=${to}&country=US&limit=500&tz=America%2FNew_York`; 
   const data = await fetchJsonWithTimeout(url);
+  
+  const dedicatedNfpUrl = `${FC_BASE}/next?series=us-nfp`;
+  let dedicatedNfp = null;
+  try {
+    const dedicatedData = await fetchJsonWithTimeout(dedicatedNfpUrl);
+    if (
+      dedicatedData?.series_code === "us-nfp" &&
+      dedicatedData?.next?.date &&
+      dedicatedData?.next?.country === "US"
+    ) {
+      dedicatedNfp = dedicatedData.next;
+    }
+  } catch (nfpError) {
+    console.warn("Dedicated NFP endpoint unavailable:", nfpError?.message || "unknown");
+  }
+  
   const all = Array.isArray(data?.events) ? data.events : Array.isArray(data) ? data : null;
   
 console.log("NFP calendar sample:", JSON.stringify(
