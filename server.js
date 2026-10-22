@@ -77,8 +77,10 @@ app.get("/api/nfp/outlook", async (_req,res) => {
  try {
   const now = new Date();
   const today = ymd(now);
-  const from = ymd(new Date(now.getTime()-70*86400000));
-  const to = ymd(new Date(now.getTime()+70*86400000));
+  
+const from = ymd(new Date(now.getTime()-45*86400000));
+const to = ymd(new Date(now.getTime()+45*86400000));
+
   const url = `${FC_BASE}/calendar?from=${from}&to=${to}&country=US&limit=500&tz=America%2FNew_York`;
   const data = await fetchJsonWithTimeout(url);
   const all = Array.isArray(data?.events) ? data.events : Array.isArray(data) ? data : null;
