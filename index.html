@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090b10">
+<title>INKABI.21 — Gold Intelligence</title>
+<style>
+:root{--bg:#090b10;--panel:#111722;--panel2:#171f2c;--line:#2a3546;--text:#eef3fb;--muted:#9aa8bb;--gold:#e8bd5a;--green:#47d7a0;--red:#ff7777;--blue:#82b9ff;--orange:#ffb86b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer}
+header{padding:18px 16px 14px;background:linear-gradient(135deg,#171d29,#0b0e14);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.brand{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand h1{font-size:19px;letter-spacing:1.5px;margin:0;color:var(--gold)}.sub{color:var(--muted);font-size:12px;margin-top:3px}.status{font-size:11px;padding:5px 8px;border:1px solid var(--line);border-radius:20px;color:var(--muted);white-space:nowrap}
+nav{display:flex;gap:7px;overflow-x:auto;padding:11px 12px;background:#0d1118;border-bottom:1px solid var(--line);position:sticky;top:75px;z-index:4}nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 12px;border-radius:10px;font-size:12px}nav button.active{color:#17120a;background:var(--gold);border-color:var(--gold);font-weight:800}
+main{max-width:1050px;margin:auto;padding:14px 12px 40px}.screen{display:none}.screen.active{display:block}.section-title{font-size:17px;margin:4px 0 12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:13px;min-width:0}.card h3{font-size:12px;color:var(--muted);font-weight:650;margin:0 0 8px}.big{font-size:24px;font-weight:800;letter-spacing:-.5px;overflow-wrap:anywhere}.small{font-size:12px;color:var(--muted)}.tiny{font-size:11px;color:var(--muted)}.positive{color:var(--green)}.negative{color:var(--red)}.gold{color:var(--gold)}.blue{color:var(--blue)}.orange{color:var(--orange)}.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:4px 8px;font-size:11px;color:var(--muted)}.pill.good{color:var(--green);border-color:#246c53}.pill.bad{color:var(--red);border-color:#793e43}.pill.warn{color:var(--orange);border-color:#76572c}
+button.primary{background:var(--gold);border:0;color:#17120a;font-weight:800;border-radius:10px;padding:10px 13px}button.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 12px}button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.line{height:1px;background:var(--line);margin:12px 0}.briefing{border-left:3px solid var(--gold);padding:10px 12px;background:#141923;border-radius:0 10px 10px 0;margin-top:10px}.briefing strong{color:var(--gold)}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.row+.row{margin-top:8px}.notice{padding:11px 12px;border-radius:11px;background:#181d26;border:1px solid var(--line);font-size:12px;color:var(--muted);margin:10px 0}.notice.warn{border-color:#73572f;color:#f1c887}.notice.error{border-color:#743e44;color:#ffaaaa}.notice.good{border-color:#245f4b;color:#9ce8c8}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:650}td{overflow-wrap:anywhere}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+label{display:block;color:var(--muted);font-size:12px;margin:9px 0 5px}input,select{width:100%;background:#0c1118;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:10px;min-width:0} .formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+footer{border-top:1px solid var(--line);padding:18px 14px;color:var(--muted);font-size:11px;text-align:center}
+.list-item{padding:10px 0;border-bottom:1px solid var(--line)}.list-item:last-child{border-bottom:0}.list-item h4{margin:0 0 5px;font-size:13px}.list-item p{margin:0;color:var(--muted);font-size:12px}.bar{height:8px;background:#263142;border-radius:10px;overflow:hidden;margin-top:7px}.bar span{display:block;height:100%;background:var(--gold);width:0}
+#goldChart{display:block;width:100%;height:320px;background:#0b1018;border-radius:10px;touch-action:pan-y}.chart-tools{display:flex;gap:7px;margin:10px 0;flex-wrap:wrap}.chart-tools button{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:7px 12px}.chart-tools button.active{background:var(--gold);color:#17120a;border-color:var(--gold);font-weight:800}.chart-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:8px}.chart-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+@media(min-width:700px){main{padding:20px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:16px}.big{font-size:27px}}
+@media(max-width:380px){.grid3{grid-template-columns:1fr}.big{font-size:21px}header{padding-left:12px;padding-right:12px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><div><h1>INKABI.21</h1><div class="sub">GOLD INTELLIGENCE · MACRO · PRICE ACTION</div></div><div id="overallStatus" class="status">STARTING</div></div>
+</header>
+<nav id="nav">
+ <button class="active" data-screen="home">HOME</button>
+ <button data-screen="macro">MACRO</button>
+ <button data-screen="calendar">CALENDAR</button>
+ <button data-screen="nfp">NFP INTELLIGENCE</button>
+ <button data-screen="news">NEWS</button>
+ <button data-screen="zones">SUPPLY / DEMAND</button>
+ <button data-screen="intelligence">AI INTELLIGENCE</button>
+ <button data-screen="risk">RISK DESK</button>
+</nav>
+<main>
+<section id="home" class="screen active">
+ <h2 class="section-title">Market command</h2>
+ <div class="grid">
+  <article class="card"><h3>XAU/USD · MID PRICE</h3><div class="big gold" id="homeGold">—</div><div class="small" id="homeGoldChange">Waiting for quote…</div><div class="tiny" id="homeGoldStamp">No successful update yet</div></article>
+  <article class="card"><h3>MACRO DECISION</h3><div class="big" id="homeDecision">WAIT</div><div class="small" id="homeDecisionWhy">Waiting for market data</div><div style="margin-top:8px"><span id="homeQuality" class="pill warn">DATA CHECK</span></div></article>
+  <article class="card"><h3>DXY · US DOLLAR INDEX</h3><div class="big" id="homeDxy">—</div><div class="small" id="homeDxyChange">Waiting for quote…</div></article>
+  <article class="card"><h3>US30 · CONTEXT ONLY</h3><div class="big" id="homeUs30">—</div><div class="small" id="homeUs30Change">Not a Treasury-yield substitute</div></article>
+ </div>
+ <div class="card" style="margin-top:10px"><h3>RELATED MARKETS · PROVIDER AVAILABILITY VARIES</h3><div class="grid3">
+  <div><div class="small">EUR/USD</div><strong id="homeEURUSD">—</strong><div class="tiny" id="metaEURUSD">Awaiting quote</div></div>
+  <div><div class="small">GBP/USD</div><strong id="homeGBPUSD">—</strong><div class="tiny" id="metaGBPUSD">Awaiting quote</div></div>
+  <div><div class="small">USD/JPY</div><strong id="homeUSDJPY">—</strong><div class="tiny" id="metaUSDJPY">Awaiting quote</div></div>
+  <div><div class="small">SILVER · XAG/USD</div><strong id="homeXAGUSD">—</strong><div class="tiny" id="metaXAGUSD">Awaiting quote</div></div>
+  <div><div class="small">OIL</div><strong id="homeUSOIL">—</strong><div class="tiny" id="metaUSOIL">Awaiting quote</div></div>
+ </div><p class="tiny">These are contextual markets, not direct gold signals. Unsupported symbols remain unavailable; values are never fabricated.</p></div>
+ <div class="notice warn" id="homeAlert">The app has not verified fresh data yet. No new trade signal should be used until feeds update.</div>
+ <div class="card"><h3>Automatic briefing</h3><div id="homeBrief">Waiting for XAUUSD and DXY feed.</div><div class="line"></div><div class="row"><span class="small">Refresh cadence</span><strong>30 seconds</strong></div><div class="row"><span class="small">Last check</span><strong id="lastCheck">Never</strong></div><div class="actions"><button class="primary" id="refreshBtn">Refresh now</button><button class="secondary" id="retryYields">Retry Treasury data</button></div></div>
+ <div class="notice">This is a decision-support dashboard, not an execution bot. It does not connect to MT5, place trades, or guarantee direction.</div>
+</section>
+
+<section id="macro" class="screen">
+ <h2 class="section-title">Macro Sentinel</h2>
+ <div class="grid">
+  <article class="card"><h3>GOLD · XAU/USD</h3><div class="big gold" id="macroGold">—</div><div class="small" id="macroGoldMeta">Awaiting quote</div></article>
+  <article class="card"><h3>DXY</h3><div class="big" id="macroDxy">—</div><div class="small" id="macroDxyMeta">Awaiting quote</div></article>
+  <article class="card"><h3>US 10Y NOMINAL</h3><div class="big blue" id="nominalYield">—</div><div class="small" id="nominalMeta">Official U.S. Treasury daily series</div></article>
+  <article class="card"><h3>US 10Y REAL</h3><div class="big blue" id="realYield">—</div><div class="small" id="realMeta">Official U.S. Treasury real-yield daily series</div></article>
+ </div>
+ <div id="yieldWarning" class="notice warn">Treasury yields are separate daily observations. They may fail to load in a browser due to source/CORS availability; missing values will remain unavailable.</div>
+ <div class="card" style="margin-bottom:10px"><h3>GOLD MULTI-TIMEFRAME CONFIRMATION</h3><div class="grid3"><div><div class="small">15 MINUTE</div><div class="big" id="tf15Bias">WAIT</div><div class="tiny" id="tf15Detail">Waiting for closed candles</div></div><div><div class="small">1 HOUR</div><div class="big" id="tf1hBias">WAIT</div><div class="tiny" id="tf1hDetail">Waiting for closed candles</div></div><div><div class="small">4 HOUR</div><div class="big" id="tf4hBias">WAIT</div><div class="tiny" id="tf4hDetail">Waiting for closed candles</div></div></div><div id="tfSummary" class="notice warn">Timeframe alignment has not been verified. No entry signal.</div></div>
+ <div class="card"><h3>What the signals mean</h3><div id="macroReasoning"><p class="small">Waiting for fresh quotes and yield observations.</p></div></div>
+ <div class="card" style="margin-top:10px"><h3>Data health</h3><div id="healthList"></div></div>
+</section>
+
+<section id="calendar" class="screen">
+ <h2 class="section-title">Economic calendar</h2>
+ <div class="notice">Events are requested from the provider automatically. Actual, forecast and previous values are shown only when supplied by the source. Missing values are never invented. Event interpretation is simplified and may differ by release type.</div>
+ <div class="row"><span class="small">Last calendar refresh: <strong id="calendarStamp">Not loaded</strong></span><button class="secondary" id="calendarRefresh">Refresh</button></div>
+ <div id="calendarStatus" class="notice">Loading upcoming releases…</div>
+ <div class="table-wrap"><table><thead><tr><th>Time / event</th><th>Impact</th><th>Actual</th><th>Forecast</th><th>Previous</th><th>Conditional read</th></tr></thead><tbody id="calendarRows"><tr><td colspan="6">Waiting for provider response…</td></tr></tbody></table></div>
+ <div class="small" style="margin-top:9px">Calendar timestamps are displayed as provided by the API. Verify timezone and release details with the official release source before trading.</div>
+</section>
+
+<section id="news" class="screen">
+ <h2 class="section-title">Market news</h2>
+ <div class="notice">Headlines are context, not automatic trade instructions. Confirm the original publication, timestamp and market reaction before acting.</div>
+ <div class="row"><span class="small" id="newsStamp">Not loaded</span><button class="secondary" id="newsRefresh">Refresh news</button></div>
+ <div id="newsStatus" class="notice">Loading headlines…</div>
+ <div class="card" id="newsList"><div class="small">Waiting for provider response.</div></div>
+</section>
+
+<section id="zones" class="screen">
+ <h2 class="section-title">Automatic supply / demand</h2>
+ <div class="notice">Zones are calculated automatically from provider OHLC candles for 15m, 1H and 4H. They refresh periodically while the feed is available. They are algorithmically detected swing areas—not guaranteed institutional order blocks or entry signals.</div>
+ <div class="card" style="margin-bottom:10px"><div class="row"><h3 style="margin:0">XAU/USD · LIVE PRICE ACTION MAP</h3><span class="pill warn" id="chartFeedStatus">WAITING FOR CANDLES</span></div><div class="chart-tools"><button type="button" data-chart-tf="15m">15m</button><button type="button" data-chart-tf="1H" class="active">1H</button><button type="button" data-chart-tf="4H">4H</button></div><canvas id="goldChart" aria-label="Gold XAU USD candlestick chart"></canvas><div class="chart-legend"><span><i class="chart-dot" style="background:var(--green)"></i>Bull candle</span><span><i class="chart-dot" style="background:var(--red)"></i>Bear candle</span><span><i class="chart-dot" style="background:#47d7a055"></i>Demand zone</span><span><i class="chart-dot" style="background:#ff777755"></i>Supply zone</span><span><i class="chart-dot" style="background:var(--gold)"></i>Live quote</span></div><div class="small" id="chartCaption" style="margin-top:8px">Waiting for verified XAU/USD candle data. Chart is gold-only.</div></div>
+ <div class="grid">
+  <article class="card"><h3>LIVE GOLD PRICE</h3><div class="big gold" id="zoneLivePrice">—</div><div class="small" id="zoneLiveMeta">Waiting for a fresh quote</div></article>
+  <article class="card"><h3>ZONE ENGINE</h3><div class="big" id="zoneEngineStatus">LOADING</div><div class="small" id="zoneUpdated">No candle scan completed</div></article>
+ </div>
+ <div class="card" style="margin-top:10px"><div class="row"><h3 style="margin:0">Demand / support zones</h3><span class="pill good">Auto-detected</span></div><div id="autoDemand" class="small" style="margin-top:8px">Loading OHLC candles…</div></div>
+ <div class="card" style="margin-top:10px"><div class="row"><h3 style="margin:0">Supply / resistance zones</h3><span class="pill warn">Auto-detected</span></div><div id="autoSupply" class="small" style="margin-top:8px">Loading OHLC candles…</div></div>
+ <div class="card" style="margin-top:10px"><h3>Automatic zone assessment</h3><div id="zoneSignal">Waiting for live gold price and candle analysis.</div></div>
+ <div class="notice warn" id="zoneDisclaimer">No entry is triggered by touching a zone. Wait for a rejection/acceptance candle and your separate risk rules. If candle data is missing or stale, zones must show unavailable.</div>
+</section>
+
+<section id="intelligence" class="screen">
+ <h2 class="section-title">AI Gold Intelligence</h2>
+ <div class="notice warn" id="aiStatus">Research combines existing market feeds with a live public headline search when reachable. AI synthesis and screenshot interpretation require a secured backend.</div>
+ <div class="card" id="aiBackendConfig" style="margin-top:10px;border-color:var(--gold)">
+  <h3 style="color:var(--gold)">SECURE AI BACKEND CONNECTION · REQUIRED FOR SCREENSHOT AI</h3>
+  <p class="small">This is where you paste the HTTPS address of your deployed backend. It will not work until the backend is deployed and configured with a private AI API key.</p>
+  <label for="aiBackendUrl">AI backend HTTPS URL</label>
+  <input id="aiBackendUrl" type="url" autocomplete="url" placeholder="https://your-deployed-backend.example.com">
+  <div class="actions"><button class="secondary" id="saveAiBackend">Save backend URL</button><button class="secondary" id="testAiBackend">Test backend</button></div>
+  <div class="notice warn" id="aiBackendHelp">Status: backend URL not tested yet. Never put your private AI API key in this field or in the HTML.</div>
+ </div>
+ <div class="card" style="margin-top:10px;border-color:var(--gold)">
+  <h3 style="color:var(--gold)">OVERALL DAILY DIRECTION & INTELLIGENCE BRIEFING</h3>
+  <p class="small">This is the daily evidence-based interpretation from the feeds currently available to this app. It is not a guaranteed forecast. Missing or conflicting evidence must result in WAIT.</p>
+  <div class="grid">
+   <article class="card"><h3>DAILY GOLD BIAS</h3><div class="big gold" id="dailyBias">WAIT</div><div class="small" id="dailyBiasReason">Waiting for verified current market data.</div></article>
+   <article class="card"><h3>CONFIDENCE / DATA STATUS</h3><div class="big" id="dailyConfidence">UNVERIFIED</div><div class="small" id="dailyConfidenceReason">Confidence is withheld until critical inputs are checked.</div></article>
+  </div>
+  <div class="line"></div><h3>DAILY BRIEFING</h3><div id="dailyBriefing" class="small">Tap ANALYZE GOLD to refresh the daily briefing.</div>
+  <div class="line"></div><h3>WHAT COULD CONFIRM THE BIAS?</h3><div id="dailyConfirm" class="small">Not evaluated yet.</div>
+  <div class="line"></div><h3>WHAT WOULD INVALIDATE IT / KEEP YOU OUT?</h3><div id="dailyCaution" class="small">Not evaluated yet.</div>
+ </div>
+ <div class="card">
+  <h3>ANALYZE GOLD</h3>
+  <p class="small">Refresh a timestamped evidence snapshot from connected market feeds plus a public 24-hour headline search. Headlines are not proof of market impact; missing data remains unavailable.</p>
+  <div class="formgrid">
+   <div><label for="aiTimeframe">Primary timeframe</label><select id="aiTimeframe"><option value="15m">15 minutes</option><option value="1h" selected>1 hour</option><option value="4h">4 hours</option><option value="1d">Daily</option></select></div>
+   <div><label for="aiScreenshot">Chart screenshot (optional)</label><input id="aiScreenshot" type="file" accept="image/png,image/jpeg,image/webp"></div>
+  </div>
+  <img id="aiImagePreview" alt="Selected chart screenshot preview" style="display:none;width:100%;max-height:420px;object-fit:contain;margin-top:10px;border-radius:10px;border:1px solid var(--line)">
+  <div class="actions"><button class="primary" id="analyzeGoldBtn">ANALYZE GOLD</button><button class="secondary" id="clearAiScreenshot">Clear screenshot</button></div>
+  <p class="tiny">A screenshot is sent to your configured backend for AI interpretation. Do not upload screenshots containing account numbers, login details or other private information.</p>
+ </div>
+ <div class="card" style="margin-top:10px"><h3>SCREENSHOT + GLOBAL MARKET AI ANALYSIS</h3><div id="visionResult" class="small">Select a screenshot and configure a secure backend to enable image interpretation. The AI will receive visible chart context plus available market/news observations.</div></div>
+ <div class="grid" style="margin-top:10px">
+  <article class="card"><h3>MARKET DIRECTION</h3><div class="big" id="aiDirection">WAIT</div><div class="small" id="aiDirectionReason">Awaiting validated data.</div></article>
+  <article class="card"><h3>DATA QUALITY</h3><div class="big" id="aiDataQuality">UNVERIFIED</div><div class="small" id="aiDataSources">No analysis run yet.</div></article>
+ </div>
+ <div class="card" style="margin-top:10px"><h3>EXECUTIVE BRIEFING</h3><div id="aiBriefing" class="small">Tap ANALYZE GOLD to build a current evidence snapshot.</div></div>
+ <div class="card" style="margin-top:10px"><h3>STRUCTURE & SUPPLY / DEMAND</h3><div id="aiStructure" class="small">Structure unavailable until candle data is verified.</div><div class="line"></div><div id="aiSupplyDemand" class="small">Supply/demand zones unavailable.</div><div class="line"></div><div id="aiLiquidity" class="small">Liquidity sweep analysis unavailable.</div></div>
+ <div class="card" style="margin-top:10px"><h3>VOLUME PROFILE</h3><div id="aiVolumeProfile" class="small">Unavailable. The connected feed must provide suitable volume-at-price data; spot gold has no single consolidated global volume feed.</div></div>
+ <div class="card" style="margin-top:10px"><h3>REVERSAL CAUTION</h3><div id="aiReversal" class="notice warn">Not evaluated yet. A caution is not a reversal prediction.</div></div>
+ <div class="card" style="margin-top:10px"><h3>CATALYSTS & SOURCE EVIDENCE</h3><div id="aiCatalysts" class="small">No fresh briefing yet.</div><div class="line"></div><div id="aiCitations" class="small">Source URLs are shown only when supplied by the connected provider.</div></div>
+ <div class="card" style="margin-top:10px"><h3>SCENARIOS & RISK GATE</h3><div id="aiBullCase" class="small">Bullish scenario: not evaluated.</div><div class="line"></div><div id="aiBearCase" class="small">Bearish scenario: not evaluated.</div><div class="line"></div><div class="big" id="aiRiskGate">NO-GO</div><div id="aiRiskReason" class="small">No verified setup or complete pre-trade risk validation.</div></div>
+ <div class="notice">This screen combines a transparent local evidence summary with public headline search results when reachable. AI screenshot interpretation and synthesized analysis require the configured secured backend and working provider credentials. Public search can be incomplete, delayed, duplicated or blocked by browser CORS.</div>
+</section>
+
+
+<section id="nfp" class="screen">
+ <h2 class="section-title">Automatic NFP intelligence map</h2>
+ <div class="notice">Automatic source collection only — no manual event or number entry. Calendar and release values are supplied by Finance Calendar and linked sources. Forecasts are not guaranteed to be available for every release. This is a conditional evidence summary, not a prediction guarantee.</div>
+ <div class="actions"><button class="primary" id="nfpRefresh">REFRESH NFP MAP</button><span class="tiny" id="nfpUpdated">Not refreshed yet</span></div>
+ <div class="grid" style="margin-top:10px">
+  <article class="card"><h3>NEXT OFFICIAL NFP</h3><div class="big gold" id="nfpDate">Loading…</div><div class="small" id="nfpDateMeta">Checking release schedule</div></article>
+  <article class="card"><h3>PRE-NFP EVIDENCE OUTLOOK</h3><div class="big" id="nfpBias">WAIT</div><div class="small" id="nfpConfidence">No evidence assessment yet</div></article>
+ </div>
+ <div class="card" style="margin-top:10px"><h3>EXECUTIVE NFP BRIEFING</h3><div id="nfpBrief" class="small">Fetching automatic releases. Missing values remain unavailable.</div><div class="line"></div><h3>USD / GOLD IMPLICATION</h3><div id="nfpGoldImpact" class="small">Awaiting source data.</div><div class="line"></div><h3>DATA QUALITY & LIMITATIONS</h3><div id="nfpQuality" class="small">Not checked yet.</div></div>
+ <div class="card" style="margin-top:10px"><h3>AUTOMATIC RELEASE TIMELINE</h3><div class="small" style="margin-bottom:8px">From the latest previous NFP release through the next scheduled NFP date. Published values only; forecast and previous fields are not filled with estimates invented by this app.</div><div id="nfpTimeline" class="small">Loading timeline…</div></div>
+ <div class="card" style="margin-top:10px"><h3>DATA SOURCES</h3><div id="nfpSources" class="small">Finance Calendar API · BLS published series where available · U.S. Department of Labor claims source. Source links will be displayed with the timeline.</div><p class="tiny">Calendar data attribution: <a href="https://www.financecalendar.com/api/" target="_blank" rel="noopener">Finance Calendar API</a>. Verify critical release values against the official source links shown for each event.</p></div>
+</section>
+
+<section id="risk" class="screen">
+ <h2 class="section-title">Risk desk</h2>
+ <div class="notice warn">Risk rules are advisory in this browser-only page. They cannot block orders in MT5 unless you later build and verify an execution-side integration.</div>
+ <div class="card">
+  <div class="formgrid">
+   <div><label for="accountBalance">Account balance (currency units)</label><input id="accountBalance" type="number" min="0" step="0.01" placeholder="e.g. 10000"></div>
+   <div><label for="riskPercent">Risk per trade (%)</label><input id="riskPercent" type="number" min="0" max="100" step="0.1" value="1"></div>
+   <div><label for="dailyLossPercent">Daily loss limit (%)</label><input id="dailyLossPercent" type="number" min="0" max="100" step="0.1" value="2"></div>
+   <div><label for="dailyLossUsed">Today's loss so far</label><input id="dailyLossUsed" type="number" min="0" step="0.01" value="0"></div>
+  </div>
+  <div class="actions"><button class="primary" id="calcRisk">Calculate limits</button></div>
+  <div id="riskOutput" class="briefing">Enter your account details to calculate the configured risk and daily-loss limits.</div>
+ </div>
+</section>
+</main>
+<footer>INKABI.21 · Data can be delayed, incomplete or unavailable. Always verify prices and scheduled releases at your broker and official sources. Never trade from a single indicator.</footer>
+
+<script>
+(() => {
+"use strict";
+const API = "https://biquote.io";
+const $ = id => document.getElementById(id);
+const state = {quotes:{}, quoteError:"", quoteAt:null, calendar:[], news:[], yields:{nominal:null,real:null}, yieldDates:{nominal:null,real:null}, yieldError:"", autoZones:[], candlesByTf:{}, chartTf:"1H", ohlcStatus:"Not scanned", ohlcError:"", ohlcAt:null, ohlcLoading:false};
+const fmt = (n,d=3) => Number.isFinite(Number(n)) ? Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}) : "—";
+const signedPct = n => Number.isFinite(Number(n)) ? `${Number(n)>0?"+":""}${Number(n).toFixed(3)}%` : "Daily change unavailable";
+const stamp = d => { if(!d) return "Not available"; const date = new Date(d); return Number.isNaN(date.getTime()) ? String(d) : date.toLocaleString(); };
+function safeText(v){return v===null||v===undefined||v==="" ? "—" : String(v)}
+function setText(id,v){const el=$(id);if(el)el.textContent=v}
+function setHTML(id,v){const el=$(id);if(el)el.innerHTML=v}
+function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function quoteIsFresh(q){
+ if(!q || q.stale===true || q.marketState==="closed") return false;
+ const age=Number(q.quoteAgeSeconds);
+ if(Number.isFinite(age) && age>300) return false;
+ const t=Date.parse(q.timestamp||q.lastQuoteAt||"");
+ if(!Number.isNaN(t) && (Date.now()-t)>300000) return false;
+ return Number.isFinite(Number(q.mid)) && Number(q.mid)>0;
+}
+async function fetchQuotes(){
+ const url=API+"/api/latest?symbols=XAUUSD&symbols=DXY&symbols=US30&symbols=EURUSD&symbols=GBPUSD&symbols=USDJPY&symbols=XAGUSD&symbols=USOIL";
+ try{
+  const r=await fetch(url,{cache:"no-store"});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  const data=await r.json();
+  if(!data || typeof data!=="object") throw new Error("Unexpected quote response");
+  state.quotes=data; state.quoteAt=new Date(); state.quoteError="";
+  renderQuotes(); renderBriefing(); renderZones();
+ }catch(e){
+  state.quoteError=e.message||"Feed request failed";
+  renderQuotes(); renderBriefing(); renderZones();
+ }
+ setText("lastCheck",new Date().toLocaleTimeString());
+ setText("overallStatus",state.quoteError?"FEED ISSUE":(quoteIsFresh(state.quotes.XAUUSD)&&quoteIsFresh(state.quotes.DXY)?"FEEDS OK":"DATA CHECK"));
+}
+function renderOne(symbol,homePrice,homeChange,macroPrice,macroMeta){
+ const q=state.quotes[symbol];
+ const fresh=quoteIsFresh(q);
+ const price= q && Number.isFinite(Number(q.mid)) ? fmt(q.mid,symbol==="US30"?2:(symbol==="DXY"?4:3)) : "—";
+ if(homePrice)setText(homePrice,price);
+ if(homeChange)setText(homeChange,q?signedPct(q.dayDiffPercent):"No quote returned");
+ if(macroPrice)setText(macroPrice,price);
+ if(macroMeta)setText(macroMeta,q?`${fresh?"Fresh quote":"NOT LIVE"} · ${stamp(q.timestamp)} · ${safeText(q.source)}`:"Quote unavailable");
+ if(homePrice){const el=$(homePrice); if(el)el.className="big "+(symbol==="XAUUSD"?"gold":"")+(q&&Number(q.dayDiffPercent)>0?" positive":q&&Number(q.dayDiffPercent)<0?" negative":"");}
+}
+function renderQuotes(){
+ renderOne("XAUUSD","homeGold","homeGoldChange","macroGold","macroGoldMeta");
+ renderOne("DXY","homeDxy","homeDxyChange","macroDxy","macroDxyMeta");
+ renderOne("US30","homeUs30","homeUs30Change",null,null);
+ for(const symbol of ["EURUSD","GBPUSD","USDJPY","XAGUSD","USOIL"]){
+  const q=state.quotes[symbol];setText("home"+symbol,q&&Number(q.mid)>0?fmt(q.mid,symbol==="USDJPY"?3:(symbol==="USOIL"?2:4)):"—");
+  setText("meta"+symbol,q&&Number(q.mid)>0?`${quoteIsFresh(q)?"Fresh":"STALE / CHECK"} · ${signedPct(q.dayDiffPercent)} · ${stamp(q.timestamp)}`:"Unavailable from current quote provider");
+ }
+
+ setText("homeGoldStamp",state.quotes.XAUUSD?`Quote time: ${stamp(state.quotes.XAUUSD.timestamp)}`:"No successful update yet");
+ setText("homeDxyChange",state.quotes.DXY?signedPct(state.quotes.DXY.dayDiffPercent):"Waiting for quote…");
+ setText("homeUs30Change",state.quotes.US30?`${signedPct(state.quotes.US30.dayDiffPercent)} · context only`:"Not a Treasury-yield substitute");
+ const freshGold=quoteIsFresh(state.quotes.XAUUSD), freshDxy=quoteIsFresh(state.quotes.DXY);
+ const alert=$("homeAlert");
+ if(state.quoteError){alert.className="notice error";alert.textContent="Market feed request failed ("+state.quoteError+"). The app is not treating cached values as live. Refresh or check your connection."}
+ else if(!freshGold||!freshDxy){alert.className="notice warn";alert.textContent="One or more required market quotes are missing, stale or closed. No new macro signal should be used."}
+ else{alert.className="notice good";alert.textContent="Gold and DXY quote checks passed at the last fetch. This does not guarantee the provider will remain available."}
+ setText("homeQuality",freshGold&&freshDxy?"QUOTE CHECK OK":"NO SIGNAL");
+ $("homeQuality").className="pill "+(freshGold&&freshDxy?"good":"bad");
+}
+async function fetchTreasurySeries(curveType, fieldName){
+ // Official U.S. Treasury daily XML feed; no FRED API key required.
+ // These are daily observations, not live intraday yields.
+ const year = new Date().getFullYear();
+ const dataset = curveType === "real"
+   ? "daily_treasury_real_yield_curve"
+   : "daily_treasury_yield_curve";
+ const url = "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data="
+   + encodeURIComponent(dataset) + "&field_tdr_date_value=" + year;
+ const r = await fetch(url, {cache:"no-store"});
+ if (!r.ok) throw new Error(curveType + " Treasury feed HTTP " + r.status);
+ const xmlText = await r.text();
+ const xml = new DOMParser().parseFromString(xmlText, "application/xml");
+ if (xml.querySelector("parsererror")) throw new Error(curveType + " Treasury XML could not be parsed");
+ const entries = Array.from(xml.getElementsByTagNameNS("*", "entry"));
+ const observations = [];
+ for (const entry of entries) {
+   const fields = {};
+   for (const node of Array.from(entry.getElementsByTagName("*"))) {
+     const key = node.localName;
+     if (key && node.textContent && node.textContent.trim()) fields[key] = node.textContent.trim();
+   }
+   const dateRaw = fields.NEW_DATE || fields.NEW_DATE_VALUE || fields.RECORD_DATE || "";
+   const rawValue = fields[fieldName];
+   if (!dateRaw || rawValue === undefined || rawValue === "" || rawValue === ".") continue;
+   const value = Number(rawValue);
+   if (!Number.isFinite(value)) continue;
+   observations.push({value, date: dateRaw.slice(0,10)});
+ }
+ observations.sort((a,b)=>b.date.localeCompare(a.date));
+ if (!observations.length) throw new Error(curveType + " Treasury feed has no numeric " + fieldName + " observation");
+ return observations[0];
+}
+async function fetchYields(){
+ setText("yieldWarning","Fetching official daily US Treasury yield series via official U.S. Treasury XML feeds. If browser access is blocked, values remain unavailable.");
+ try{
+  const results=await Promise.allSettled([fetchTreasurySeries("nominal","BC_10YEAR"),fetchTreasurySeries("real","TC_10YEAR")]);
+  if(results[0].status==="fulfilled"){state.yields.nominal=results[0].value.value;state.yieldDates.nominal=results[0].value.date;}else{state.yields.nominal=null;state.yieldDates.nominal=null;}
+  if(results[1].status==="fulfilled"){state.yields.real=results[1].value.value;state.yieldDates.real=results[1].value.date;}else{state.yields.real=null;state.yieldDates.real=null;}
+  const errs=results.filter(x=>x.status==="rejected").map(x=>x.reason?.message||"Request failed");
+  state.yieldError=errs.join("; ");
+ }catch(e){state.yieldError=e.message||"Treasury data unavailable";state.yields={nominal:null,real:null};}
+ setText("nominalYield",state.yields.nominal===null?"Unavailable":state.yields.nominal.toFixed(2)+"%");
+ setText("realYield",state.yields.real===null?"Unavailable":state.yields.real.toFixed(2)+"%");
+ setText("nominalMeta",state.yieldDates.nominal?"Observation date: "+state.yieldDates.nominal+" · Daily, not live":"Official U.S. Treasury daily series");
+ setText("realMeta",state.yieldDates.real?"Observation date: "+state.yieldDates.real+" · Daily, not live":"Official U.S. Treasury real-yield daily series");
+ const yw=$("yieldWarning");
+ if(state.yields.nominal!==null&&state.yields.real!==null){yw.className="notice good";yw.textContent="Both official daily series loaded. These observations are not intraday streaming data; check their dates before using them."}
+ else{yw.className="notice warn";yw.textContent="One or both yield series could not be loaded in this browser. Values are deliberately shown as unavailable. "+(state.yieldError||"Check connection or CORS availability.")+" Open the official U.S. Treasury yield-curve data pages directly if needed."}
+ renderBriefing(); renderHealth();
+}
+function timeframeRead(tf){
+ const raw=state.candlesByTf[tf]||[];
+ const bars=raw.filter(b=>!b.isOpen&&Number.isFinite(Number(b.close))&&Number.isFinite(Number(b.high))&&Number.isFinite(Number(b.low))).slice().reverse();
+ if(bars.length<12)return {bias:"WAIT",detail:"Insufficient verified closed candles",score:0};
+ const closes=bars.map(b=>Number(b.close));
+ const last=closes[closes.length-1], prior=closes[closes.length-6], older=closes[closes.length-11];
+ const recentHigh=Math.max(...bars.slice(-5).map(b=>Number(b.high)));
+ const priorHigh=Math.max(...bars.slice(-10,-5).map(b=>Number(b.high)));
+ const recentLow=Math.min(...bars.slice(-5).map(b=>Number(b.low)));
+ const priorLow=Math.min(...bars.slice(-10,-5).map(b=>Number(b.low)));
+ let score=0; if(last>prior)score++; else if(last<prior)score--; if(prior>older)score++; else if(prior<older)score--;
+ if(recentHigh>priorHigh&&recentLow>priorLow)score++; else if(recentHigh<priorHigh&&recentLow<priorLow)score--;
+ const bias=score>=2?"BULLISH":score<=-2?"BEARISH":"MIXED";
+ return {bias,score,detail:`${bars.length} closed candles · close ${fmt(last,2)} · ${recentHigh>priorHigh&&recentLow>priorLow?"higher swing range":recentHigh<priorHigh&&recentLow<priorLow?"lower swing range":"no clear swing break"}`};
+}
+function renderMultiTimeframe(){
+ const defs=[["15m","tf15Bias","tf15Detail"],["1H","tf1hBias","tf1hDetail"],["4H","tf4hBias","tf4hDetail"]];
+ const reads=defs.map(([tf,id,detail])=>{const r=timeframeRead(tf);setText(id,r.bias);setText(detail,r.detail);const el=$(id);if(el)el.className="big "+(r.bias==="BULLISH"?"positive":r.bias==="BEARISH"?"negative":"orange");return r;});
+ const allUp=reads.every(r=>r.bias==="BULLISH"),allDown=reads.every(r=>r.bias==="BEARISH");
+ const el=$("tfSummary"); if(!el)return;
+ if(state.ohlcError||reads.some(r=>r.bias==="WAIT")){el.className="notice warn";el.textContent="WAIT / NO-GO: one or more timeframe candle checks are unavailable or incomplete.";}
+ else if(allUp){el.className="notice good";el.textContent="Bullish timeframe alignment detected. Context only: wait for a valid entry trigger, stop-loss and risk check.";}
+ else if(allDown){el.className="notice good";el.textContent="Bearish timeframe alignment detected. Context only: wait for a valid entry trigger, stop-loss and risk check.";}
+ else{el.className="notice warn";el.textContent="Timeframes disagree or are mixed. WAIT for clearer structure; do not force a trade.";}
+}
+function renderBriefing(){
+ const gold=state.quotes.XAUUSD, dxy=state.quotes.DXY;
+ const goldFresh=quoteIsFresh(gold), dxyFresh=quoteIsFresh(dxy);
+ let decision="WAIT", why="Required feeds are not both fresh.";
+ const lines=[];
+ if(goldFresh&&dxyFresh){
+  const gp=Number(gold.dayDiffPercent), dp=Number(dxy.dayDiffPercent);
+  if(Number.isFinite(gp)&&Number.isFinite(dp)){
+   if(gp>0&&dp<0){decision="GOLD BULLISH CONTEXT";why="Gold is up on the reported day while DXY is down: macro alignment, but price-action confirmation is still required."}
+   else if(gp<0&&dp>0){decision="GOLD BEARISH CONTEXT";why="Gold is down on the reported day while DXY is up: macro alignment, but price-action confirmation is still required."}
+   else if(gp<0&&dp<0){decision="MIXED — WAIT";why="Gold and DXY are both down on the reported day. Dollar weakness alone is not lifting gold in these readings."}
+   else{decision="MIXED — WAIT";why="Gold and DXY are both up on the reported day. Do not infer a simple inverse relationship from this snapshot."}
+  }else{decision="WAIT";why="Daily-change values are missing or invalid."}
+ }
+ const nominal=state.yields.nominal, real=state.yields.real;
+ lines.push(`<p><strong>Market snapshot:</strong> ${goldFresh?"XAUUSD quote fresh":"XAUUSD missing/stale"}; ${dxyFresh?"DXY quote fresh":"DXY missing/stale"}. ${escapeHTML(why)}</p>`);
+ if(nominal!==null)lines.push(`<p><strong>US10Y nominal:</strong> ${nominal.toFixed(2)}% (${escapeHTML(state.yieldDates.nominal||"date unavailable")}). A rising yield can weigh on gold, all else equal, but today's level alone does not show whether it is rising.</p>`);
+ else lines.push(`<p><strong>US10Y nominal:</strong> unavailable. No yield-based directional claim is made.</p>`);
+ if(real!==null)lines.push(`<p><strong>US10Y real:</strong> ${real.toFixed(2)}% (${escapeHTML(state.yieldDates.real||"date unavailable")}). Rising real yields often pressure non-yielding gold; compare observations across dates before judging direction.</p>`);
+ else lines.push(`<p><strong>US10Y real:</strong> unavailable. No real-yield directional claim is made.</p>`);
+ lines.push(`<p><strong>Risk rule:</strong> ${decision==="WAIT"||decision==="MIXED — WAIT"?"WAIT / NO TRADE from macro snapshot alone.":"Context only — wait for structure, trigger and defined risk before considering a trade."} No order is placed by this page.</p>`);
+ setText("homeDecision",decision);
+ setText("homeDecisionWhy",why);
+ setText("homeBrief",why+" "+(goldFresh&&dxyFresh?"Required live quote checks passed.":"Required quotes are not fresh."));
+ setHTML("macroReasoning",lines.join(""));
+ renderMultiTimeframe();
+}
+function renderHealth(){
+ const items=[
+ ["XAUUSD",quoteIsFresh(state.quotes.XAUUSD)?"Fresh quote":"Missing / stale"],
+ ["DXY",quoteIsFresh(state.quotes.DXY)?"Fresh quote":"Missing / stale"],
+ ["US30",quoteIsFresh(state.quotes.US30)?"Fresh quote":"Missing / stale; context optional"],
+ ["US10Y",state.yields.nominal===null?"Unavailable":`Loaded · ${state.yieldDates.nominal||"date unknown"}`],
+ ["US10Y real",state.yields.real===null?"Unavailable":`Loaded · ${state.yieldDates.real||"date unknown"}`],
+ ["Supply/demand candles",state.ohlcError?"Unavailable":(state.ohlcAt?"Scanned · "+state.ohlcAt.toLocaleTimeString():"Not scanned")],
+ ["Connection",navigator.onLine?"Browser reports online":"Browser reports offline"]
+ ];
+ setHTML("healthList",items.map(([a,b])=>`<div class="row"><span>${escapeHTML(a)}</span><span class="pill ${/Fresh|Loaded|online/.test(b)?"good":"warn"}">${escapeHTML(b)}</span></div>`).join(""));
+}
+function conditionalEventRead(ev){
+ const imp=String(ev.impact||ev.importance||"").toLowerCase();
+ const name=String(ev.title||ev.event||ev.name||"").toLowerCase();
+ const actual=ev.actual, forecast=ev.forecast, previous=ev.previous;
+ if(actual===null||actual===undefined||actual==="")return "Pending / actual not published";
+ const a=Number(String(actual).replace(/[^0-9.+-]/g,""));
+ const f=Number(String(forecast).replace(/[^0-9.+-]/g,""));
+ if(!Number.isFinite(a)||!Number.isFinite(f))return "Event-specific interpretation needed";
+ let favorable;
+ if(/unemployment|jobless claims|initial claims|continuing claims/.test(name)) favorable=a<f;
+ else if(/cpi|inflation|ppi|pce price|average hourly earnings|wage/.test(name)) favorable=a<f;
+ else if(/nfp|nonfarm|payroll|employment change/.test(name)) favorable=a>f;
+ else if(/retail sales|gdp|ism|pmi/.test(name)) favorable=a>f;
+ else return "Compare release-specific details; no generic rule applied";
+ return favorable?"Potentially USD-supportive / gold-negative, all else equal":"Potentially USD-negative / gold-supportive, all else equal";
+}
+function eventDate(ev){return ev.date||ev.datetime||ev.time||ev.timestamp||""}
+async function fetchCalendar(){
+ setText("calendarStatus","Fetching upcoming events…");
+ try{
+  const r=await fetch(API+"/api/calendar/upcoming?countries=US&limit=30",{cache:"no-store"});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  const data=await r.json();
+  const list=Array.isArray(data)?data:(data.events||data.data||data.results||[]);
+  if(!Array.isArray(list))throw new Error("Unexpected calendar format");
+  state.calendar=list;
+  setText("calendarStamp",new Date().toLocaleString());
+  setText("calendarStatus",list.length?`${list.length} events returned. Values below are exactly as supplied by the provider.`:"Provider returned no upcoming events.");
+  setHTML("calendarRows",list.length?list.map(ev=>{
+   const title=ev.title||ev.event||ev.name||"Unnamed event";
+   const actual=ev.actual, forecast=ev.forecast, previous=ev.previous;
+   return `<tr><td><strong>${escapeHTML(title)}</strong><br><span class="tiny">${escapeHTML(eventDate(ev))}</span></td><td>${escapeHTML(ev.impact||ev.importance||"—")}</td><td>${escapeHTML(safeText(actual))}</td><td>${escapeHTML(safeText(forecast))}</td><td>${escapeHTML(safeText(previous))}</td><td>${escapeHTML(conditionalEventRead(ev))}</td></tr>`;
+  }).join(""):'<tr><td colspan="6">No events returned.</td></tr>');
+ }catch(e){
+  setText("calendarStatus","Calendar unavailable: "+(e.message||"request failed")+". No event values have been invented.");
+  setHTML("calendarRows",'<tr><td colspan="6">Calendar feed unavailable. Retry later or verify releases with the official source.</td></tr>');
+ }
+}
+async function fetchNews(){
+ setText("newsStatus","Fetching market headlines…");
+ try{
+  const r=await fetch(API+"/api/news/market?symbol=XAUUSD&language=en&country=US&maxResults=10",{cache:"no-store"});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  const data=await r.json();
+  const list=Array.isArray(data)?data:(data.articles||data.news||data.data||[]);
+  if(!Array.isArray(list))throw new Error("Unexpected news format");
+  state.news=list;setText("newsStamp","Last refresh: "+new Date().toLocaleString());
+  setText("newsStatus",list.length?`${list.length} headlines returned. Headlines may not be complete or independently verified.`:"No headlines returned.");
+  setHTML("newsList",list.length?list.map(n=>{
+   const title=n.title||n.headline||"Untitled headline";
+   const url=n.url||n.link||n.sourceUrl||"";
+   const source=n.source||n.publisher||"Source not provided";
+   const date=n.publishedAt||n.published_at||n.date||n.timestamp||"Time not provided";
+   const desc=n.description||n.summary||"No summary supplied.";
+   return `<div class="list-item"><h4>${url?`<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" style="color:var(--text)">${escapeHTML(title)}</a>`:escapeHTML(title)}</h4><p>${escapeHTML(source)} · ${escapeHTML(date)}</p><p style="margin-top:5px">${escapeHTML(desc)}</p></div>`;
+  }).join(""):'<div class="small">No headlines returned.</div>');
+ }catch(e){setText("newsStatus","News unavailable: "+(e.message||"request failed"));setHTML("newsList",'<div class="small">No new news-based bias will be generated. Retry later.</div>');}
+}
+function renderZones(){
+ drawGoldChart();
+ const gold=state.quotes.XAUUSD;
+ const fresh=quoteIsFresh(gold);
+ const p=fresh?Number(gold.mid):null;
+ setText("zoneLivePrice",p===null?"Unavailable":fmt(p,3));
+ setText("zoneLiveMeta",gold?`${fresh?"Fresh quote":"NOT LIVE"} · ${stamp(gold.timestamp)}`:"No quote returned");
+ setText("zoneEngineStatus",state.ohlcError?"FEED ISSUE":(state.autoZones.length?"ACTIVE":"LOADING"));
+ setText("zoneUpdated",state.ohlcAt?"Last candle scan: "+state.ohlcAt.toLocaleTimeString():(state.ohlcError?"Scan failed":"No candle scan completed"));
+ // Keep only the two most relevant recent zones of each type. Prefer recent pivots,
+ // then levels nearest to the verified current gold price; avoid flooding the map.
+ const selectRecentZones=(type)=>state.autoZones.filter(z=>z.type===type)
+  .sort((a,b)=>{
+   const ar=Number(a.index)||0, br=Number(b.index)||0;
+   if(Math.abs(br-ar)>12)return br-ar;
+   if(p!==null){const da=Math.abs(((a.low+a.high)/2)-p),db=Math.abs(((b.low+b.high)/2)-p);if(da!==db)return da-db;}
+   return b.score-a.score;
+  }).slice(0,2);
+ const demand=selectRecentZones("demand");
+ const supply=selectRecentZones("supply");
+ const renderList=(arr)=>arr.length?arr.map(z=>{
+  const relation=p===null?"Price unavailable":(p>=z.low&&p<=z.high?"PRICE INSIDE ZONE":(z.type==="demand"?(p>z.high?"Below price":"Above price"):(p<z.low?"Above price":"Below price")));
+  const cls=p!==null&&p>=z.low&&p<=z.high?"warn":"";
+  return `<div class="list-item"><div class="row"><strong>${escapeHTML(z.tf)} · ${fmt(z.low,2)}–${fmt(z.high,2)}</strong><span class="pill ${cls}">${escapeHTML(relation)}</span></div><div class="small">Touches: ${z.touches} · Strength: ${z.score}/10 · Last pivot: ${escapeHTML(stamp(z.time))}</div><div class="bar"><span style="width:${Math.min(100,z.score*10)}%"></span></div></div>`;
+ }).join(""):'<div class="small">No valid zones calculated yet. Check feed status or wait for candle history.</div>';
+ setHTML("autoDemand",renderList(demand));
+ setHTML("autoSupply",renderList(supply));
+ const alert=$("zoneDisclaimer");
+ if(state.ohlcError){alert.className="notice error";alert.textContent="Automatic zone engine cannot verify candle data: "+state.ohlcError+". Do not use old zones as current."}
+ else{alert.className="notice warn";alert.textContent="Zones are calculated from recent OHLC swings and can change as new candles arrive. They are not guaranteed institutional order blocks and are not entry signals."}
+ if(p===null){setText("zoneSignal","Gold quote is stale or unavailable. No live zone assessment.");return}
+ if(state.ohlcError||!state.autoZones.length){setText("zoneSignal","Candle scan is unavailable or incomplete. No automatic zone signal.");return}
+ const inside=state.autoZones.filter(z=>p>=z.low&&p<=z.high);
+ if(inside.length){setText("zoneSignal",`Gold is inside ${inside.map(z=>z.tf+" "+z.type+" "+fmt(z.low,2)+"–"+fmt(z.high,2)).join("; ")}. Zone contact alone is not confirmation. Wait for price-action response.`);return}
+ const nearest=state.autoZones.map(z=>({...z,distance:p<z.low?z.low-p:p>z.high?p-z.high:0})).sort((a,b)=>a.distance-b.distance)[0];
+ setText("zoneSignal",`Gold ${fmt(p,3)} is outside detected zones. Nearest: ${nearest.tf} ${nearest.type} ${fmt(nearest.low,2)}–${fmt(nearest.high,2)} (${fmt(nearest.distance,2)} away). Location only—no entry signal.`);
+}
+
+function drawGoldChart(){
+ const canvas=$("goldChart"); if(!canvas)return;
+ const ctx=canvas.getContext("2d"), dpr=Math.max(1,window.devicePixelRatio||1), w=canvas.clientWidth||320,h=320;
+ canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ ctx.fillStyle="#0b1018";ctx.fillRect(0,0,w,h);
+ const bars=(state.candlesByTf[state.chartTf]||[]).slice(-55); const gold=state.quotes.XAUUSD; const fresh=quoteIsFresh(gold);
+ const tfZones=state.autoZones.filter(z=>z.tf===state.chartTf);
+ const zones=["demand","supply"].flatMap(type=>tfZones.filter(z=>z.type===type)
+  .sort((a,b)=>{
+   const ar=Number(a.index)||0,br=Number(b.index)||0;
+   if(Math.abs(br-ar)>12)return br-ar;
+   if(fresh){const p=Number(gold.mid),da=Math.abs(((a.low+a.high)/2)-p),db=Math.abs(((b.low+b.high)/2)-p);if(da!==db)return da-db;}
+   return b.score-a.score;
+  }).slice(0,2));
+ if(!bars.length||state.ohlcError){ctx.fillStyle="#9aa8bb";ctx.textAlign="center";ctx.font="12px system-ui";ctx.fillText(state.ohlcError?"CANDLE FEED UNAVAILABLE":"Waiting for real gold candles…",w/2,h/2-5);ctx.fillText("No illustrative or invented prices are shown",w/2,h/2+16);setText("chartFeedStatus","WAIT / NO-GO");setText("chartCaption",state.ohlcError?"Gold candle data could not be verified: "+state.ohlcError:"Waiting for the XAU/USD OHLC feed.");return;}
+ const nums=bars.flatMap(b=>[Number(b.high),Number(b.low)]).filter(Number.isFinite);if(fresh)nums.push(Number(gold.mid));zones.forEach(z=>nums.push(z.low,z.high));
+ if(!nums.length)return;let lo=Math.min(...nums),hi=Math.max(...nums);const pad=Math.max((hi-lo)*.08,.5);lo-=pad;hi+=pad;
+ const left=8,right=62,top=14,bottom=25,pw=w-left-right,ph=h-top-bottom;const y=v=>top+(hi-v)/(hi-lo)*ph;
+ ctx.font="10px system-ui";ctx.textAlign="left";
+ for(let i=0;i<5;i++){let yy=top+ph*i/4;ctx.strokeStyle="#263142";ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();let val=hi-(hi-lo)*i/4;ctx.fillStyle="#9aa8bb";ctx.fillText(val.toFixed(2),w-right+5,yy+3)}
+ zones.forEach(z=>{let y1=y(z.high),y2=y(z.low);ctx.fillStyle=z.type==="demand"?"rgba(71,215,160,.13)":"rgba(255,119,119,.13)";ctx.fillRect(left,y1,pw,Math.max(2,y2-y1));ctx.strokeStyle=z.type==="demand"?"rgba(71,215,160,.5)":"rgba(255,119,119,.5)";ctx.setLineDash([4,4]);ctx.strokeRect(left,y1,pw,Math.max(2,y2-y1));ctx.setLineDash([]);});
+ const step=pw/bars.length,cw=Math.max(2,Math.min(8,step*.58));bars.forEach((b,i)=>{let x=left+i*step+step/2,o=Number(b.open),c=Number(b.close),hh=Number(b.high),ll=Number(b.low);if(![o,c,hh,ll].every(Number.isFinite))return;let color=c>=o?"#47d7a0":"#ff7777";ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,y(hh));ctx.lineTo(x,y(ll));ctx.stroke();let yo=y(o),yc=y(c);ctx.fillRect(x-cw/2,Math.min(yo,yc),cw,Math.max(1,Math.abs(yc-yo)));});
+ if(fresh){let yy=y(Number(gold.mid));ctx.strokeStyle="#e8bd5a";ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#e8bd5a";ctx.fillRect(w-right+1,yy-8,right-2,16);ctx.fillStyle="#17120a";ctx.font="bold 10px system-ui";ctx.fillText(Number(gold.mid).toFixed(2),w-right+4,yy+3);}
+ setText("chartFeedStatus",fresh?"LIVE · XAU/USD":"QUOTE NOT FRESH");setText("chartCaption",`${state.chartTf} · ${bars.filter(b=>!b.isOpen).length} closed + ${bars.some(b=>b.isOpen)?"forming":"no forming"} candle · ${zones.length} zones in this timeframe · ${fresh?"Live quote verified":"Live quote unavailable; no live-price line"}`);
+}
+// Timeframe buttons are inside the zones screen, not the main navigation.
+// Delegate from document so taps on 15m / 1H / 4H always update the chart.
+ document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-chart-tf]");
+  if(!b)return;
+  const tf=b.dataset.chartTf;
+  if(!["15m","1H","4H"].includes(tf))return;
+  state.chartTf=tf;
+  document.querySelectorAll("[data-chart-tf]").forEach(x=>x.classList.toggle("active",x.dataset.chartTf===tf));
+  drawGoldChart();
+  const bars=state.candlesByTf[tf]||[];
+  if(!bars.length){setText("chartCaption",`${tf} selected · waiting for verified XAU/USD candles.`);}
+ });
+window.addEventListener("resize",()=>drawGoldChart());
+
+function median(values){
+ if(!values.length)return 0;
+ const a=[...values].sort((x,y)=>x-y),m=Math.floor(a.length/2);
+ return a.length%2?a[m]:(a[m-1]+a[m])/2;
+}
+function findSwingZones(bars,tf){
+ const closed=bars.filter(b=>!b.isOpen&&Number.isFinite(Number(b.high))&&Number.isFinite(Number(b.low))&&Number.isFinite(Number(b.close))).slice().reverse();
+ if(closed.length<15)return [];
+ const ranges=closed.map(b=>Number(b.high)-Number(b.low)).filter(n=>n>0);
+ const tolerance=Math.max(1.2,median(ranges)*0.22);
+ const pivots=[];
+ for(let i=2;i<closed.length-2;i++){
+  const b=closed[i], hi=Number(b.high),lo=Number(b.low);
+  const prev=closed.slice(i-2,i),next=closed.slice(i+1,i+3);
+  if(prev.every(x=>hi>=Number(x.high))&&next.every(x=>hi>=Number(x.high))&&(prev.some(x=>hi>Number(x.high))||next.some(x=>hi>Number(x.high)))){
+   pivots.push({type:"supply",price:hi,time:b.openTime,index:i});
+  }
+  if(prev.every(x=>lo<=Number(x.low))&&next.every(x=>lo<=Number(x.low))&&(prev.some(x=>lo<Number(x.low))||next.some(x=>lo<Number(x.low)))){
+   pivots.push({type:"demand",price:lo,time:b.openTime,index:i});
+  }
+ }
+ const zones=[];
+ for(const type of ["demand","supply"]){
+  const list=pivots.filter(x=>x.type===type).sort((a,b)=>a.price-b.price);
+  const clusters=[];
+  for(const pivot of list){
+   let cluster=clusters.find(c=>Math.abs((c.reduce((s,x)=>s+x.price,0)/c.length)-pivot.price)<=tolerance);
+   if(!cluster){cluster=[];clusters.push(cluster)}
+   cluster.push(pivot);
+  }
+  for(const cluster of clusters){
+   if(cluster.length<1)continue;
+   const center=cluster.reduce((s,x)=>s+x.price,0)/cluster.length;
+   const newest=cluster.reduce((a,b)=>a.index>b.index?a:b);
+   const recency= newest.index/Math.max(1,closed.length-1);
+   const score=Math.min(10,Math.round((Math.min(cluster.length,5)*1.35)+(recency*3)+1));
+   zones.push({type,tf,low:center-tolerance/2,high:center+tolerance/2,touches:cluster.length,score,time:newest.time,index:newest.index});
+  }
+ }
+ return zones;
+}
+async function fetchAutoZones(){
+ if(state.ohlcLoading)return;
+ state.ohlcLoading=true;
+ try{
+  const specs=[["15m", "15m",160],["1H","1h",160],["4H","4h",160]];
+  const results=await Promise.all(specs.map(async ([tf,interval,limit])=>{
+   const url=API+"/api/XAUUSD/ohlc?interval="+interval+"&limit="+limit;
+   const r=await fetch(url,{cache:"no-store"});
+   if(!r.ok)throw new Error(tf+" candles HTTP "+r.status);
+   const data=await r.json();
+   if(!data||!Array.isArray(data.bars))throw new Error(tf+" candle response invalid");
+   const bars=data.bars;
+   if(!bars.some(b=>!b.isOpen))throw new Error(tf+" has no closed candles");
+   return {tf,bars,zones:findSwingZones(bars,tf)};
+  }));
+  // Keep the provider's currently forming candle for chart display. Zone detection
+  // still uses closed candles only inside findSwingZones().
+  state.candlesByTf=Object.fromEntries(results.map(r=>[r.tf,r.bars]));
+  const gold=state.quotes.XAUUSD;
+  const price=quoteIsFresh(gold)?Number(gold.mid):null;
+  const all=results.flatMap(r=>r.zones).filter(z=>Number.isFinite(z.low)&&Number.isFinite(z.high));
+  // When a fresh quote exists, hide distant zones; without one, keep the actual candle history
+  // but do not claim a live directional assessment.
+  const near=price===null?all:all.filter(z=>Math.abs(((z.low+z.high)/2)-price)<=Math.max(180,price*0.045));
+  state.autoZones=near.sort((a,b)=>b.score-a.score);
+  state.ohlcAt=new Date();state.ohlcError="";
+  if(!state.candlesByTf[state.chartTf]?.length)state.ohlcError="No candles returned for selected timeframe";
+ }catch(e){state.ohlcError=e.message||"OHLC request failed";state.autoZones=[];state.candlesByTf={};}
+ finally { state.ohlcLoading=false; }
+ renderZones();
+ renderHealth();
+}
+// Public GDELT article search: live headlines only, not AI synthesis.
+let aiGlobalArticles = [];
+let aiGlobalResearchStatus = "Not checked";
+async function fetchGlobalGoldResearch(){
+  const endpoint = "https://api.gdeltproject.org/api/v2/doc/doc";
+  const params = new URLSearchParams({
+    query: '(gold OR XAUUSD OR "Federal Reserve" OR "US dollar" OR "Treasury yields" OR inflation OR tariffs OR Iran)',
+    mode: "ArtList", format: "json", maxrecords: "12", timespan: "24h", sort: "HybridRel"
+  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 9000);
+  try {
+    const response = await fetch(endpoint + "?" + params.toString(), {cache:"no-store",signal:controller.signal});
+    if (!response.ok) throw new Error("GDELT HTTP " + response.status);
+    const payload = await response.json();
+    const articles = Array.isArray(payload.articles) ? payload.articles : [];
+    aiGlobalArticles = articles.filter(a => a && typeof a.title === "string" &&
+      typeof a.url === "string" && /^https?:\/\//i.test(a.url)).slice(0,12).map(a=>({
+        title:a.title,url:a.url,domain:a.domain||"Publisher not supplied",
+        date:a.seendate||a.date||"Publication time not supplied"
+      }));
+    aiGlobalResearchStatus = aiGlobalArticles.length
+      ? "GDELT returned " + aiGlobalArticles.length + " article results in the last 24 hours."
+      : "GDELT returned no usable article results.";
+    return {ok:aiGlobalArticles.length>0,message:aiGlobalResearchStatus};
+  } catch(error) {
+    aiGlobalArticles=[];
+    aiGlobalResearchStatus="Global research unavailable: "+
+      (error && error.name==="AbortError"?"request timed out":(error.message||"request failed"))+
+      ". Browser network/CORS access may block the public endpoint.";
+    return {ok:false,message:aiGlobalResearchStatus};
+  } finally { clearTimeout(timer); }
+}
+
+// AI Intelligence screen: transparent local evidence summary; no invented facts.
+let aiScreenshotUrl = "";
+const aiFile = $("aiScreenshot"), aiPreview = $("aiImagePreview");
+if(aiFile && aiPreview){
+ aiFile.addEventListener("change",()=>{
+  const file=aiFile.files&&aiFile.files[0];
+  if(aiScreenshotUrl){URL.revokeObjectURL(aiScreenshotUrl);aiScreenshotUrl="";}
+  aiPreview.removeAttribute("src");aiPreview.style.display="none";
+  if(!file)return;
+  if(!["image/png","image/jpeg","image/webp"].includes(file.type)||file.size>8*1024*1024){
+   setText("aiStatus","Screenshot rejected. Use PNG/JPEG/WebP under 8 MB. It will not be sent to a server.");aiFile.value="";return;
+  }
+  aiScreenshotUrl=URL.createObjectURL(file);aiPreview.src=aiScreenshotUrl;aiPreview.style.display="block";
+  setText("aiStatus",getAiBackendUrl()?"Screenshot preview loaded locally. Tap ANALYZE GOLD to request interpretation from the configured backend.":"Screenshot preview loaded locally. To enable AI interpretation, add and save a deployed HTTPS backend URL above, then test it.");
+ });
+ $("clearAiScreenshot").addEventListener("click",()=>{if(aiScreenshotUrl)URL.revokeObjectURL(aiScreenshotUrl);aiScreenshotUrl="";aiFile.value="";aiPreview.removeAttribute("src");aiPreview.style.display="none";setText("aiStatus","Screenshot cleared. No image was uploaded.");});
+}
+// Secure backend configuration: URL only. Never store provider secrets in this HTML.
+const backendInput=$("aiBackendUrl");
+if(backendInput){backendInput.value=localStorage.getItem("inkabiAiBackendUrl")||"";if($("aiBackendHelp"))setText("aiBackendHelp",backendInput.value?"Status: a backend URL is saved on this device. Tap Test backend to verify it.":"Status: no backend URL saved. Screenshot AI remains unavailable until you deploy a backend and paste its HTTPS URL here.");}
+function getAiBackendUrl(){return String($("aiBackendUrl")?.value||"").trim().replace(/\/$/,"");}
+if($("saveAiBackend"))$("saveAiBackend").addEventListener("click",()=>{
+ const u=getAiBackendUrl();if(u&&!/^https:\/\//i.test(u)){setText("visionResult","Use an HTTPS backend URL. Local HTTP is only appropriate for local development.");return;}
+ localStorage.setItem("inkabiAiBackendUrl",u);setText("visionResult",u?"Backend URL saved on this device. Test it before relying on analysis.":"Backend URL cleared.");if($("aiBackendHelp"))setText("aiBackendHelp",u?"Status: URL saved on this device. Tap Test backend to verify the deployed service.":"Status: no backend URL saved. Screenshot AI remains unavailable.");
+});
+if($("testAiBackend"))$("testAiBackend").addEventListener("click",async()=>{
+ const u=getAiBackendUrl();if(!u){setText("visionResult","Enter and save your deployed backend URL first.");return;}
+ setText("visionResult","Testing backend…");if($("aiBackendHelp"))setText("aiBackendHelp","Status: testing backend health endpoint…");try{const r=await fetch(u+"/api/health",{cache:"no-store"});const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||("HTTP "+r.status));setText("visionResult","Backend reachable. Vision configured: "+(j.visionConfigured?"yes":"no")+". Market provider status is not guaranteed by this health check.");if($("aiBackendHelp"))setText("aiBackendHelp","Status: backend reachable. Vision configured: "+(j.visionConfigured?"yes":"no")+".");}catch(e){setText("visionResult","Backend test failed: "+(e.message||"network error")+". Check deployment, URL and CORS.");if($("aiBackendHelp"))setText("aiBackendHelp","Status: backend test failed. Check the deployed URL, server and CORS settings.");}
+});
+async function runServerVisionAnalysis(){
+ const file=aiFile&&aiFile.files&&aiFile.files[0];const backend=getAiBackendUrl();
+ if(!file){setText("visionResult","No screenshot selected. Select a PNG, JPEG or WebP chart image first.");return false;}
+ if(!backend){setText("visionResult","Screenshot selected but not interpreted: add your deployed secure AI backend URL, save it and test it. No fake analysis is shown.");return false;}
+ if(file.size>8*1024*1024){setText("visionResult","Image exceeds the 8 MB safety limit.");return false;}
+ setText("visionResult","Sending screenshot and current available evidence to the configured vision AI service…");
+ const dataUrl=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||""));reader.onerror=()=>reject(new Error("Could not read image file"));reader.readAsDataURL(file);});
+ const context={
+  product:"INKABI.21 Gold Intelligence",timeframe:$("aiTimeframe")?.value||"1h",timestamp:new Date().toISOString(),
+  quotes:state.quotes,quoteError:state.quoteError,
+  yields:state.yields,yieldDates:state.yieldDates,
+  candles:{selectedTimeframe:$("aiTimeframe")?.value||"1h",bars:latestClosedBars(({"15m":"15m","1h":"1H","4h":"4H","1d":"Daily"})[$("aiTimeframe")?.value||"1h"]||"1H").slice(-40)},
+  supplyDemand:state.autoZones.slice(0,12),calendar:state.calendar.slice(0,20),news:state.news.slice(0,10),
+  localAssessment:{direction:$ ("aiDirection")?.textContent||"WAIT",reason:$ ("aiDirectionReason")?.textContent||"",riskGate:$ ("aiRiskGate")?.textContent||"NO-GO"}
+ };
+ try{
+  const r=await fetch(backend+"/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({imageDataUrl:dataUrl,context})});
+  const j=await r.json();if(!r.ok)throw new Error(j.error||("HTTP "+r.status));
+  if(!j.analysis)throw new Error("Backend returned no analysis");
+  setText("visionResult",j.analysis+"\n\nAI model: "+(j.model||"backend-selected")+" · analyzed at "+new Date().toLocaleString()+". Treat this as decision support, not trade authorization.");
+  setText("aiStatus","Vision analysis returned by configured backend. Verify all visible price labels and live feed timestamps before acting.");return true;
+ }catch(e){setText("visionResult","AI screenshot analysis failed: "+(e.message||"network error")+". No screenshot-based conclusion is available; retry after checking backend health.");return false;}
+}
+function latestClosedBars(tf){return (state.candlesByTf[tf]||[]).filter(b=>Number.isFinite(Number(b.open))&&Number.isFinite(Number(b.high))&&Number.isFinite(Number(b.low))&&Number.isFinite(Number(b.close)));}
+function candleReversalCaution(tf){
+ const bars=latestClosedBars(tf);
+ if(bars.length<3)return {level:"UNAVAILABLE",text:"Not enough verified closed candles for reversal checks."};
+ const b=bars[bars.length-1],prev=bars[bars.length-2];
+ const o=Number(b.open),h=Number(b.high),l=Number(b.low),c=Number(b.close),po=Number(prev.open),pc=Number(prev.close);
+ const range=h-l,body=Math.abs(c-o);
+ if(!(range>0))return {level:"UNAVAILABLE",text:"Latest candle range is invalid."};
+ const upper=h-Math.max(o,c),lower=Math.min(o,c)-l;
+ const bearishWick=upper/range>=0.55 && c<o;
+ const bullishWick=lower/range>=0.55 && c>o;
+ const bearishEngulf=c<o && pc>po && o>=pc && c<=po;
+ const bullishEngulf=c>o && pc<po && o<=pc && c>=po;
+ const gold=state.quotes.XAUUSD,price=quoteIsFresh(gold)?Number(gold.mid):null;
+ const nearby=price===null?[]:state.autoZones.filter(z=>z.tf===tf&&price>=z.low-Math.max(2,price*0.0007)&&price<=z.high+Math.max(2,price*0.0007));
+ let signs=[];
+ if(bearishWick)signs.push("upper-wick rejection");if(bullishWick)signs.push("lower-wick rejection");
+ if(bearishEngulf)signs.push("bearish engulfing-like candle");if(bullishEngulf)signs.push("bullish engulfing-like candle");
+ if(!signs.length)return {level:"LOW / NO PATTERN",text:"No defined reversal candle pattern detected in the latest closed "+tf+" candle. This does not rule out a reversal."};
+ const direction=(bearishWick||bearishEngulf)?"bearish":"bullish";
+ const nearText=nearby.length?" Price is also near a detected "+nearby.map(z=>z.type).join("/")+" zone.":" No nearby detected zone confirmed by this check.";
+ return {level:nearby.length?"CAUTION — CONFIRMATION NEEDED":"EARLY CAUTION",text:"Possible "+direction+" reversal clues: "+signs.join(", ")+" on "+tf+"."+nearText+" Wait for follow-through/structure break; a single candle is not a trade signal."};
+}
+async function runGoldIntelligence(){
+ const gold=state.quotes.XAUUSD,dxy=state.quotes.DXY;
+ const gf=quoteIsFresh(gold),df=quoteIsFresh(dxy);
+ const nominal=state.yields.nominal,real=state.yields.real;
+ const tf=($("aiTimeframe")||{}).value||"1h";
+ const tfLabel={"15m":"15m","1h":"1H","4h":"4H","1d":"Daily"}[tf]||tf;
+ setText("aiStatus","Refreshing live public headlines and checking current market evidence…");
+ const globalResearch = await fetchGlobalGoldResearch();
+ const bars=latestClosedBars(tfLabel);
+ const reversal=candleReversalCaution(tfLabel);
+ const hasZones=state.autoZones.length>0&&!state.ohlcError;
+ let direction="WAIT",reason="Required fresh price evidence is missing or contradictory.";
+ if(gf&&df){
+  const gp=Number(gold.dayDiffPercent),dp=Number(dxy.dayDiffPercent);
+  if(Number.isFinite(gp)&&Number.isFinite(dp)&&gp>0&&dp<0){direction="BULLISH CONTEXT";reason="Gold is up on the provider's reported daily change while DXY is down. This is contextual alignment, not a trade trigger.";}
+  else if(Number.isFinite(gp)&&Number.isFinite(dp)&&gp<0&&dp>0){direction="BEARISH CONTEXT";reason="Gold is down on the provider's reported daily change while DXY is up. This is contextual alignment, not a trade trigger.";}
+  else{direction="MIXED — WAIT";reason="Gold and DXY do not show the simple inverse alignment in their reported daily changes. Wait for price structure and catalysts.";}
+ }
+ setText("aiDirection",direction);setText("aiDirectionReason",reason);
+ // Daily outlook is deliberately fail-closed: no invented calendar values or unsupported yield direction.
+ const dailyReady=gf&&df&&Number.isFinite(Number(gold.dayDiffPercent))&&Number.isFinite(Number(dxy.dayDiffPercent));
+ const dailyBias=dailyReady&&direction==="BULLISH CONTEXT"?"BULLISH BIAS":dailyReady&&direction==="BEARISH CONTEXT"?"BEARISH BIAS":"WAIT / MIXED";
+ setText("dailyBias",dailyBias);
+ setText("dailyBiasReason",dailyReady?reason:"Daily direction withheld because fresh gold and DXY data with valid daily changes are both required.");
+ const dailyQuality=dailyReady&&hasZones&&bars.length>=3?"PARTIAL — CHECKED":"INCOMPLETE";
+ setText("dailyConfidence",dailyQuality);
+ setText("dailyConfidenceReason",dailyReady?"Gold and DXY daily changes checked; candle zones: "+(hasZones?"available":"unavailable")+"; closed candles: "+bars.length+". No numeric probability is claimed.":"Critical inputs are missing or stale. Treat direction as unverified.");
+ const goldMove=dailyReady?Number(gold.dayDiffPercent):null; const dxyMove=dailyReady?Number(dxy.dayDiffPercent):null;
+ const macroText="Gold daily change: "+(goldMove===null?"unavailable":(goldMove>0?"+":"")+goldMove.toFixed(2)+"%")+"; DXY daily change: "+(dxyMove===null?"unavailable":(dxyMove>0?"+":"")+dxyMove.toFixed(2)+"%")+". US 10Y nominal yield: "+(nominal===null?"unavailable":""+nominal+"% (daily observation "+(state.yieldDates.nominal||"date unknown")+")")+"; real yield: "+(real===null?"unavailable":""+real+"% (daily observation "+(state.yieldDates.real||"date unknown")+")")+". Yield levels are not treated as a rising/falling trend without a verified comparison.";
+ setText("dailyBriefing",new Date().toLocaleString()+" — "+dailyBias+". "+(dailyReady?reason:"No reliable overall direction can be assigned from the currently verified inputs.")+" "+macroText+" Supply/demand zones: "+(hasZones?"algorithmic zones available":"unavailable")+". Relevant headline results: "+(aiGlobalArticles.length?aiGlobalArticles.length+" search results retrieved; titles and source links are shown below, but their market impact is not assumed":"no public headline results confirmed")+". Economic calendar actual/forecast/previous values are not used in this bias unless the calendar feed supplies and validates them.");
+ setText("dailyConfirm",dailyBias==="BULLISH BIAS"?"For bullish continuation, wait for price to hold or reclaim a verified demand/support area and confirm a higher high or retest. Check that USD/yield evidence does not contradict the move and review today's verified high-impact releases.":dailyBias==="BEARISH BIAS"?"For bearish continuation, wait for price to reject a verified supply/resistance area and confirm a lower low or retest. Check that USD/yield evidence does not contradict the move and review today's verified high-impact releases.":"No directional setup is confirmed. Wait for fresh gold and DXY evidence to align with a confirmed price-structure break/retest; verify today's high-impact events before considering a trade.");
+ setText("dailyCaution",!dailyReady?"WAIT / NO-GO: critical gold or DXY data is missing, stale or lacks a valid daily change. ":"The bias is contextual, not a trade signal. Stand aside if gold/DXY diverge, yields conflict, price remains inside a range, a key release is imminent, or candle/zone data is stale. "+"No entry, stop, target or numeric probability is invented. Check the risk desk before any trade.");
+ const quality=gf&&df&&nominal!==null&&real!==null&&hasZones?"PARTIAL / CHECKED":"INCOMPLETE";
+ setText("aiDataQuality",quality);
+ setText("aiDataSources","XAUUSD: "+(gf?"fresh quote":"missing/stale")+" · DXY: "+(df?"fresh quote":"missing/stale")+" · nominal yield: "+(nominal===null?"unavailable":"daily "+(state.yieldDates.nominal||"date unknown"))+" · real yield: "+(real===null?"unavailable":"daily "+(state.yieldDates.real||"date unknown"))+" · candle zones: "+(hasZones?"calculated":"unavailable"));
+ setText("aiBriefing",new Date().toLocaleString()+" — "+reason+" "+(gf?"Gold quote: "+fmt(gold.mid,3)+" ("+stamp(gold.timestamp)+"). ":"Gold quote is not verified fresh. ")+(df?"DXY: "+fmt(dxy.mid,4)+" ("+stamp(dxy.timestamp)+"). ":"DXY is not verified fresh. ")+"US 10Y nominal: "+(nominal===null?"unavailable":""+nominal+"% observed "+state.yieldDates.nominal)+"; real: "+(real===null?"unavailable":""+real+"% observed "+state.yieldDates.real)+". These yields are daily observations, not streaming data.");
+ setText("aiStructure",bars.length>=3?"Closed "+tfLabel+" candles available: "+bars.length+". Latest candle close: "+fmt(Number(bars[bars.length-1].close),3)+"; previous close: "+fmt(Number(bars[bars.length-2].close),3)+". This is a basic snapshot, not full multi-timeframe structure confirmation.":"No verified candle history for "+tfLabel+". Structure unavailable.");
+ setText("aiSupplyDemand",hasZones?"Detected zones from the existing OHLC swing algorithm: "+state.autoZones.filter(z=>z.type==="demand").length+" demand and "+state.autoZones.filter(z=>z.type==="supply").length+" supply zones across available timeframes. These are algorithmic swing areas, not verified institutional orders.":"Supply/demand unavailable: "+(state.ohlcError||"no valid zones detected"));
+ setText("aiLiquidity",bars.length>=3?"Potential liquidity reference: recent candle highs/lows. No sweep is confirmed by this summary because a sweep needs a level break and a verified close/reclaim sequence.":"Liquidity sweep check unavailable without closed candle history.");
+ setText("aiVolumeProfile","Unavailable from current feed. No volume-at-price histogram, POC, VAH or VAL is calculated here. Do not treat tick volume as consolidated global spot-gold volume.");
+ setText("aiReversal",reversal.level+" — "+reversal.text);
+ const globalItems=aiGlobalArticles.slice(0,8).map(a=>({title:a.title,source:a.domain,date:a.date,url:a.url,kind:"GDELT article search"}));
+ const feedItems=state.news.slice(0,5).map(n=>({title:n.title||n.headline||n.name||"Untitled",source:n.source||n.publisher||"Source not provided",date:n.publishedAt||n.published_at||n.date||n.timestamp||"Time not provided",url:n.url||n.link||n.sourceUrl||"",kind:"Existing app news feed"}));
+ const mergedNews=[...globalItems,...feedItems].filter((n,i,arr)=>!n.url||arr.findIndex(x=>x.url===n.url)===i).slice(0,10);
+ setHTML("aiCatalysts",mergedNews.length?mergedNews.map(n=>`<div class="list-item"><strong>${escapeHTML(n.title)}</strong><div class="tiny">${escapeHTML(n.source)} · ${escapeHTML(n.date)} · ${escapeHTML(n.kind)}</div>${n.url?`<a href="${escapeHTML(n.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);overflow-wrap:anywhere">Open source article</a>`:""}</div>`).join(""):`<div class="small">${escapeHTML(globalResearch.message)} Existing app news: ${state.news.length?"available":"unavailable"}.</div>`);
+ const sources=[];
+ if(gold&&gold.source)sources.push("XAUUSD source: "+gold.source+"; quote time: "+stamp(gold.timestamp));
+ if(dxy&&dxy.source)sources.push("DXY source: "+dxy.source+"; quote time: "+stamp(dxy.timestamp));
+ if(state.yieldDates.nominal)sources.push("US Treasury nominal daily observation: "+state.yieldDates.nominal);
+ if(state.yieldDates.real)sources.push("US Treasury real daily observation: "+state.yieldDates.real);
+ setText("aiCitations",sources.length?sources.join("\n")+"\nNews URLs are listed above when provided by the news feed.":"Source metadata unavailable. No citation can be asserted.");
+ setText("aiBullCase",gf&&df&&Number(gold.dayDiffPercent)>0&&Number(dxy.dayDiffPercent)<0?"Bullish context has partial support from reported daily gold-up / DXY-down alignment. Require a confirmed structure break or retest and defined risk.":"Bullish scenario is not confirmed. Watch for gold strength, USD/yield pressure easing, and a confirmed higher high/retest; these conditions have not all been verified here.");
+ setText("aiBearCase",gf&&df&&Number(gold.dayDiffPercent)<0&&Number(dxy.dayDiffPercent)>0?"Bearish context has partial support from reported daily gold-down / DXY-up alignment. Require a confirmed breakdown or retest and defined risk.":"Bearish scenario is not confirmed. Watch for gold lower highs/lower lows, stronger USD or rising real yields, and a confirmed breakdown; these conditions have not all been verified here.");
+ const gate=gf&&df&&hasZones&&bars.length>=3&&reversal.level!=="UNAVAILABLE"?"WAIT":"NO-GO";
+ setText("aiRiskGate",gate);setText("aiRiskReason",gate==="NO-GO"?"One or more required quote/candle checks are incomplete. No trade clearance.":"Basic market inputs are present, but entry trigger, stop-loss, position sizing, spread, news risk and account limits have not all been independently validated. WAIT for the full pre-trade risk desk.");
+ setText("aiStatus","Evidence snapshot refreshed at "+new Date().toLocaleString()+". Headlines are search results, not independently verified facts. Local calculations are not a complete AI-synthesized forecast.");
+ if(aiFile&&aiFile.files&&aiFile.files[0]) await runServerVisionAnalysis();
+}
+$("analyzeGoldBtn").addEventListener("click",runGoldIntelligence);
+
+
+$("calcRisk").addEventListener("click",()=>{
+ const bal=Number($("accountBalance").value),risk=Number($("riskPercent").value),limit=Number($("dailyLossPercent").value),used=Number($("dailyLossUsed").value);
+ if(!(bal>0)||risk<0||risk>100||limit<0||limit>100||used<0){setHTML("riskOutput","<strong>Check inputs.</strong> Enter a positive balance and valid non-negative percentages/loss.");return}
+ const per=bal*risk/100,cap=bal*limit/100,remaining=Math.max(0,cap-used),blocked=used>=cap;
+ setHTML("riskOutput",`<strong>${blocked?"DAILY LIMIT REACHED — STOP NEW TRADES":"Configured limits (advisory only)"}</strong><p>Risk budget per trade: ${fmt(per,2)}</p><p>Daily loss cap: ${fmt(cap,2)} · Used: ${fmt(used,2)} · Remaining: ${fmt(remaining,2)}</p><p>${blocked?"Your configured loss limit has been reached. Do not open new trades under this rule.":"Stop trading when the daily loss reaches the configured cap. The page cannot enforce this in MT5."}</p>`);
+});
+$("refreshBtn").addEventListener("click",()=>{fetchQuotes();fetchYields();});
+$("retryYields").addEventListener("click",fetchYields);
+$("calendarRefresh").addEventListener("click",fetchCalendar);
+$("newsRefresh").addEventListener("click",fetchNews);
+
+async function fetchNfpMap(){
+ const base=(localStorage.getItem("inkabiAiBackendUrl")||"").trim().replace(/\/$/,"");
+ setText("nfpBias","WAIT");setText("nfpConfidence","Fetching verified automatic data…");setText("nfpTimeline","Loading automatic release timeline…");
+ if(!base){setText("nfpDate","BACKEND NEEDED");setText("nfpDateMeta","Save and test the deployed backend URL on AI Intelligence.");setText("nfpBrief","No backend URL is saved. Automatic NFP timeline is not connected yet.");setText("nfpGoldImpact","WAIT / NO-GO: no automatic source response.");setText("nfpQuality","Backend URL missing. No event data or NFP direction has been fabricated.");setText("nfpTimeline","Connect the backend to load the automatic map.");return;}
+ try{
+  const r=await fetch(base+"/api/nfp/outlook",{cache:"no-store"});if(!r.ok)throw new Error("Backend HTTP "+r.status);const d=await r.json();
+  setText("nfpDate",d.nextNfp?.date||"UNAVAILABLE");setText("nfpDateMeta",d.nextNfp?.title||"Official NFP date was not found in the calendar feed.");
+  setText("nfpBias",d.outlook?.label||"WAIT");setText("nfpConfidence",d.outlook?.confidence||"Insufficient verified evidence");setText("nfpBrief",d.outlook?.briefing||"No briefing available.");setText("nfpGoldImpact",d.outlook?.goldImpact||"WAIT: no defensible gold implication.");setText("nfpQuality",(d.quality||[]).join(" · ")||"No quality details supplied.");
+  const events=Array.isArray(d.timeline)?d.timeline:[];
+  if(!events.length)setText("nfpTimeline","No matching releases were returned for the NFP window.");else setHTML("nfpTimeline",events.map(e=>`<div class="list-item"><h4>${escapeHTML(e.date||"Date unavailable")} · ${escapeHTML(e.name||"Unnamed release")} <span class="pill">${escapeHTML(e.status||"status unknown")}</span></h4><p>Actual: ${escapeHTML(e.actual??"Unavailable")} · Forecast: ${escapeHTML(e.forecast??"Unavailable")} · Previous: ${escapeHTML(e.previous??"Unavailable")}</p><p>Interpretation: ${escapeHTML(e.interpretation||"No directional comparison possible.")}</p>${e.sourceUrl?`<p><a href="${escapeHTML(e.sourceUrl)}" target="_blank" rel="noopener">Open source</a></p>`:""}</div>`).join(""));
+  setHTML("nfpSources",(d.sources||[]).map(x=>`<p><a href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.name)}</a> — ${escapeHTML(x.status||"source")}</p>`).join("")||"Source list unavailable.");setText("nfpUpdated","Updated "+new Date(d.generatedAt||Date.now()).toLocaleString());
+ }catch(e){setText("nfpDate","UNAVAILABLE");setText("nfpDateMeta","Backend/source request failed");setText("nfpBias","WAIT / NO-GO");setText("nfpConfidence","No reliable outlook until source data loads");setText("nfpBrief","Automatic NFP request failed: "+(e.message||"unknown error"));setText("nfpGoldImpact","No gold direction generated.");setText("nfpQuality","Check the deployed backend URL, /api/health, host logs and upstream source availability.");setText("nfpTimeline","No events shown because the request failed.");}
+}
+if($("nfpRefresh"))$("nfpRefresh").addEventListener("click",fetchNfpMap);
+
+$("nav").addEventListener("click",e=>{const b=e.target.closest("button[data-screen]");if(!b)return;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".screen").forEach(x=>x.classList.toggle("active",x.id===b.dataset.screen));});
+window.addEventListener("online",()=>{setText("overallStatus","ONLINE · REFRESHING");fetchQuotes();fetchAutoZones();fetchCalendar();fetchNews();fetchYields();});
+window.addEventListener("offline",()=>{setText("overallStatus","OFFLINE");setText("homeAlert","Internet connection lost. Monitoring is impaired; no new signal should be used.");$("homeAlert").className="notice error";renderHealth();});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){fetchQuotes();fetchAutoZones();}});
+fetchQuotes();
+fetchAutoZones();
+fetchYields();
+fetchCalendar();
+fetchNews();
+fetchNfpMap();
+renderHealth();
+setInterval(fetchQuotes,10000);
+setInterval(fetchAutoZones,15000);
+setInterval(fetchYields,6*60*60*1000);
+setInterval(fetchCalendar,15*60*1000);
+setInterval(fetchNews,5*60*1000);
+setInterval(fetchNfpMap,15*60*1000);
+})();
+</script>
+</body>
+</html>
