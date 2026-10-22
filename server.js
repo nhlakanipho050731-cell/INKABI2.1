@@ -41,15 +41,38 @@ const parseFirstNumber = value => {
  return m ? Number(m[0]) : null;
 };
 const ymd = date => date.toISOString().slice(0,10);
-async function fetchJsonWithTimeout(url, timeoutMs=12000) {
- const controller = new AbortController();
- const timer = setTimeout(()=>controller.abort(), timeoutMs);
- try {
-  const response = await fetch(url, {signal:controller.signal, headers:{"Accept":"application/json","User-Agent":"INKABI.21 NFP Intelligence/1.0"}});
-  if (!response.ok) throw new Error(`Upstream HTTP ${response.status}`);
-  return await response.json();
- } finally { clearTimeout(timer); }
+
+async function fetchJsonWithTimeout(url, timeoutMs = 12000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        "Accept": "application/json",
+        "User-Agent": "INKABI.21 NFP Intelligence/1.0"
+      }
+    });
+
+    const body = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        `Upstream HTTP ${response.status}: ${body.slice(0, 500)}`
+      );
+    }
+
+    try {
+      return JSON.parse(body);
+    } catch {
+      throw new Error("Upstream returned invalid JSON");
+    }
+  } finally {
+    clearTimeout(timer);
+  }
 }
+
 app.get("/api/nfp/outlook", async (_req,res) => {
  try {
   const now = new Date();
