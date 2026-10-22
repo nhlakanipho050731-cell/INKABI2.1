@@ -228,8 +228,12 @@ previous: nextNfp.previous ?? nextNfp.prior ?? null,
 
 
  } catch(e) {
-  console.error("/api/nfp/outlook failed:",e?.message||"unknown");
-  res.status(502).json({error:"Automatic NFP data request failed. Check upstream calendar availability and backend logs."});
+  const message = String(e?.message || "Unknown error");
+  console.error("/api/nfp/outlook failed:", message);
+  res.status(502).json({
+    error: "Automatic NFP data request failed.",
+    detail: message.slice(0, 300)
+  });
  }
 });
 
