@@ -83,8 +83,9 @@ const to = ymd(new Date(now.getTime()+45*86400000));
 
   const url = `${FC_BASE}/calendar?from=${from}&to=${to}&country=US&limit=500&tz=America%2FNew_York`; 
   const data = await fetchJsonWithTimeout(url);
-  console.log("Dedicated NFP response:", JSON.stringify(dedicatedData));
+  
   const dedicatedNfpUrl = `${FC_BASE}/next?series=us-nfp`;
+  console.log("Dedicated NFP response:", JSON.stringify(dedicatedData));
   let dedicatedNfp = null;
   try {
     const dedicatedData = await fetchJsonWithTimeout(dedicatedNfpUrl);
