@@ -792,12 +792,6 @@ setText(
       " · Verify release data against official sources."
 );
 
-  (Array.isArray(d.quality)&&d.quality.length)
-    ? d.quality.join(" · ")
-    : "Upcoming NFP consensus: "+(d.nextNfp?.consensus==null?"Unavailable":"Provided")+
-      " · Missing values are not estimated"+
-      " · Verify release data against official sources."
-);
   const events=Array.isArray(d.timeline)?d.timeline:[];
   if(!events.length)setText("nfpTimeline","No matching releases were returned for the NFP window.");else setHTML("nfpTimeline",events.map(e=>`<div class="list-item"><h4>${escapeHTML(e.date||"Date unavailable")} · ${escapeHTML(e.name||"Unnamed release")} <span class="pill">${escapeHTML(e.status||"status unknown")}</span></h4><p>Actual: ${escapeHTML(e.actual??"Unavailable")} · Forecast: ${escapeHTML(e.forecast??"Unavailable")} · Previous: ${escapeHTML(e.previous??"Unavailable")}</p><p>Interpretation: ${escapeHTML(e.interpretation||"No directional comparison possible.")}</p>${e.sourceUrl?`<p><a href="${escapeHTML(e.sourceUrl)}" target="_blank" rel="noopener">Open source</a></p>`:""}</div>`).join(""));
   setHTML("nfpSources",(d.sources||[]).map(x=>`<p><a href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.name)}</a> — ${escapeHTML(x.status||"source")}</p>`).join("")||"Source list unavailable.");setText("nfpUpdated","Updated "+new Date(d.generatedAt||Date.now()).toLocaleString());
