@@ -756,7 +756,15 @@ $("newsRefresh").addEventListener("click",fetchNews);
 async function fetchNfpMap(){
  const base=(localStorage.getItem("inkabiAiBackendUrl")||"").trim().replace(/\/$/,"");
  setText("nfpBias","WAIT");setText("nfpConfidence","Fetching verified automatic data…");setText("nfpTimeline","Loading automatic release timeline…");
- if(!base){setText("nfpDate","BACKEND NEEDED");setText("nfpDateMeta","Save and test the deployed backend URL on AI Intelligence.");setText("nfpBrief","No backend URL is saved. Automatic NFP timeline is not connected yet.");setText("nfpGoldImpact","WAIT / NO-GO: no automatic source response.");setText("nfpQuality","Backend URL missing. No event data or NFP direction has been fabricated.");setText("nfpTimeline","Connect the backend to load the automatic map.");return;}
+ if(!base){setText("nfpDate","BACKEND NEEDED");setText("nfpDateMeta","Save and test the deployed backend URL on AI Intelligence.");setText("nfpBrief","No backend URL is saved. Automatic NFP timeline is not connected yet.");setText("nfpGoldImpact","WAIT / NO-GO: no automatic source response.");setText(
+  "nfpQuality",
+  (Array.isArray(d.quality) && d.quality.length)
+    ? d.quality.join(" · ")
+    : "Upcoming NFP consensus: " +
+      (d.nextNfp?.consensus == null ? "Unavailable" : "Provided") +
+      " · Missing values are not estimated" +
+      " · Verify release data against official sources."
+);
  try{
   const r=await fetch(base+"/api/nfp/outlook",{cache:"no-store"});if(!r.ok)throw new Error("Backend HTTP "+r.status);const d=await r.json();
   setText("nfpDate",d.nextNfp?.date||"UNAVAILABLE");setText("nfpDateMeta",d.nextNfp?.title||"Official NFP date was not found in the calendar feed.");
