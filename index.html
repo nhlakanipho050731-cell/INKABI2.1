@@ -194,14 +194,55 @@ function safeText(v){return v===null||v===undefined||v==="" ? "—" : String(v)}
 function setText(id,v){const el=$(id);if(el)el.textContent=v}
 function setHTML(id,v){const el=$(id);if(el)el.innerHTML=v}
 function escapeHTML(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function quoteIsFresh(q){
- if(!q || q.stale===true || q.marketState==="closed") return false;
- const age=Number(q.quoteAgeSeconds);
- if(Number.isFinite(age) && age>300) return false;
- const t=Date.parse(q.timestamp||q.lastQuoteAt||"");
- if(!Number.isNaN(t) && (Date.now()-t)>300000) return false;
- return Number.isFinite(Number(q.mid)) && Number(q.mid)>0;
+
+function quoteIsFresh(q) {
+  if (!q || q.stale === true) return false;
+
+  if (String(q.marketState || "").toLowerCase() === "closed") {
+    return false;
+  }
+
+  const rawTime = q.timestamp ?? q.lastQuoteAt ?? q.time ?? q.ts;
+
+  if (rawTime === undefined || rawTime === null || rawTime === "") {
+    return false;
+  }
+
+  let timestamp;
+
+  if (
+    typeof rawTime === "number" ||
+    /^\d{10,13}$/.test(String(rawTime).trim())
+  ) {
+    const n = Number(rawTime);
+    timestamp = n < 1e12 ? n * 1000 : n;
+  } else {
+    timestamp = Date.parse(rawTime);
+  }
+
+  if (!Number.isFinite(timestamp)) return false;
+
+  const ageSeconds = (Date.now() - timestamp) / 1000;
+
+  if (ageSeconds < -30 || ageSeconds > 300) return false;
+
+  if (q.quoteAgeSeconds !== undefined && q.quoteAgeSeconds !== null) {
+    const reportedAge = Number(q.quoteAgeSeconds);
+
+    if (
+      !Number.isFinite(reportedAge) ||
+      reportedAge < 0 ||
+      reportedAge > 300
+    ) {
+      return false;
+    }
+  }
+
+  const mid = Number(q.mid);
+
+  return Number.isFinite(mid) && mid > 0;
 }
+
 async function fetchQuotes(){
  const url=API+"/api/latest?symbols=XAUUSD&symbols=DXY&symbols=US30&symbols=EURUSD&symbols=GBPUSD&symbols=USDJPY&symbols=XAGUSD&symbols=USOIL";
  try{
