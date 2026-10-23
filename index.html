@@ -698,8 +698,17 @@ async function runServerVisionAnalysis(){
   setText("visionResult",j.analysis+"\n\nAI model: "+(j.model||"backend-selected")+" · analyzed at "+new Date().toLocaleString()+". Treat this as decision support, not trade authorization.");
   setText("aiStatus","Vision analysis returned by configured backend. Verify all visible price labels and live feed timestamps before acting.");return true;
  }catch(e){setText("visionResult","AI screenshot analysis failed: "+(e.message||"network error")+". No screenshot-based conclusion is available; retry after checking backend health.");return false;}
+}function latestClosedBars(tf){
+  return (state.candlesByTf[tf] || []).filter(b =>
+    b &&
+    b.isOpen !== true &&
+    Number.isFinite(Number(b.open)) &&
+    Number.isFinite(Number(b.high)) &&
+    Number.isFinite(Number(b.low)) &&
+    Number.isFinite(Number(b.close)) &&
+    Number(b.high) >= Number(b.low)
+  );
 }
-function latestClosedBars(tf){return (state.candlesByTf[tf]||[]).filter(b=>Number.isFinite(Number(b.open))&&Number.isFinite(Number(b.high))&&Number.isFinite(Number(b.low))&&Number.isFinite(Number(b.close)));}
 function candleReversalCaution(tf){
  const bars=latestClosedBars(tf);
  if(bars.length<3)return {level:"UNAVAILABLE",text:"Not enough verified closed candles for reversal checks."};
