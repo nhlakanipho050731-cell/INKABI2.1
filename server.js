@@ -293,8 +293,11 @@ if (!consensusMissing) {
   
   res.json({
     ok: true,
-    generatedAt: new Date().toISOString(),
-
+generatedAt: new Date().toISOString(),
+verified: nfpDataVerified,
+verificationStatus: nfpDataVerified
+  ? "VERIFIED"
+  : "WAIT — SOURCE VALIDATION REQUIRED",
     nextNfp: nextNfp ? {
       date: nextNfp.date ?? null,
       title: nextNfp.title || nextNfp.name || nextNfp.series_name || "U.S. Employment Situation",
