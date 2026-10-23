@@ -842,7 +842,7 @@ const verified = d.verified === true && validSources.length > 0;
   setText(
   "nfpBias",
   verified ? (d.outlook?.label || "WAIT") : "WAIT / NO-GO"
-);;
+);
   setText("nfpConfidence",d.outlook?.confidence||"Insufficient verified evidence");
   setText("nfpBrief",d.outlook?.briefing||"No briefing available.");
   setText(
@@ -872,7 +872,8 @@ setText(
       ).join("")
     : "No valid HTTPS sources were provided by the backend."
 );
- catch(e){setText("nfpDate","UNAVAILABLE");setText("nfpDateMeta","Backend/source request failed");setText("nfpBias","WAIT / NO-GO");setText("nfpConfidence","No reliable outlook until source data loads");setText("nfpBrief","Automatic NFP request failed: "+(e.message||"unknown error"));setText("nfpGoldImpact","No gold direction generated.");setText("nfpQuality","Check the deployed backend URL, /api/health, host logs and upstream source availability.");setText("nfpTimeline","No events shown because the request failed.");}
+ } catch(e) {
+ setText("nfpDate","UNAVAILABLE");setText("nfpDateMeta","Backend/source request failed");setText("nfpBias","WAIT / NO-GO");setText("nfpConfidence","No reliable outlook until source data loads");setText("nfpBrief","Automatic NFP request failed: "+(e.message||"unknown error"));setText("nfpGoldImpact","No gold direction generated.");setText("nfpQuality","Check the deployed backend URL, /api/health, host logs and upstream source availability.");setText("nfpTimeline","No events shown because the request failed.");}
 }
 if($("nfpRefresh"))$("nfpRefresh").addEventListener("click",fetchNfpMap);
 
