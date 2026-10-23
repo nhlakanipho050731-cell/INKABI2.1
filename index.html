@@ -804,77 +804,183 @@ $("calendarRefresh").addEventListener("click",fetchCalendar);
 $("newsRefresh").addEventListener("click",fetchNews);
 
 
-async function fetchNfpMap(){
- const base=(localStorage.getItem("inkabiAiBackendUrl")||"").trim().replace(/\/+$/,"");
 
- setText("nfpUpdated","Refreshing…");
- setText("nfpBias","WAIT / NO-GO");
- setText("nfpConfidence","Fetching verified automatic data…");
- setText("nfpTimeline","Loading automatic release timeline…");
- setText("nfpSources","Refreshing source verification…");
+async function fetchNfpMap() {
+  const base = (localStorage.getItem("inkabiAiBackendUrl") || "")
+    .trim()
+    .replace(/\/+$/, "");
 
-  return;
+  setText("nfpUpdated", "Refreshing…");
+  setText("nfpDate", "Loading…");
+  setText("nfpDateMeta", "Checking release schedule");
+  setText("nfpBias", "WAIT / NO-GO");
+  setText("nfpConfidence", "Checking verified evidence…");
+  setText("nfpBrief", "Loading automatic NFP data…");
+  setText("nfpGoldImpact", "Awaiting verified source data.");
+  setText("nfpQuality", "Checking data quality…");
+  setText("nfpTimeline", "Loading automatic release timeline…");
+  setText("nfpSources", "Checking source verification…");
+
+  if (!base || !/^https:\/\//i.test(base)) {
+    setText("nfpUpdated", "Not connected");
+    setText("nfpDate", "UNAVAILABLE");
+    setText("nfpDateMeta", "Configure the deployed HTTPS backend.");
+    setText("nfpConfidence", "No verified outlook available");
+    setText("nfpBrief", "Save your deployed backend URL in the AI Intelligence screen, then test the backend.");
+    setText("nfpGoldImpact", "WAIT / NO-GO: backend is not configured.");
+    setText("nfpQuality", "No request was made. No data has been verified.");
+    setText("nfpTimeline", "Unavailable until the backend is connected.");
+    setText("nfpSources", "No source verification available.");
+    return;
+  }
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12000);
+
+    let response;
+    let d;
+
+    try {
+      response = await fetch(base + "/api/nfp/outlook", {
+        cache: "no-store",
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error("Backend HTTP " + response.status);
+      }
+
+      d = await response.json();
+    } finally {
+      clearTimeout(timer);
+    }
+
+    setText("nfpUpdated", "Response received: " + new Date().toLocaleTimeString());
+
+    if (!d || typeof d !== "object" || Array.isArray(d)) {
+      throw new Error("Invalid NFP response format");
+    }
+
+    const validSources = Array.isArray(d.sources)
+      ? d.sources.filter(x =>
+          x &&
+          typeof x.name === "string" &&
+          typeof x.url === "string" &&
+          /^https:\/\//i.test(x.url)
+        )
+      : [];
+
+    const verified = d.verified === true && validSources.length > 0;
+    const outlook = d.outlook && typeof d.outlook === "object"
+      ? d.outlook
+      : {};
+
+    setText("nfpDate", d.nextNfp?.date || "UNAVAILABLE");
+    setText(
+      "nfpDateMeta",
+      d.nextNfp?.title || "Official NFP release date unavailable."
+    );
+
+    setText(
+      "nfpBias",
+      verified ? (outlook.label || "WAIT") : "WAIT / NO-GO"
+    );
+
+    setText(
+      "nfpConfidence",
+      verified
+        ? (outlook.confidence || "No confidence assessment supplied")
+        : "Withheld: source verification is incomplete"
+    );
+
+    setText(
+      "nfpBrief",
+      verified
+        ? (outlook.briefing || "No verified briefing supplied.")
+        : "No verified NFP outlook. Check the backend and its underlying sources."
+    );
+
+    setText(
+      "nfpGoldImpact",
+      verified
+        ? (outlook.goldImpact || "WAIT: no defensible gold implication supplied.")
+        : "WAIT / NO-GO: source verification is missing or incomplete."
+    );
+
+    setText(
+      "nfpQuality",
+      (Array.isArray(d.quality) && d.quality.length)
+        ? d.quality.join(" · ")
+        : "Verification: " + (verified ? "backend marked verified" : "not verified") +
+          " · Consensus: " +
+          (d.nextNfp?.consensus == null ? "Unavailable" : "Provided") +
+          " · Confirm critical values with official sources."
+    );
+
+    const events = Array.isArray(d.timeline) ? d.timeline : [];
+
+    if (!events.length) {
+      setText("nfpTimeline", "No matching releases returned for the NFP window.");
+    } else {
+      setHTML(
+        "nfpTimeline",
+        events.map(e => {
+          const sourceUrl =
+            typeof e.sourceUrl === "string" &&
+            /^https:\/\//i.test(e.sourceUrl)
+              ? e.sourceUrl
+              : "";
+
+          return `<div class="list-item">
+            <h4>${escapeHTML(e.date || "Date unavailable")} ·
+            ${escapeHTML(e.name || "Unnamed release")}
+            <span class="pill">${escapeHTML(e.status || "status unknown")}</span></h4>
+            <p>Actual: ${escapeHTML(e.actual ?? "Unavailable")} ·
+            Forecast: ${escapeHTML(e.forecast ?? "Unavailable")} ·
+            Previous: ${escapeHTML(e.previous ?? "Unavailable")}</p>
+            <p>Interpretation: ${escapeHTML(e.interpretation || "No directional comparison supplied.")}</p>
+            ${sourceUrl
+              ? `<p><a href="${escapeHTML(sourceUrl)}" target="_blank" rel="noopener noreferrer">Open source</a></p>`
+              : ""}
+          </div>`;
+        }).join("")
+      );
+    }
+
+    setHTML(
+      "nfpSources",
+      validSources.length
+        ? validSources.map(x =>
+            `<p><a href="${escapeHTML(x.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(x.name)}</a> — ${escapeHTML(x.status || "source supplied by backend")}</p>`
+          ).join("")
+        : "No valid HTTPS sources were provided by the backend."
+    );
+
+    if (!verified) {
+      setText(
+        "nfpQuality",
+        "NOT VERIFIED: the backend verification flag or valid source links are missing. Do not use the outlook as a trading signal."
+      );
+    }
+  } catch (e) {
+    setText("nfpUpdated", "Refresh failed");
+    setText("nfpDate", "UNAVAILABLE");
+    setText("nfpDateMeta", "Backend/source request failed");
+    setText("nfpBias", "WAIT / NO-GO");
+    setText("nfpConfidence", "No reliable outlook until data is checked");
+    setText("nfpBrief", "Automatic NFP request failed: " +
+      (e.name === "AbortError" ? "request timed out" : (e.message || "unknown error")));
+    setText("nfpGoldImpact", "No verified gold direction available.");
+    setText("nfpQuality", "Check the backend URL, /api/health, server logs and upstream sources.");
+    setText("nfpTimeline", "No events shown because the request failed.");
+    setText("nfpSources", "Source verification unavailable.");
+  }
 }
 
-try{
-  const r=await fetch(base+"/api/nfp/outlook",{cache:"no-store"});
-  if(!r.ok)throw new Error("Backend HTTP "+r.status);
-  const d = await r.json();
-setText("nfpUpdated","Response received: "+new Date().toLocaleTimeString());
-if (!d || typeof d !== "object" || Array.isArray(d)) {
-  throw new Error("Invalid NFP response format");
+if ($("nfpRefresh")) {
+  $("nfpRefresh").addEventListener("click", fetchNfpMap);
 }
-
-const validSources = Array.isArray(d.sources)
-  ? d.sources.filter(x =>
-      x &&
-      typeof x.name === "string" &&
-      typeof x.url === "string" &&
-      /^https:\/\//i.test(x.url)
-    )
-  : [];
-
-const verified = d.verified === true && validSources.length > 0;
-
-  setText("nfpDate",d.nextNfp?.date||"UNAVAILABLE");
-  setText("nfpDateMeta",d.nextNfp?.title||"Official NFP date was not found in the calendar feed.");
-  setText(
-  "nfpBias",
-  verified ? (d.outlook?.label || "WAIT") : "WAIT / NO-GO"
-);
-  setText("nfpConfidence",d.outlook?.confidence||"Insufficient verified evidence");
-  setText("nfpBrief",d.outlook?.briefing||"No briefing available.");
-  setText(
-  "nfpGoldImpact",
-  verified
-    ? (d.outlook?.goldImpact || "WAIT: no defensible gold implication.")
-    : "WAIT / NO-GO: NFP source verification is missing or incomplete."
-);
-
-setText(
-  "nfpQuality",
-  (Array.isArray(d.quality) && d.quality.length)
-    ? d.quality.join(" · ")
-    : "Upcoming NFP consensus: " +
-      (d.nextNfp?.consensus == null ? "Unavailable" : "Provided") +
-      " · Missing values are not estimated" +
-      " · Verify release data against official sources."
-);
-
-  const events=Array.isArray(d.timeline)?d.timeline:[];
-  if(!events.length)setText("nfpTimeline","No matching releases were returned for the NFP window.");else setHTML("nfpTimeline",events.map(e=>`<div class="list-item"><h4>${escapeHTML(e.date||"Date unavailable")} · ${escapeHTML(e.name||"Unnamed release")} <span class="pill">${escapeHTML(e.status||"status unknown")}</span></h4><p>Actual: ${escapeHTML(e.actual??"Unavailable")} · Forecast: ${escapeHTML(e.forecast??"Unavailable")} · Previous: ${escapeHTML(e.previous??"Unavailable")}</p><p>Interpretation: ${escapeHTML(e.interpretation||"No directional comparison possible.")}</p>${e.sourceUrl?`<p><a href="${escapeHTML(e.sourceUrl)}" target="_blank" rel="noopener">Open source</a></p>`:""}</div>`).join(""));
-  setHTML(
-  "nfpSources",
-  validSources.length
-    ? validSources.map(x =>
-        `<p><a href="${escapeHTML(x.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(x.name)}</a> — ${escapeHTML(x.status || "source")}</p>`
-      ).join("")
-    : "No valid HTTPS sources were provided by the backend."
-);
- } catch(e) {
- setText("nfpDate","UNAVAILABLE");setText("nfpDateMeta","Backend/source request failed");setText("nfpBias","WAIT / NO-GO");setText("nfpConfidence","No reliable outlook until source data loads");setText("nfpBrief","Automatic NFP request failed: "+(e.message||"unknown error"));setText("nfpGoldImpact","No gold direction generated.");setText("nfpQuality","Check the deployed backend URL, /api/health, host logs and upstream source availability.");setText("nfpTimeline","No events shown because the request failed.");}
-}
-if($("nfpRefresh"))$("nfpRefresh").addEventListener("click",fetchNfpMap);
 
 $("nav").addEventListener("click",e=>{const b=e.target.closest("button[data-screen]");if(!b)return;document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".screen").forEach(x=>x.classList.toggle("active",x.id===b.dataset.screen));});
 window.addEventListener("online",()=>{setText("overallStatus","ONLINE · REFRESHING");fetchQuotes();fetchAutoZones();fetchCalendar();fetchNews();fetchYields();});
