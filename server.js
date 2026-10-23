@@ -232,6 +232,21 @@ previous: safeText(previousNfp.previous ?? previousNfp.prior)
 
     timeline: mapped,
 
+    
+    verified: false,
+    verificationStatus: "WAIT — SOURCE VALIDATION REQUIRED",
+
+    sources: [
+      {
+        name: "FinanceCalendar",
+        url: "https://www.financecalendar.com"
+      },
+      {
+        name: "U.S. Bureau of Labor Statistics",
+        url: "https://www.bls.gov/schedule/news_release/bls.ics"
+      }
+    ],
+
     attribution: {
       source: "FinanceCalendar",
       url: "https://www.financecalendar.com"
