@@ -820,7 +820,22 @@ if(!base){
 try{
   const r=await fetch(base+"/api/nfp/outlook",{cache:"no-store"});
   if(!r.ok)throw new Error("Backend HTTP "+r.status);
-  const d=await r.json();
+  const d = await r.json();
+
+if (!d || typeof d !== "object" || Array.isArray(d)) {
+  throw new Error("Invalid NFP response format");
+}
+
+const validSources = Array.isArray(d.sources)
+  ? d.sources.filter(x =>
+      x &&
+      typeof x.name === "string" &&
+      typeof x.url === "string" &&
+      /^https:\/\//i.test(x.url)
+    )
+  : [];
+
+const verified = d.verified === true && validSources.length > 0;
 
   setText("nfpDate",d.nextNfp?.date||"UNAVAILABLE");
   setText("nfpDateMeta",d.nextNfp?.title||"Official NFP date was not found in the calendar feed.");
