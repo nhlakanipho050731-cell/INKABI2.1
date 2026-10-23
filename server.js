@@ -162,39 +162,52 @@ console.log("NFP calendar sample:", JSON.stringify(
   const calendarNextNfp = nfpEvents.find(e=>String(e.date||"")>=today && !/cancelled/i.test(e.status||"")) || null;
   const nextNfp = dedicatedNfp || calendarNextNfp;
 
+  
   const nextNfpDate = String(nextNfp?.date || "");
-  const validNfpDate = /^\d{4}-\d{2}-\d{2}$/.test(nextNfpDate) &&
-    !Number.isNaN(Date.parse(`${nextNfpDate}T00:00:00Z`));
 
-  const nfpSourceUrl = String(
-    nextNfp?.source_url ||
-    nextNfp?.url ||
-    "https://www.bls.gov/schedule/news_release/bls.ics"
-  );
+  const validNfpDate =
+    /^\d{4}-\d{2}-\d{2}$/.test(nextNfpDate) &&
+    !Number.isNaN(Date.parse(`${nextNfpDate}T00:00:00Z`)) &&
+    new Date(`${nextNfpDate}T00:00:00Z`).toISOString().slice(0, 10) === nextNfpDate;
 
-  const sourceUrlIsHttps = (() => {
-    try {
-      return new URL(nfpSourceUrl).protocol === "https:";
-    } catch {
-      return false;
-    }
-  })();
+  let officialBlsDates = [];
+  let blsScheduleAvailable = false;
+
+  try {
+    const blsIcs = await fetchTextWithTimeout(
+      "https://www.bls.gov/schedule/news_release/bls.ics"
+    );
+
+    officialBlsDates = parseBlsNfpDates(blsIcs);
+    blsScheduleAvailable = officialBlsDates.length > 0;
+  } catch (blsError) {
+    console.warn(
+      "Official BLS schedule validation unavailable:",
+      blsError?.message || "unknown"
+    );
+  }
+
+  const officialScheduleMatches =
+    validNfpDate && officialBlsDates.includes(nextNfpDate);
 
   const nfpDateVerified = Boolean(
     dedicatedNfp &&
-    validNfpDate &&
     String(dedicatedNfp.country || "").toUpperCase() === "US" &&
-    sourceUrlIsHttps
+    officialScheduleMatches
   );
 
   const nfpConsensus = nextNfp?.consensus ?? nextNfp?.forecast ?? null;
+
   const consensusAvailable =
     nfpConsensus !== null &&
     nfpConsensus !== undefined &&
     String(nfpConsensus).trim() !== "" &&
     Number.isFinite(Number(nfpConsensus));
 
-  const nfpDataVerified = nfpDateVerified && consensusAvailable;
+  // A numeric forecast alone does not prove its source or freshness.
+  // Keep full data verification disabled until those checks exist.
+  const forecastSourceVerified = false;
+  const nfpDataVerified = false;
   
   const previousNfp = [...nfpEvents].reverse().find(e=>String(e.date||"")<today && (e.actual!==null && e.actual!==undefined || /released/i.test(e.status||""))) || null;
   const relevantRx = /ADP.*employment|employment change|jobless claims|unemployment claims|continuing claims|JOLTS|job openings|ISM.*employment|employment.*ISM|average hourly earnings|hourly earnings|unemployment rate|labor force participation|labour force participation|non.?farm payroll|employment situation|challenger.*job cuts/i;
@@ -309,20 +322,19 @@ previous: safeText(previousNfp.previous ?? previousNfp.prior)
     timeline: mapped,
 
     
-    verified: nfpDataVerified,
-    verificationStatus: !nfpDateVerified
-      ? "WAIT — NFP DATE/SOURCE CHECK INCOMPLETE"
-      : !consensusAvailable
-        ? "WAIT — CONSENSUS NOT AVAILABLE"
-        : "DATE AND CONSENSUS CHECKS PASSED",
+    
     validation: {
       dateFormatValid: validNfpDate,
       dedicatedSourceMatched: Boolean(dedicatedNfp),
-      sourceUrlIsHttps,
+      blsScheduleAvailable,
+      officialScheduleMatches,
+      officialBlsDates,
       consensusAvailable,
+      forecastSourceVerified,
       dateVerified: nfpDateVerified,
       dataVerified: nfpDataVerified
     },
+
 
 
     sources: [
