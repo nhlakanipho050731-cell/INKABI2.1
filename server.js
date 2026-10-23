@@ -43,6 +43,48 @@ const parseFirstNumber = value => {
 const ymd = date => date.toISOString().slice(0,10);
 
 async function fetchJsonWithTimeout(url, timeoutMs = 12000) {
+async function fetchTextWithTimeout(url, timeoutMs = 12000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        "Accept": "text/calendar,text/plain,*/*",
+        "User-Agent": "INKABI.21 NFP Intelligence/1.0"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`BLS schedule HTTP ${response.status}`);
+    }
+
+    return await response.text();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function parseBlsNfpDates(icsText) {
+  const unfolded = String(icsText).replace(/\r?\n[ \t]/g, "");
+  const events = unfolded.split("BEGIN:VEVENT").slice(1);
+  const dates = [];
+
+  for (const event of events) {
+    const summary = event.match(/^SUMMARY(?:;[^:]*)?:(.*)$/mi)?.[1] || "";
+    const start = event.match(/^DTSTART(?:;[^:]*)?:(\d{8})/mi)?.[1] || "";
+
+    if (/employment situation/i.test(summary) && /^\d{8}$/.test(start)) {
+      dates.push(
+        `${start.slice(0, 4)}-${start.slice(4, 6)}-${start.slice(6, 8)}`
+      );
+    }
+  }
+
+  return [...new Set(dates)].sort();
+}
+ 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
