@@ -267,8 +267,21 @@ previous: safeText(previousNfp.previous ?? previousNfp.prior)
     timeline: mapped,
 
     
-    verified: false,
-    verificationStatus: "WAIT — SOURCE VALIDATION REQUIRED",
+    verified: nfpDataVerified,
+    verificationStatus: !nfpDateVerified
+      ? "WAIT — NFP DATE/SOURCE CHECK INCOMPLETE"
+      : !consensusAvailable
+        ? "WAIT — CONSENSUS NOT AVAILABLE"
+        : "DATE AND CONSENSUS CHECKS PASSED",
+    validation: {
+      dateFormatValid: validNfpDate,
+      dedicatedSourceMatched: Boolean(dedicatedNfp),
+      sourceUrlIsHttps,
+      consensusAvailable,
+      dateVerified: nfpDateVerified,
+      dataVerified: nfpDataVerified
+    },
+
 
     sources: [
       {
