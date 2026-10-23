@@ -839,12 +839,17 @@ const verified = d.verified === true && validSources.length > 0;
 
   setText("nfpDate",d.nextNfp?.date||"UNAVAILABLE");
   setText("nfpDateMeta",d.nextNfp?.title||"Official NFP date was not found in the calendar feed.");
-  setText("nfpBias",d.outlook?.label||"WAIT");
+  setText(
+  "nfpBias",
+  verified ? (d.outlook?.label || "WAIT") : "WAIT / NO-GO"
+);;
   setText("nfpConfidence",d.outlook?.confidence||"Insufficient verified evidence");
   setText("nfpBrief",d.outlook?.briefing||"No briefing available.");
   setText(
   "nfpGoldImpact",
-  d.outlook?.goldImpact || "WAIT: no defensible gold implication."
+  verified
+    ? (d.outlook?.goldImpact || "WAIT: no defensible gold implication.")
+    : "WAIT / NO-GO: NFP source verification is missing or incomplete."
 );
 
 setText(
