@@ -887,12 +887,19 @@ async function fetchNfpMap() {
       verified ? (outlook.label || "WAIT") : "WAIT / NO-GO"
     );
 
-    setText(
-      "nfpConfidence",
-      verified
-        ? (outlook.confidence || "No confidence assessment supplied")
-        : "Withheld: source verification is incomplete"
-    );
+    
+setText(
+  "nfpConfidence",
+  verified
+    ? (outlook.confidence || "No confidence assessment supplied")
+    : (
+        outlook.confidence ||
+        outlook.label ||
+        d.verificationStatus ||
+        "Withheld: source verification is incomplete"
+      )
+);
+
 
     setText(
       "nfpBrief",
