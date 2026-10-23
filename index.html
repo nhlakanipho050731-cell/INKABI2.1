@@ -864,8 +864,15 @@ setText(
 
   const events=Array.isArray(d.timeline)?d.timeline:[];
   if(!events.length)setText("nfpTimeline","No matching releases were returned for the NFP window.");else setHTML("nfpTimeline",events.map(e=>`<div class="list-item"><h4>${escapeHTML(e.date||"Date unavailable")} · ${escapeHTML(e.name||"Unnamed release")} <span class="pill">${escapeHTML(e.status||"status unknown")}</span></h4><p>Actual: ${escapeHTML(e.actual??"Unavailable")} · Forecast: ${escapeHTML(e.forecast??"Unavailable")} · Previous: ${escapeHTML(e.previous??"Unavailable")}</p><p>Interpretation: ${escapeHTML(e.interpretation||"No directional comparison possible.")}</p>${e.sourceUrl?`<p><a href="${escapeHTML(e.sourceUrl)}" target="_blank" rel="noopener">Open source</a></p>`:""}</div>`).join(""));
-  setHTML("nfpSources",(d.sources||[]).map(x=>`<p><a href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.name)}</a> — ${escapeHTML(x.status||"source")}</p>`).join("")||"Source list unavailable.");setText("nfpUpdated","Updated "+new Date(d.generatedAt||Date.now()).toLocaleString());
- }catch(e){setText("nfpDate","UNAVAILABLE");setText("nfpDateMeta","Backend/source request failed");setText("nfpBias","WAIT / NO-GO");setText("nfpConfidence","No reliable outlook until source data loads");setText("nfpBrief","Automatic NFP request failed: "+(e.message||"unknown error"));setText("nfpGoldImpact","No gold direction generated.");setText("nfpQuality","Check the deployed backend URL, /api/health, host logs and upstream source availability.");setText("nfpTimeline","No events shown because the request failed.");}
+  setHTML(
+  "nfpSources",
+  validSources.length
+    ? validSources.map(x =>
+        `<p><a href="${escapeHTML(x.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(x.name)}</a> — ${escapeHTML(x.status || "source")}</p>`
+      ).join("")
+    : "No valid HTTPS sources were provided by the backend."
+);
+ catch(e){setText("nfpDate","UNAVAILABLE");setText("nfpDateMeta","Backend/source request failed");setText("nfpBias","WAIT / NO-GO");setText("nfpConfidence","No reliable outlook until source data loads");setText("nfpBrief","Automatic NFP request failed: "+(e.message||"unknown error"));setText("nfpGoldImpact","No gold direction generated.");setText("nfpQuality","Check the deployed backend URL, /api/health, host logs and upstream source availability.");setText("nfpTimeline","No events shown because the request failed.");}
 }
 if($("nfpRefresh"))$("nfpRefresh").addEventListener("click",fetchNfpMap);
 
