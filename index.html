@@ -803,17 +803,16 @@ $("retryYields").addEventListener("click",fetchYields);
 $("calendarRefresh").addEventListener("click",fetchCalendar);
 $("newsRefresh").addEventListener("click",fetchNews);
 
-async function fetchNfpMap(){
- const base=(localStorage.getItem("inkabiAiBackendUrl")||"").trim().replace(/\/$/,"");
- setText("nfpBias","WAIT");setText("nfpConfidence","Fetching verified automatic data…");setText("nfpTimeline","Loading automatic release timeline…");
 
-if(!base){
-  setText("nfpDate","BACKEND NEEDED");
-  setText("nfpDateMeta","Save and test the deployed backend URL on AI Intelligence.");
-  setText("nfpBrief","No backend URL is saved. Automatic NFP timeline is not connected yet.");
-  setText("nfpGoldImpact","WAIT / NO-GO: no automatic source response.");
-  setText("nfpQuality","Backend URL missing. No NFP outlook has been verified.");
-  setText("nfpTimeline","No events shown because the backend is not configured.");
+async function fetchNfpMap(){
+ const base=(localStorage.getItem("inkabiAiBackendUrl")||"").trim().replace(/\/+$/,"");
+
+ setText("nfpUpdated","Refreshing…");
+ setText("nfpBias","WAIT / NO-GO");
+ setText("nfpConfidence","Fetching verified automatic data…");
+ setText("nfpTimeline","Loading automatic release timeline…");
+ setText("nfpSources","Refreshing source verification…");
+
   return;
 }
 
@@ -821,7 +820,7 @@ try{
   const r=await fetch(base+"/api/nfp/outlook",{cache:"no-store"});
   if(!r.ok)throw new Error("Backend HTTP "+r.status);
   const d = await r.json();
-
+setText("nfpUpdated","Response received: "+new Date().toLocaleTimeString());
 if (!d || typeof d !== "object" || Array.isArray(d)) {
   throw new Error("Invalid NFP response format");
 }
