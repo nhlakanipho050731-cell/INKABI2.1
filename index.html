@@ -1011,6 +1011,14 @@ setInterval(fetchCalendar,15*60*1000);
 setInterval(fetchNews,5*60*1000);
 setInterval(fetchNfpMap,15*60*1000);
 })();
+document.addEventListener("click", function (e) {
+  const button = e.target.closest("button[data-screen]");
+  if (!button) return;
+
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
 </script>
 </body>
 </html>
